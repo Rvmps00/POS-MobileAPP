@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  "appName": "Lesehan Surya POS",
+  "@appName": {
+    "description": "The name of the application"
+  },
+  "login": "Sign In",
+  "loginWithGoogle": "Sign in with Google",
+  "email": "Email",
+  "password": "Password",
+  "cart": "Cart",
+  "checkout": "Checkout",
+  "total": "Total",
+  "addToCart": "Add to Cart",
+  "dineIn": "Dine-in",
+  "takeaway": "Takeaway",
+  "inventory": "Inventory",
+  "settings": "Settings",
+  "signOut": "Sign Out",
+  "subtotal": "Subtotal",
+  "tax": "Tax",
+  "grandTotal": "Grand Total",
+  "confirmOrder": "Confirm Order"
+}

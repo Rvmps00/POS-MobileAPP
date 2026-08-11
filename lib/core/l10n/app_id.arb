@@ -1,0 +1,21 @@
+{
+  "@@locale": "id",
+  "appName": "Lesehan Surya POS",
+  "login": "Masuk",
+  "loginWithGoogle": "Masuk dengan Google",
+  "email": "Email",
+  "password": "Kata Sandi",
+  "cart": "Keranjang",
+  "checkout": "Bayar",
+  "total": "Total",
+  "addToCart": "Tambah",
+  "dineIn": "Makan di tempat",
+  "takeaway": "Bawa pulang",
+  "inventory": "Inventaris",
+  "settings": "Pengaturan",
+  "signOut": "Keluar",
+  "subtotal": "Subtotal",
+  "tax": "Pajak",
+  "grandTotal": "Total Akhir",
+  "confirmOrder": "Konfirmasi Pesanan"
+}
