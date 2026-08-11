@@ -12,8 +12,10 @@ part of 'app_router.dart';
 @ProviderFor(authState)
 final authStateProvider = AuthStateProvider._();
 
-final class AuthStateProvider extends $FunctionalProvider<bool, bool, bool>
-    with $Provider<bool> {
+final class AuthStateProvider
+    extends
+        $FunctionalProvider<AsyncValue<AuthState>, AuthState, Stream<AuthState>>
+    with $FutureModifier<AuthState>, $StreamProvider<AuthState> {
   AuthStateProvider._()
     : super(
         from: null,
@@ -30,24 +32,16 @@ final class AuthStateProvider extends $FunctionalProvider<bool, bool, bool>
 
   @$internal
   @override
-  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $StreamProviderElement<AuthState> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
 
   @override
-  bool create(Ref ref) {
+  Stream<AuthState> create(Ref ref) {
     return authState(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(bool value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<bool>(value),
-    );
   }
 }
 
-String _$authStateHash() => r'894bea2dc3fdbc6d7f5cd51a6da9db098522edb4';
+String _$authStateHash() => r'a3f25f5dd7d362320c01f6303e630f2fec07613a';
 
 @ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
@@ -88,4 +82,4 @@ final class AppRouterProvider
   }
 }
 
-String _$appRouterHash() => r'2ff774dcc57ad295eed4519150723ad52d30ebf1';
+String _$appRouterHash() => r'13573b406c33524ff946a111edb4c113c46e68ea';

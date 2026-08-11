@@ -12,21 +12,26 @@ import '../../features/orders/presentation/order_history_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/printer_setup_screen.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 part 'app_router.g.dart';
 
-// Placeholder auth state for now until Supabase is fully wired
 @riverpod
-bool authState(AuthStateRef ref) {
-  return false; // Assuming unauthenticated for now
+Stream<AuthState> authState(Ref ref) {
+  return Supabase.instance.client.auth.onAuthStateChange;
 }
 
 @riverpod
-GoRouter appRouter(AppRouterRef ref) {
-  final isAuthenticated = ref.watch(authStateProvider);
+GoRouter appRouter(Ref ref) {
+  final authState = ref.watch(authStateProvider);
+  final isAuthenticated = authState.value?.session != null;
 
   return GoRouter(
     initialLocation: '/pos',
     redirect: (context, state) {
+      // While loading the initial auth state, don't redirect yet
+      if (authState.isLoading) return null;
+
       final isLoggingIn = state.uri.path == '/login';
       
       if (!isAuthenticated && !isLoggingIn) {

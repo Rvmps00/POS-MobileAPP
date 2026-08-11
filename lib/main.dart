@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'core/l10n/app_localizations.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_notifier.dart';
@@ -13,10 +13,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Supabase
-  // TODO: Replace with actual Supabase URL and Anon Key when provided by the user
   await Supabase.initialize(
-    url: 'https://placeholder-url.supabase.co',
-    anonKey: 'placeholder-anon-key',
+    url: 'https://iggafrwzriteftslmneb.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnZ2Fmcnd6cml0ZWZ0c2xtbmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzAzNDksImV4cCI6MjEwMjAwNjM0OX0.rJZxPFCei76-eVEePa-tPgHZOa0yDSzal8PUPVQxGio',
   );
 
   runApp(const ProviderScope(child: LesehanSuryaApp()));
@@ -27,8 +26,8 @@ class LesehanSuryaApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeNotifierProvider);
-    final locale = ref.watch(languageNotifierProvider);
+    final themeMode = ref.watch(themeProvider);
+    final locale = ref.watch(languageProvider);
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
@@ -37,7 +36,7 @@ class LesehanSuryaApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       locale: locale,
-      localizationsDelegates: const [
+      localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
