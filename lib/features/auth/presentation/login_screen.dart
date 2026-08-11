@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../../../core/l10n/app_localizations.dart';
+
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -98,7 +98,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -160,7 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       hintText: "admin@lesehansurya.com",
                       prefixIcon: Icon(Icons.mail_outline, color: colorScheme.onSurfaceVariant),
                       filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                      fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
@@ -208,7 +207,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         },
                       ),
                       filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                      fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
@@ -362,7 +361,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Text(
                     "v1.0",
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),

@@ -15,7 +15,7 @@ void main() async {
   // Initialize Supabase
   await Supabase.initialize(
     url: 'https://iggafrwzriteftslmneb.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnZ2Fmcnd6cml0ZWZ0c2xtbmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzAzNDksImV4cCI6MjEwMjAwNjM0OX0.rJZxPFCei76-eVEePa-tPgHZOa0yDSzal8PUPVQxGio',
+    publishableKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnZ2Fmcnd6cml0ZWZ0c2xtbmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzAzNDksImV4cCI6MjEwMjAwNjM0OX0.rJZxPFCei76-eVEePa-tPgHZOa0yDSzal8PUPVQxGio',
   );
 
   runApp(const ProviderScope(child: LesehanSuryaApp()));
