@@ -61,7 +61,8 @@ class _ToppingManagementScreenState
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(
-                foregroundColor: Theme.of(ctx).colorScheme.error),
+              foregroundColor: Theme.of(ctx).colorScheme.error,
+            ),
             child: const Text('Hapus'),
           ),
         ],
@@ -83,12 +84,14 @@ class _ToppingManagementScreenState
     return '+Rp $formatted';
   }
 
-  Future<Map<String, dynamic>?> _showToppingDialog(
-      {AddonToppingModel? topping}) async {
+  Future<Map<String, dynamic>?> _showToppingDialog({
+    AddonToppingModel? topping,
+  }) async {
     final nameCtrl = TextEditingController(text: topping?.name ?? '');
     final nameEnCtrl = TextEditingController(text: topping?.nameEn ?? '');
-    final priceCtrl =
-        TextEditingController(text: topping?.price.toString() ?? '0');
+    final priceCtrl = TextEditingController(
+      text: topping?.price.toString() ?? '0',
+    );
     bool isAvailable = topping?.isAvailable ?? true;
 
     return showDialog<Map<String, dynamic>>(
@@ -96,8 +99,9 @@ class _ToppingManagementScreenState
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           title: Text(topping == null ? 'Tambah Topping' : 'Edit Topping'),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -106,7 +110,8 @@ class _ToppingManagementScreenState
                 decoration: InputDecoration(
                   labelText: 'Nama Topping *',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -115,7 +120,8 @@ class _ToppingManagementScreenState
                 decoration: InputDecoration(
                   labelText: 'Name (English)',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -125,7 +131,8 @@ class _ToppingManagementScreenState
                   labelText: 'Harga (0 = Gratis)',
                   prefixText: 'Rp ',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -134,8 +141,7 @@ class _ToppingManagementScreenState
               SwitchListTile(
                 title: const Text('Tersedia'),
                 value: isAvailable,
-                onChanged: (v) =>
-                    setDialogState(() => isAvailable = v),
+                onChanged: (v) => setDialogState(() => isAvailable = v),
                 contentPadding: EdgeInsets.zero,
               ),
             ],
@@ -171,9 +177,7 @@ class _ToppingManagementScreenState
     final toppingsAsync = ref.watch(toppingsProvider(widget.productId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kelola Tambahan'),
-      ),
+      appBar: AppBar(title: const Text('Kelola Tambahan')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addTopping,
         icon: const Icon(Icons.add),
@@ -187,9 +191,11 @@ class _ToppingManagementScreenState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.add_circle_outline,
-                      size: 48,
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4)),
+                  Icon(
+                    Icons.add_circle_outline,
+                    size: 48,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  ),
                   const SizedBox(height: 16),
                   const Text('Belum ada tambahan/topping'),
                 ],
@@ -204,11 +210,14 @@ class _ToppingManagementScreenState
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: ListTile(
                   leading: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: item.isFree
                           ? Colors.green.withValues(alpha: 0.1)
@@ -234,7 +243,9 @@ class _ToppingManagementScreenState
                       if (!item.isAvailable)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: colorScheme.errorContainer,
                             borderRadius: BorderRadius.circular(100),
@@ -252,14 +263,18 @@ class _ToppingManagementScreenState
                         onPressed: () => _editTopping(item),
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete_outline,
-                            size: 20, color: colorScheme.error),
+                        icon: Icon(
+                          Icons.delete_outline,
+                          size: 20,
+                          color: colorScheme.error,
+                        ),
                         onPressed: () => _deleteTopping(item.id),
                       ),
                     ],
                   ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
               );
             },

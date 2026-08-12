@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -38,9 +37,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       // Navigation will be handled by GoRouter's redirect based on auth state change
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } finally {
       if (mounted) {
@@ -52,13 +51,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
-      const webClientId = '594623077837-ofdor4cst3rm9m58u186jemv4p14lk2o.apps.googleusercontent.com';
-      
-      final googleSignIn = GoogleSignIn(
-        serverClientId: webClientId,
-      );
+      const webClientId =
+          '594623077837-ofdor4cst3rm9m58u186jemv4p14lk2o.apps.googleusercontent.com';
+
+      final googleSignIn = GoogleSignIn(serverClientId: webClientId);
       final googleUser = await googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         throw 'Google Sign In was cancelled';
       }
@@ -66,11 +64,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
-      
+
       if (accessToken == null || idToken == null) {
         throw 'Missing Google Auth Tokens';
       }
-      
+
       await Supabase.instance.client.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
@@ -78,9 +76,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } finally {
       if (mounted) {
@@ -141,7 +139,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40), // mb-xl
-
                   // Email Field
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
@@ -157,27 +154,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     controller: _emailController,
                     decoration: InputDecoration(
                       hintText: "admin@lesehansurya.com",
-                      prefixIcon: Icon(Icons.mail_outline, color: colorScheme.onSurfaceVariant),
+                      prefixIcon: Icon(
+                        Icons.mail_outline,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                       filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      fillColor: colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.5,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide(color: colorScheme.outlineVariant),
+                        borderSide: BorderSide(
+                          color: colorScheme.outlineVariant,
+                        ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide(color: colorScheme.outlineVariant),
+                        borderSide: BorderSide(
+                          color: colorScheme.outlineVariant,
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+                        borderSide: BorderSide(
+                          color: colorScheme.primary,
+                          width: 1.5,
+                        ),
                       ),
                     ),
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 16), // gap-md
-
                   // Password Field
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
@@ -194,10 +205,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       hintText: "••••••••",
-                      prefixIcon: Icon(Icons.lock_outline, color: colorScheme.onSurfaceVariant),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
                           color: colorScheme.onSurfaceVariant,
                         ),
                         onPressed: () {
@@ -207,23 +223,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         },
                       ),
                       filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      fillColor: colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.5,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide(color: colorScheme.outlineVariant),
+                        borderSide: BorderSide(
+                          color: colorScheme.outlineVariant,
+                        ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide(color: colorScheme.outlineVariant),
+                        borderSide: BorderSide(
+                          color: colorScheme.outlineVariant,
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+                        borderSide: BorderSide(
+                          color: colorScheme.primary,
+                          width: 1.5,
+                        ),
                       ),
                     ),
                   ),
-                  
+
                   // Remember Me & Forgot Password
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
@@ -240,7 +268,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 onChanged: (value) {
                                   setState(() => _rememberMe = value ?? false);
                                 },
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
                                 activeColor: colorScheme.primary,
                               ),
                             ),
@@ -295,31 +325,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           )
                         : const Text(
                             "Sign In",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                   ),
-                  
+
                   const SizedBox(height: 24), // mb-lg
-                  
                   // OR Divider
                   Row(
                     children: [
-                      Expanded(child: Divider(color: colorScheme.outlineVariant)),
+                      Expanded(
+                        child: Divider(color: colorScheme.outlineVariant),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          'OR', 
+                          'OR',
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ),
-                      Expanded(child: Divider(color: colorScheme.outlineVariant)),
+                      Expanded(
+                        child: Divider(color: colorScheme.outlineVariant),
+                      ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Google Sign In
                   OutlinedButton.icon(
                     onPressed: _isLoading ? null : _signInWithGoogle,
@@ -361,7 +397,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Text(
                     "v1.0",
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.7,
+                      ),
                     ),
                     textAlign: TextAlign.center,
                   ),

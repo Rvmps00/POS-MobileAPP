@@ -5,6 +5,7 @@ import '../../data/models/product_model.dart';
 class ProductCard extends StatelessWidget {
   final ProductModel product;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
   final VoidCallback? onAddTap;
   final String languageCode;
 
@@ -12,6 +13,7 @@ class ProductCard extends StatelessWidget {
     super.key,
     required this.product,
     required this.onTap,
+    this.onLongPress,
     this.onAddTap,
     this.languageCode = 'id',
   });
@@ -23,6 +25,7 @@ class ProductCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: isOutOfStock ? null : onTap,
+      onLongPress: onLongPress,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
@@ -47,8 +50,8 @@ class ProductCard extends StatelessWidget {
                   aspectRatio: 4 / 3,
                   child: Container(
                     color: colorScheme.surfaceContainer,
-                    child: product.imageUrl != null &&
-                            product.imageUrl!.isNotEmpty
+                    child:
+                        product.imageUrl != null && product.imageUrl!.isNotEmpty
                         ? CachedNetworkImage(
                             imageUrl: product.imageUrl!,
                             fit: BoxFit.cover,
@@ -56,16 +59,18 @@ class ProductCard extends StatelessWidget {
                               child: Icon(
                                 Icons.restaurant_outlined,
                                 size: 40,
-                                color: colorScheme.onSurfaceVariant
-                                    .withValues(alpha: 0.4),
+                                color: colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.4,
+                                ),
                               ),
                             ),
                             errorWidget: (_, __, ___) => Center(
                               child: Icon(
                                 Icons.restaurant_outlined,
                                 size: 40,
-                                color: colorScheme.onSurfaceVariant
-                                    .withValues(alpha: 0.4),
+                                color: colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.4,
+                                ),
                               ),
                             ),
                           )
@@ -73,8 +78,9 @@ class ProductCard extends StatelessWidget {
                             child: Icon(
                               Icons.restaurant_outlined,
                               size: 40,
-                              color: colorScheme.onSurfaceVariant
-                                  .withValues(alpha: 0.4),
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.4,
+                              ),
                             ),
                           ),
                   ),
@@ -149,7 +155,9 @@ class ProductCard extends StatelessWidget {
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: colorScheme.errorContainer,
                         borderRadius: BorderRadius.circular(100),

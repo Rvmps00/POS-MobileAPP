@@ -69,10 +69,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
       // Upload image if new one selected
       if (_selectedImage != null) {
-        final fileName =
-            '${const Uuid().v4()}.jpg';
-        imageUrl =
-            await repo.uploadProductImage(fileName, _selectedImage!);
+        final fileName = '${const Uuid().v4()}.jpg';
+        imageUrl = await repo.uploadProductImage(fileName, _selectedImage!);
       }
 
       final data = {
@@ -98,23 +96,27 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       }
 
       // Refresh products list
+      ref.invalidate(productsProvider);
       ref.invalidate(filteredProductsProvider);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(widget.isEditing
-                ? 'Produk berhasil diperbarui'
-                : 'Produk berhasil ditambahkan'),
+            content: Text(
+              widget.isEditing
+                  ? 'Produk berhasil diperbarui'
+                  : 'Produk berhasil ditambahkan',
+            ),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)),
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         if (widget.isEditing) {
           context.pop();
         } else {
-          context.replace('/pos/product/${savedProduct.id}/edit');
+          context.replace('/menu/${savedProduct.id}/edit');
         }
       }
     } catch (e) {
@@ -160,13 +162,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     try {
       final repo = ref.read(catalogRepositoryProvider);
       await repo.deleteProduct(widget.productId!);
+      ref.invalidate(productsProvider);
       ref.invalidate(filteredProductsProvider);
       if (mounted) context.pop();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
         setState(() => _isSaving = false);
       }
     }
@@ -205,8 +208,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             ImagePickerWidget(
               currentImageUrl: _currentImageUrl,
               selectedFile: _selectedImage,
-              onImageSelected: (file) =>
-                  setState(() => _selectedImage = file),
+              onImageSelected: (file) => setState(() => _selectedImage = file),
             ),
             const SizedBox(height: 24),
 
@@ -217,7 +219,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 labelText: 'Nama Produk *',
                 hintText: 'Contoh: Nasi Goreng',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Nama wajib diisi' : null,
@@ -231,7 +234,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 labelText: 'Name (English)',
                 hintText: 'e.g., Fried Rice',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -243,17 +247,19 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 decoration: InputDecoration(
                   labelText: 'Kategori *',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 items: categories
-                    .map((c) => DropdownMenuItem(
-                          value: c.id,
-                          child: Text('${c.icon ?? ''} ${c.name}'),
-                        ))
+                    .map(
+                      (c) => DropdownMenuItem(
+                        value: c.id,
+                        child: Text('${c.icon ?? ''} ${c.name}'),
+                      ),
+                    )
                     .toList(),
                 onChanged: (v) => setState(() => _selectedCategoryId = v),
-                validator: (v) =>
-                    v == null ? 'Pilih kategori' : null,
+                validator: (v) => v == null ? 'Pilih kategori' : null,
               ),
               loading: () => const LinearProgressIndicator(),
               error: (_, __) => const Text('Gagal memuat kategori'),
@@ -268,13 +274,18 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 hintText: '15000',
                 prefixText: 'Rp ',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Harga wajib diisi';
-                if (int.tryParse(v.trim()) == null) return 'Masukkan angka';
+                if (v == null || v.trim().isEmpty) {
+                  return 'Harga wajib diisi';
+                }
+                if (int.tryParse(v.trim()) == null) {
+                  return 'Masukkan angka';
+                }
                 return null;
               },
             ),
@@ -287,7 +298,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 labelText: 'Stok',
                 hintText: '100',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -302,7 +314,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 labelText: 'Deskripsi',
                 hintText: 'Deskripsi produk (opsional)',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -310,13 +323,16 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             // Availability toggle
             SwitchListTile(
               title: const Text('Tersedia'),
-              subtitle: Text(_isAvailable
-                  ? 'Produk bisa dipesan'
-                  : 'Produk tidak tersedia (Habis)'),
+              subtitle: Text(
+                _isAvailable
+                    ? 'Produk bisa dipesan'
+                    : 'Produk tidak tersedia (Habis)',
+              ),
               value: _isAvailable,
               onChanged: (v) => setState(() => _isAvailable = v),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
             const SizedBox(height: 16),
 
@@ -329,9 +345,10 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 subtitle: const Text('Bahan yang bisa dihilangkan'),
                 trailing: const Icon(Icons.chevron_right),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                onTap: () => context.push(
-                    '/pos/product/${widget.productId}/ingredients'),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                onTap: () =>
+                    context.push('/menu/${widget.productId}/ingredients'),
               ),
               ListTile(
                 leading: const Icon(Icons.add_circle_outline),
@@ -339,9 +356,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 subtitle: const Text('Topping & extra dengan harga'),
                 trailing: const Icon(Icons.chevron_right),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                onTap: () => context.push(
-                    '/pos/product/${widget.productId}/toppings'),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                onTap: () => context.push('/menu/${widget.productId}/toppings'),
               ),
             ],
 
@@ -367,7 +384,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     : Text(
                         widget.isEditing ? 'Simpan Perubahan' : 'Simpan Produk',
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
               ),
             ),

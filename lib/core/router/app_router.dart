@@ -1,4 +1,3 @@
-
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,12 +7,14 @@ import '../../features/catalog/presentation/main_pos_screen.dart';
 import '../../features/catalog/presentation/product_form_screen.dart';
 import '../../features/catalog/presentation/ingredient_management_screen.dart';
 import '../../features/catalog/presentation/topping_management_screen.dart';
+import '../../features/catalog/presentation/menu_management_screen.dart';
 import '../../features/cart/presentation/cart_screen.dart';
 import '../../features/checkout/presentation/checkout_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/orders/presentation/order_history_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/printer_setup_screen.dart';
+import 'app_shell.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -36,7 +37,7 @@ GoRouter appRouter(Ref ref) {
       if (authState.isLoading) return null;
 
       final isLoggingIn = state.uri.path == '/login';
-      
+
       if (!isAuthenticated && !isLoggingIn) {
         return '/login';
       }
@@ -46,64 +47,93 @@ GoRouter appRouter(Ref ref) {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: '/pos',
-        builder: (context, state) => const MainPosScreen(),
-        routes: [
-          // Product management routes
-          GoRoute(
-            path: 'product/add',
-            builder: (context, state) => const ProductFormScreen(),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return AppShell(navigationShell: navigationShell);
+        },
+        branches: [
+          // Tab 1: POS / Order
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/pos',
+                builder: (context, state) => const MainPosScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'cart',
+                    builder: (context, state) => const CartScreen(),
+                  ),
+                  GoRoute(
+                    path: 'checkout',
+                    builder: (context, state) => const CheckoutScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
-          GoRoute(
-            path: 'product/:id/edit',
-            builder: (context, state) => ProductFormScreen(
-              productId: state.pathParameters['id'],
-            ),
+          // Tab 2: Menu Management
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/menu',
+                builder: (context, state) => const MenuManagementScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    builder: (context, state) => const ProductFormScreen(),
+                  ),
+                  GoRoute(
+                    path: ':id/edit',
+                    builder: (context, state) => ProductFormScreen(
+                      productId: state.pathParameters['id'],
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/ingredients',
+                    builder: (context, state) => IngredientManagementScreen(
+                      productId: state.pathParameters['id']!,
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/toppings',
+                    builder: (context, state) => ToppingManagementScreen(
+                      productId: state.pathParameters['id']!,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          GoRoute(
-            path: 'product/:id/ingredients',
-            builder: (context, state) => IngredientManagementScreen(
-              productId: state.pathParameters['id']!,
-            ),
+          // Tab 3: Inventory
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/inventory',
+                builder: (context, state) => const InventoryScreen(),
+              ),
+            ],
           ),
-          GoRoute(
-            path: 'product/:id/toppings',
-            builder: (context, state) => ToppingManagementScreen(
-              productId: state.pathParameters['id']!,
-            ),
+          // Tab 4: Settings
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'printer',
+                    builder: (context, state) => const PrinterSetupScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
       GoRoute(
-        path: '/cart',
-        builder: (context, state) => const CartScreen(),
-      ),
-      GoRoute(
-        path: '/checkout',
-        builder: (context, state) => const CheckoutScreen(),
-      ),
-      GoRoute(
-        path: '/inventory',
-        builder: (context, state) => const InventoryScreen(),
-      ),
-      GoRoute(
         path: '/orders',
         builder: (context, state) => const OrderHistoryScreen(),
-      ),
-      GoRoute(
-        path: '/settings',
-        builder: (context, state) => const SettingsScreen(),
-        routes: [
-          GoRoute(
-            path: 'printer',
-            builder: (context, state) => const PrinterSetupScreen(),
-          ),
-        ]
       ),
     ],
   );

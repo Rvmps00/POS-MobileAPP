@@ -34,13 +34,19 @@ class IngredientToggleTile extends StatelessWidget {
                 width: 24,
                 height: 24,
                 child: isLocked
-                    ? Icon(Icons.lock_outline,
-                        size: 18, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5))
+                    ? Icon(
+                        Icons.lock_outline,
+                        size: 18,
+                        color: colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.5,
+                        ),
+                      )
                     : Checkbox(
                         value: !isRemoved,
                         onChanged: (v) => onChanged(!(v ?? true)),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                         activeColor: colorScheme.primary,
                       ),
               ),
@@ -55,16 +61,17 @@ class IngredientToggleTile extends StatelessWidget {
                     color: isRemoved
                         ? colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
                         : colorScheme.onSurface,
-                    decoration:
-                        isRemoved ? TextDecoration.lineThrough : null,
+                    decoration: isRemoved ? TextDecoration.lineThrough : null,
                   ),
                 ),
               ),
               // Status
               if (isLocked)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainer,
                     borderRadius: BorderRadius.circular(100),

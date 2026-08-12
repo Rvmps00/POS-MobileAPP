@@ -83,7 +83,9 @@ class CatalogRepository {
   }
 
   Future<ProductModel> updateProduct(
-      String id, Map<String, dynamic> data) async {
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     final product = await _remote.updateProduct(id, data);
     await _local.upsertProduct(product);
     return product;
@@ -100,8 +102,7 @@ class CatalogRepository {
   }
 
   // ─── Default Ingredients ───
-  Future<List<DefaultIngredientModel>> getIngredients(
-      String productId) async {
+  Future<List<DefaultIngredientModel>> getIngredients(String productId) async {
     try {
       if (await _isOnline) {
         final ingredients = await _remote.getIngredients(productId);
@@ -120,12 +121,15 @@ class CatalogRepository {
   }
 
   Future<DefaultIngredientModel> createIngredient(
-      Map<String, dynamic> data) async {
+    Map<String, dynamic> data,
+  ) async {
     return _remote.insertIngredient(data);
   }
 
   Future<DefaultIngredientModel> updateIngredient(
-      String id, Map<String, dynamic> data) async {
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     return _remote.updateIngredient(id, data);
   }
 
@@ -157,7 +161,9 @@ class CatalogRepository {
   }
 
   Future<AddonToppingModel> updateTopping(
-      String id, Map<String, dynamic> data) async {
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     return _remote.updateTopping(id, data);
   }
 

@@ -19,8 +19,8 @@ class CatalogLocalDataSource {
 
   Stream<List<CategoryModel>> watchCategories() {
     return _dao.watchAllCategories().map(
-          (rows) => rows.map(_categoryFromRow).toList(),
-        );
+      (rows) => rows.map(_categoryFromRow).toList(),
+    );
   }
 
   Future<void> cacheCategories(List<CategoryModel> categories) async {
@@ -70,13 +70,15 @@ class CatalogLocalDataSource {
   }
 
   Stream<List<DefaultIngredientModel>> watchIngredients(String productId) {
-    return _dao.watchIngredientsByProduct(productId).map(
-          (rows) => rows.map(_ingredientFromRow).toList(),
-        );
+    return _dao
+        .watchIngredientsByProduct(productId)
+        .map((rows) => rows.map(_ingredientFromRow).toList());
   }
 
   Future<void> cacheIngredients(
-      String productId, List<DefaultIngredientModel> ingredients) async {
+    String productId,
+    List<DefaultIngredientModel> ingredients,
+  ) async {
     await _dao.clearIngredientsByProduct(productId);
     final companions = ingredients.map(_ingredientToCompanion).toList();
     await _dao.upsertIngredients(companions);
@@ -89,13 +91,15 @@ class CatalogLocalDataSource {
   }
 
   Stream<List<AddonToppingModel>> watchToppings(String productId) {
-    return _dao.watchToppingsByProduct(productId).map(
-          (rows) => rows.map(_toppingFromRow).toList(),
-        );
+    return _dao
+        .watchToppingsByProduct(productId)
+        .map((rows) => rows.map(_toppingFromRow).toList());
   }
 
   Future<void> cacheToppings(
-      String productId, List<AddonToppingModel> toppings) async {
+    String productId,
+    List<AddonToppingModel> toppings,
+  ) async {
     await _dao.clearToppingsByProduct(productId);
     final companions = toppings.map(_toppingToCompanion).toList();
     await _dao.upsertToppings(companions);
@@ -172,7 +176,8 @@ class CatalogLocalDataSource {
   }
 
   DefaultIngredientsTableCompanion _ingredientToCompanion(
-      DefaultIngredientModel model) {
+    DefaultIngredientModel model,
+  ) {
     return DefaultIngredientsTableCompanion(
       id: Value(model.id),
       productId: Value(model.productId),

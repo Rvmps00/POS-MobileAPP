@@ -9,6 +9,7 @@ class ProductGrid extends StatelessWidget {
   final bool isLoading;
   final String languageCode;
   final void Function(ProductModel product) onProductTap;
+  final void Function(ProductModel product)? onProductLongPress;
   final void Function(ProductModel product)? onAddTap;
 
   const ProductGrid({
@@ -17,6 +18,7 @@ class ProductGrid extends StatelessWidget {
     this.isLoading = false,
     this.languageCode = 'id',
     required this.onProductTap,
+    this.onProductLongPress,
     this.onAddTap,
   });
 
@@ -48,6 +50,9 @@ class ProductGrid extends StatelessWidget {
               product: product,
               languageCode: languageCode,
               onTap: () => onProductTap(product),
+              onLongPress: onProductLongPress != null
+                  ? () => onProductLongPress!(product)
+                  : null,
               onAddTap: onAddTap != null ? () => onAddTap!(product) : null,
             );
           },

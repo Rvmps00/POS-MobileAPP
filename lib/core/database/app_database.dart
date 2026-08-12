@@ -8,7 +8,10 @@ import 'tables/categories_table.dart';
 import 'tables/products_table.dart';
 import 'tables/default_ingredients_table.dart';
 import 'tables/addon_toppings_table.dart';
+import 'tables/orders_table.dart';
+import 'tables/order_items_table.dart';
 import 'daos/catalog_dao.dart';
+import 'converters/json_list_converter.dart';
 
 part 'app_database.g.dart';
 
@@ -18,6 +21,8 @@ part 'app_database.g.dart';
     ProductsTable,
     DefaultIngredientsTable,
     AddonToppingsTable,
+    OrdersTable,
+    OrderItemsTable,
   ],
   daos: [CatalogDao],
 )

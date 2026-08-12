@@ -38,7 +38,8 @@ class SelectedCategoryNotifier extends Notifier<String?> {
 
 final selectedCategoryProvider =
     NotifierProvider<SelectedCategoryNotifier, String?>(
-        SelectedCategoryNotifier.new);
+      SelectedCategoryNotifier.new,
+    );
 
 // ─── Categories ───
 final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
@@ -49,38 +50,46 @@ final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
 });
 
 // ─── Products (filtered by category) ───
-final productsProvider =
-    FutureProvider.family<List<ProductModel>, String?>((ref, categoryId) async {
+final productsProvider = FutureProvider.family<List<ProductModel>, String?>((
+  ref,
+  categoryId,
+) async {
   final repo = ref.watch(catalogRepositoryProvider);
   return repo.getProducts(categoryId: categoryId);
 });
 
 // ─── Filtered Products (uses selectedCategoryProvider) ───
-final filteredProductsProvider =
-    FutureProvider<List<ProductModel>>((ref) async {
+final filteredProductsProvider = FutureProvider<List<ProductModel>>((
+  ref,
+) async {
   final categoryId = ref.watch(selectedCategoryProvider);
   final repo = ref.watch(catalogRepositoryProvider);
   return repo.getProducts(categoryId: categoryId);
 });
 
 // ─── Product Detail ───
-final productDetailProvider =
-    FutureProvider.family<ProductModel?, String>((ref, productId) async {
+final productDetailProvider = FutureProvider.family<ProductModel?, String>((
+  ref,
+  productId,
+) async {
   final repo = ref.watch(catalogRepositoryProvider);
   return repo.getProductById(productId);
 });
 
 // ─── Ingredients for a Product ───
-final ingredientsProvider = FutureProvider.family<List<DefaultIngredientModel>,
-    String>((ref, productId) async {
-  final repo = ref.watch(catalogRepositoryProvider);
-  return repo.getIngredients(productId);
-});
+final ingredientsProvider =
+    FutureProvider.family<List<DefaultIngredientModel>, String>((
+      ref,
+      productId,
+    ) async {
+      final repo = ref.watch(catalogRepositoryProvider);
+      return repo.getIngredients(productId);
+    });
 
 // ─── Toppings for a Product ───
-final toppingsProvider =
-    FutureProvider.family<List<AddonToppingModel>, String>(
-        (ref, productId) async {
-  final repo = ref.watch(catalogRepositoryProvider);
-  return repo.getToppings(productId);
-});
+final toppingsProvider = FutureProvider.family<List<AddonToppingModel>, String>(
+  (ref, productId) async {
+    final repo = ref.watch(catalogRepositoryProvider);
+    return repo.getToppings(productId);
+  },
+);

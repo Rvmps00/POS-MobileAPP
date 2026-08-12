@@ -19,9 +19,10 @@ class _ProductCardSkeletonState extends State<ProductCardSkeleton>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
-    _animation = Tween<double>(begin: 0.3, end: 0.7).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.3,
+      end: 0.7,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -53,8 +54,9 @@ class _ProductCardSkeletonState extends State<ProductCardSkeleton>
               AspectRatio(
                 aspectRatio: 4 / 3,
                 child: Container(
-                  color: colorScheme.surfaceContainerHighest
-                      .withValues(alpha: _animation.value),
+                  color: colorScheme.surfaceContainerHighest.withValues(
+                    alpha: _animation.value,
+                  ),
                 ),
               ),
               // Text skeletons
@@ -67,8 +69,9 @@ class _ProductCardSkeletonState extends State<ProductCardSkeleton>
                       height: 14,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest
-                            .withValues(alpha: _animation.value),
+                        color: colorScheme.surfaceContainerHighest.withValues(
+                          alpha: _animation.value,
+                        ),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -77,8 +80,9 @@ class _ProductCardSkeletonState extends State<ProductCardSkeleton>
                       height: 12,
                       width: 60,
                       decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest
-                            .withValues(alpha: _animation.value),
+                        color: colorScheme.surfaceContainerHighest.withValues(
+                          alpha: _animation.value,
+                        ),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),

@@ -2043,6 +2043,1719 @@ class AddonToppingsTableCompanion
   }
 }
 
+class $OrdersTableTable extends OrdersTable
+    with TableInfo<$OrdersTableTable, OrdersTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OrdersTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderNumberMeta = const VerificationMeta(
+    'orderNumber',
+  );
+  @override
+  late final GeneratedColumn<String> orderNumber = GeneratedColumn<String>(
+    'order_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderTypeMeta = const VerificationMeta(
+    'orderType',
+  );
+  @override
+  late final GeneratedColumn<String> orderType = GeneratedColumn<String>(
+    'order_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tableNumberMeta = const VerificationMeta(
+    'tableNumber',
+  );
+  @override
+  late final GeneratedColumn<int> tableNumber = GeneratedColumn<int>(
+    'table_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _subtotalMeta = const VerificationMeta(
+    'subtotal',
+  );
+  @override
+  late final GeneratedColumn<int> subtotal = GeneratedColumn<int>(
+    'subtotal',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taxAmountMeta = const VerificationMeta(
+    'taxAmount',
+  );
+  @override
+  late final GeneratedColumn<int> taxAmount = GeneratedColumn<int>(
+    'tax_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _grandTotalMeta = const VerificationMeta(
+    'grandTotal',
+  );
+  @override
+  late final GeneratedColumn<int> grandTotal = GeneratedColumn<int>(
+    'grand_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paymentMethodMeta = const VerificationMeta(
+    'paymentMethod',
+  );
+  @override
+  late final GeneratedColumn<String> paymentMethod = GeneratedColumn<String>(
+    'payment_method',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('CASH'),
+  );
+  static const VerificationMeta _paymentStatusMeta = const VerificationMeta(
+    'paymentStatus',
+  );
+  @override
+  late final GeneratedColumn<String> paymentStatus = GeneratedColumn<String>(
+    'payment_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('PAID'),
+  );
+  static const VerificationMeta _cashReceivedMeta = const VerificationMeta(
+    'cashReceived',
+  );
+  @override
+  late final GeneratedColumn<int> cashReceived = GeneratedColumn<int>(
+    'cash_received',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cashChangeMeta = const VerificationMeta(
+    'cashChange',
+  );
+  @override
+  late final GeneratedColumn<int> cashChange = GeneratedColumn<int>(
+    'cash_change',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('COMPLETED'),
+  );
+  static const VerificationMeta _cashierIdMeta = const VerificationMeta(
+    'cashierId',
+  );
+  @override
+  late final GeneratedColumn<String> cashierId = GeneratedColumn<String>(
+    'cashier_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    orderNumber,
+    orderType,
+    tableNumber,
+    subtotal,
+    taxAmount,
+    grandTotal,
+    paymentMethod,
+    paymentStatus,
+    cashReceived,
+    cashChange,
+    status,
+    cashierId,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'orders_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OrdersTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('order_number')) {
+      context.handle(
+        _orderNumberMeta,
+        orderNumber.isAcceptableOrUnknown(
+          data['order_number']!,
+          _orderNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_orderNumberMeta);
+    }
+    if (data.containsKey('order_type')) {
+      context.handle(
+        _orderTypeMeta,
+        orderType.isAcceptableOrUnknown(data['order_type']!, _orderTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderTypeMeta);
+    }
+    if (data.containsKey('table_number')) {
+      context.handle(
+        _tableNumberMeta,
+        tableNumber.isAcceptableOrUnknown(
+          data['table_number']!,
+          _tableNumberMeta,
+        ),
+      );
+    }
+    if (data.containsKey('subtotal')) {
+      context.handle(
+        _subtotalMeta,
+        subtotal.isAcceptableOrUnknown(data['subtotal']!, _subtotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subtotalMeta);
+    }
+    if (data.containsKey('tax_amount')) {
+      context.handle(
+        _taxAmountMeta,
+        taxAmount.isAcceptableOrUnknown(data['tax_amount']!, _taxAmountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taxAmountMeta);
+    }
+    if (data.containsKey('grand_total')) {
+      context.handle(
+        _grandTotalMeta,
+        grandTotal.isAcceptableOrUnknown(data['grand_total']!, _grandTotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_grandTotalMeta);
+    }
+    if (data.containsKey('payment_method')) {
+      context.handle(
+        _paymentMethodMeta,
+        paymentMethod.isAcceptableOrUnknown(
+          data['payment_method']!,
+          _paymentMethodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('payment_status')) {
+      context.handle(
+        _paymentStatusMeta,
+        paymentStatus.isAcceptableOrUnknown(
+          data['payment_status']!,
+          _paymentStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cash_received')) {
+      context.handle(
+        _cashReceivedMeta,
+        cashReceived.isAcceptableOrUnknown(
+          data['cash_received']!,
+          _cashReceivedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cash_change')) {
+      context.handle(
+        _cashChangeMeta,
+        cashChange.isAcceptableOrUnknown(data['cash_change']!, _cashChangeMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('cashier_id')) {
+      context.handle(
+        _cashierIdMeta,
+        cashierId.isAcceptableOrUnknown(data['cashier_id']!, _cashierIdMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OrdersTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OrdersTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      orderNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_number'],
+      )!,
+      orderType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_type'],
+      )!,
+      tableNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}table_number'],
+      ),
+      subtotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}subtotal'],
+      )!,
+      taxAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tax_amount'],
+      )!,
+      grandTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}grand_total'],
+      )!,
+      paymentMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_method'],
+      )!,
+      paymentStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_status'],
+      )!,
+      cashReceived: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cash_received'],
+      ),
+      cashChange: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cash_change'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      cashierId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cashier_id'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $OrdersTableTable createAlias(String alias) {
+    return $OrdersTableTable(attachedDatabase, alias);
+  }
+}
+
+class OrdersTableData extends DataClass implements Insertable<OrdersTableData> {
+  final String id;
+  final String orderNumber;
+  final String orderType;
+  final int? tableNumber;
+  final int subtotal;
+  final int taxAmount;
+  final int grandTotal;
+  final String paymentMethod;
+  final String paymentStatus;
+  final int? cashReceived;
+  final int? cashChange;
+  final String status;
+  final String? cashierId;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const OrdersTableData({
+    required this.id,
+    required this.orderNumber,
+    required this.orderType,
+    this.tableNumber,
+    required this.subtotal,
+    required this.taxAmount,
+    required this.grandTotal,
+    required this.paymentMethod,
+    required this.paymentStatus,
+    this.cashReceived,
+    this.cashChange,
+    required this.status,
+    this.cashierId,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['order_number'] = Variable<String>(orderNumber);
+    map['order_type'] = Variable<String>(orderType);
+    if (!nullToAbsent || tableNumber != null) {
+      map['table_number'] = Variable<int>(tableNumber);
+    }
+    map['subtotal'] = Variable<int>(subtotal);
+    map['tax_amount'] = Variable<int>(taxAmount);
+    map['grand_total'] = Variable<int>(grandTotal);
+    map['payment_method'] = Variable<String>(paymentMethod);
+    map['payment_status'] = Variable<String>(paymentStatus);
+    if (!nullToAbsent || cashReceived != null) {
+      map['cash_received'] = Variable<int>(cashReceived);
+    }
+    if (!nullToAbsent || cashChange != null) {
+      map['cash_change'] = Variable<int>(cashChange);
+    }
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || cashierId != null) {
+      map['cashier_id'] = Variable<String>(cashierId);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  OrdersTableCompanion toCompanion(bool nullToAbsent) {
+    return OrdersTableCompanion(
+      id: Value(id),
+      orderNumber: Value(orderNumber),
+      orderType: Value(orderType),
+      tableNumber: tableNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tableNumber),
+      subtotal: Value(subtotal),
+      taxAmount: Value(taxAmount),
+      grandTotal: Value(grandTotal),
+      paymentMethod: Value(paymentMethod),
+      paymentStatus: Value(paymentStatus),
+      cashReceived: cashReceived == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cashReceived),
+      cashChange: cashChange == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cashChange),
+      status: Value(status),
+      cashierId: cashierId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cashierId),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory OrdersTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OrdersTableData(
+      id: serializer.fromJson<String>(json['id']),
+      orderNumber: serializer.fromJson<String>(json['orderNumber']),
+      orderType: serializer.fromJson<String>(json['orderType']),
+      tableNumber: serializer.fromJson<int?>(json['tableNumber']),
+      subtotal: serializer.fromJson<int>(json['subtotal']),
+      taxAmount: serializer.fromJson<int>(json['taxAmount']),
+      grandTotal: serializer.fromJson<int>(json['grandTotal']),
+      paymentMethod: serializer.fromJson<String>(json['paymentMethod']),
+      paymentStatus: serializer.fromJson<String>(json['paymentStatus']),
+      cashReceived: serializer.fromJson<int?>(json['cashReceived']),
+      cashChange: serializer.fromJson<int?>(json['cashChange']),
+      status: serializer.fromJson<String>(json['status']),
+      cashierId: serializer.fromJson<String?>(json['cashierId']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'orderNumber': serializer.toJson<String>(orderNumber),
+      'orderType': serializer.toJson<String>(orderType),
+      'tableNumber': serializer.toJson<int?>(tableNumber),
+      'subtotal': serializer.toJson<int>(subtotal),
+      'taxAmount': serializer.toJson<int>(taxAmount),
+      'grandTotal': serializer.toJson<int>(grandTotal),
+      'paymentMethod': serializer.toJson<String>(paymentMethod),
+      'paymentStatus': serializer.toJson<String>(paymentStatus),
+      'cashReceived': serializer.toJson<int?>(cashReceived),
+      'cashChange': serializer.toJson<int?>(cashChange),
+      'status': serializer.toJson<String>(status),
+      'cashierId': serializer.toJson<String?>(cashierId),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  OrdersTableData copyWith({
+    String? id,
+    String? orderNumber,
+    String? orderType,
+    Value<int?> tableNumber = const Value.absent(),
+    int? subtotal,
+    int? taxAmount,
+    int? grandTotal,
+    String? paymentMethod,
+    String? paymentStatus,
+    Value<int?> cashReceived = const Value.absent(),
+    Value<int?> cashChange = const Value.absent(),
+    String? status,
+    Value<String?> cashierId = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => OrdersTableData(
+    id: id ?? this.id,
+    orderNumber: orderNumber ?? this.orderNumber,
+    orderType: orderType ?? this.orderType,
+    tableNumber: tableNumber.present ? tableNumber.value : this.tableNumber,
+    subtotal: subtotal ?? this.subtotal,
+    taxAmount: taxAmount ?? this.taxAmount,
+    grandTotal: grandTotal ?? this.grandTotal,
+    paymentMethod: paymentMethod ?? this.paymentMethod,
+    paymentStatus: paymentStatus ?? this.paymentStatus,
+    cashReceived: cashReceived.present ? cashReceived.value : this.cashReceived,
+    cashChange: cashChange.present ? cashChange.value : this.cashChange,
+    status: status ?? this.status,
+    cashierId: cashierId.present ? cashierId.value : this.cashierId,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  OrdersTableData copyWithCompanion(OrdersTableCompanion data) {
+    return OrdersTableData(
+      id: data.id.present ? data.id.value : this.id,
+      orderNumber: data.orderNumber.present
+          ? data.orderNumber.value
+          : this.orderNumber,
+      orderType: data.orderType.present ? data.orderType.value : this.orderType,
+      tableNumber: data.tableNumber.present
+          ? data.tableNumber.value
+          : this.tableNumber,
+      subtotal: data.subtotal.present ? data.subtotal.value : this.subtotal,
+      taxAmount: data.taxAmount.present ? data.taxAmount.value : this.taxAmount,
+      grandTotal: data.grandTotal.present
+          ? data.grandTotal.value
+          : this.grandTotal,
+      paymentMethod: data.paymentMethod.present
+          ? data.paymentMethod.value
+          : this.paymentMethod,
+      paymentStatus: data.paymentStatus.present
+          ? data.paymentStatus.value
+          : this.paymentStatus,
+      cashReceived: data.cashReceived.present
+          ? data.cashReceived.value
+          : this.cashReceived,
+      cashChange: data.cashChange.present
+          ? data.cashChange.value
+          : this.cashChange,
+      status: data.status.present ? data.status.value : this.status,
+      cashierId: data.cashierId.present ? data.cashierId.value : this.cashierId,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrdersTableData(')
+          ..write('id: $id, ')
+          ..write('orderNumber: $orderNumber, ')
+          ..write('orderType: $orderType, ')
+          ..write('tableNumber: $tableNumber, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('grandTotal: $grandTotal, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('paymentStatus: $paymentStatus, ')
+          ..write('cashReceived: $cashReceived, ')
+          ..write('cashChange: $cashChange, ')
+          ..write('status: $status, ')
+          ..write('cashierId: $cashierId, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    orderNumber,
+    orderType,
+    tableNumber,
+    subtotal,
+    taxAmount,
+    grandTotal,
+    paymentMethod,
+    paymentStatus,
+    cashReceived,
+    cashChange,
+    status,
+    cashierId,
+    notes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OrdersTableData &&
+          other.id == this.id &&
+          other.orderNumber == this.orderNumber &&
+          other.orderType == this.orderType &&
+          other.tableNumber == this.tableNumber &&
+          other.subtotal == this.subtotal &&
+          other.taxAmount == this.taxAmount &&
+          other.grandTotal == this.grandTotal &&
+          other.paymentMethod == this.paymentMethod &&
+          other.paymentStatus == this.paymentStatus &&
+          other.cashReceived == this.cashReceived &&
+          other.cashChange == this.cashChange &&
+          other.status == this.status &&
+          other.cashierId == this.cashierId &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class OrdersTableCompanion extends UpdateCompanion<OrdersTableData> {
+  final Value<String> id;
+  final Value<String> orderNumber;
+  final Value<String> orderType;
+  final Value<int?> tableNumber;
+  final Value<int> subtotal;
+  final Value<int> taxAmount;
+  final Value<int> grandTotal;
+  final Value<String> paymentMethod;
+  final Value<String> paymentStatus;
+  final Value<int?> cashReceived;
+  final Value<int?> cashChange;
+  final Value<String> status;
+  final Value<String?> cashierId;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const OrdersTableCompanion({
+    this.id = const Value.absent(),
+    this.orderNumber = const Value.absent(),
+    this.orderType = const Value.absent(),
+    this.tableNumber = const Value.absent(),
+    this.subtotal = const Value.absent(),
+    this.taxAmount = const Value.absent(),
+    this.grandTotal = const Value.absent(),
+    this.paymentMethod = const Value.absent(),
+    this.paymentStatus = const Value.absent(),
+    this.cashReceived = const Value.absent(),
+    this.cashChange = const Value.absent(),
+    this.status = const Value.absent(),
+    this.cashierId = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OrdersTableCompanion.insert({
+    required String id,
+    required String orderNumber,
+    required String orderType,
+    this.tableNumber = const Value.absent(),
+    required int subtotal,
+    required int taxAmount,
+    required int grandTotal,
+    this.paymentMethod = const Value.absent(),
+    this.paymentStatus = const Value.absent(),
+    this.cashReceived = const Value.absent(),
+    this.cashChange = const Value.absent(),
+    this.status = const Value.absent(),
+    this.cashierId = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       orderNumber = Value(orderNumber),
+       orderType = Value(orderType),
+       subtotal = Value(subtotal),
+       taxAmount = Value(taxAmount),
+       grandTotal = Value(grandTotal);
+  static Insertable<OrdersTableData> custom({
+    Expression<String>? id,
+    Expression<String>? orderNumber,
+    Expression<String>? orderType,
+    Expression<int>? tableNumber,
+    Expression<int>? subtotal,
+    Expression<int>? taxAmount,
+    Expression<int>? grandTotal,
+    Expression<String>? paymentMethod,
+    Expression<String>? paymentStatus,
+    Expression<int>? cashReceived,
+    Expression<int>? cashChange,
+    Expression<String>? status,
+    Expression<String>? cashierId,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (orderNumber != null) 'order_number': orderNumber,
+      if (orderType != null) 'order_type': orderType,
+      if (tableNumber != null) 'table_number': tableNumber,
+      if (subtotal != null) 'subtotal': subtotal,
+      if (taxAmount != null) 'tax_amount': taxAmount,
+      if (grandTotal != null) 'grand_total': grandTotal,
+      if (paymentMethod != null) 'payment_method': paymentMethod,
+      if (paymentStatus != null) 'payment_status': paymentStatus,
+      if (cashReceived != null) 'cash_received': cashReceived,
+      if (cashChange != null) 'cash_change': cashChange,
+      if (status != null) 'status': status,
+      if (cashierId != null) 'cashier_id': cashierId,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OrdersTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? orderNumber,
+    Value<String>? orderType,
+    Value<int?>? tableNumber,
+    Value<int>? subtotal,
+    Value<int>? taxAmount,
+    Value<int>? grandTotal,
+    Value<String>? paymentMethod,
+    Value<String>? paymentStatus,
+    Value<int?>? cashReceived,
+    Value<int?>? cashChange,
+    Value<String>? status,
+    Value<String?>? cashierId,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return OrdersTableCompanion(
+      id: id ?? this.id,
+      orderNumber: orderNumber ?? this.orderNumber,
+      orderType: orderType ?? this.orderType,
+      tableNumber: tableNumber ?? this.tableNumber,
+      subtotal: subtotal ?? this.subtotal,
+      taxAmount: taxAmount ?? this.taxAmount,
+      grandTotal: grandTotal ?? this.grandTotal,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      cashReceived: cashReceived ?? this.cashReceived,
+      cashChange: cashChange ?? this.cashChange,
+      status: status ?? this.status,
+      cashierId: cashierId ?? this.cashierId,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (orderNumber.present) {
+      map['order_number'] = Variable<String>(orderNumber.value);
+    }
+    if (orderType.present) {
+      map['order_type'] = Variable<String>(orderType.value);
+    }
+    if (tableNumber.present) {
+      map['table_number'] = Variable<int>(tableNumber.value);
+    }
+    if (subtotal.present) {
+      map['subtotal'] = Variable<int>(subtotal.value);
+    }
+    if (taxAmount.present) {
+      map['tax_amount'] = Variable<int>(taxAmount.value);
+    }
+    if (grandTotal.present) {
+      map['grand_total'] = Variable<int>(grandTotal.value);
+    }
+    if (paymentMethod.present) {
+      map['payment_method'] = Variable<String>(paymentMethod.value);
+    }
+    if (paymentStatus.present) {
+      map['payment_status'] = Variable<String>(paymentStatus.value);
+    }
+    if (cashReceived.present) {
+      map['cash_received'] = Variable<int>(cashReceived.value);
+    }
+    if (cashChange.present) {
+      map['cash_change'] = Variable<int>(cashChange.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (cashierId.present) {
+      map['cashier_id'] = Variable<String>(cashierId.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrdersTableCompanion(')
+          ..write('id: $id, ')
+          ..write('orderNumber: $orderNumber, ')
+          ..write('orderType: $orderType, ')
+          ..write('tableNumber: $tableNumber, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('grandTotal: $grandTotal, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('paymentStatus: $paymentStatus, ')
+          ..write('cashReceived: $cashReceived, ')
+          ..write('cashChange: $cashChange, ')
+          ..write('status: $status, ')
+          ..write('cashierId: $cashierId, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OrderItemsTableTable extends OrderItemsTable
+    with TableInfo<$OrderItemsTableTable, OrderItemsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OrderItemsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderIdMeta = const VerificationMeta(
+    'orderId',
+  );
+  @override
+  late final GeneratedColumn<String> orderId = GeneratedColumn<String>(
+    'order_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _productIdMeta = const VerificationMeta(
+    'productId',
+  );
+  @override
+  late final GeneratedColumn<String> productId = GeneratedColumn<String>(
+    'product_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _productNameMeta = const VerificationMeta(
+    'productName',
+  );
+  @override
+  late final GeneratedColumn<String> productName = GeneratedColumn<String>(
+    'product_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _basePriceMeta = const VerificationMeta(
+    'basePrice',
+  );
+  @override
+  late final GeneratedColumn<int> basePrice = GeneratedColumn<int>(
+    'base_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _toppingTotalMeta = const VerificationMeta(
+    'toppingTotal',
+  );
+  @override
+  late final GeneratedColumn<int> toppingTotal = GeneratedColumn<int>(
+    'topping_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lineTotalMeta = const VerificationMeta(
+    'lineTotal',
+  );
+  @override
+  late final GeneratedColumn<int> lineTotal = GeneratedColumn<int>(
+    'line_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>?, String>
+  removedIngredients =
+      GeneratedColumn<String>(
+        'removed_ingredients',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<List<String>?>(
+        $OrderItemsTableTable.$converterremovedIngredientsn,
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<
+    List<Map<String, dynamic>>?,
+    String
+  >
+  addedToppings =
+      GeneratedColumn<String>(
+        'added_toppings',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<List<Map<String, dynamic>>?>(
+        $OrderItemsTableTable.$converteraddedToppingsn,
+      );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    orderId,
+    productId,
+    productName,
+    quantity,
+    basePrice,
+    toppingTotal,
+    lineTotal,
+    removedIngredients,
+    addedToppings,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'order_items_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OrderItemsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('order_id')) {
+      context.handle(
+        _orderIdMeta,
+        orderId.isAcceptableOrUnknown(data['order_id']!, _orderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderIdMeta);
+    }
+    if (data.containsKey('product_id')) {
+      context.handle(
+        _productIdMeta,
+        productId.isAcceptableOrUnknown(data['product_id']!, _productIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_productIdMeta);
+    }
+    if (data.containsKey('product_name')) {
+      context.handle(
+        _productNameMeta,
+        productName.isAcceptableOrUnknown(
+          data['product_name']!,
+          _productNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_productNameMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('base_price')) {
+      context.handle(
+        _basePriceMeta,
+        basePrice.isAcceptableOrUnknown(data['base_price']!, _basePriceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_basePriceMeta);
+    }
+    if (data.containsKey('topping_total')) {
+      context.handle(
+        _toppingTotalMeta,
+        toppingTotal.isAcceptableOrUnknown(
+          data['topping_total']!,
+          _toppingTotalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('line_total')) {
+      context.handle(
+        _lineTotalMeta,
+        lineTotal.isAcceptableOrUnknown(data['line_total']!, _lineTotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lineTotalMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OrderItemsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OrderItemsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      orderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_id'],
+      )!,
+      productId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}product_id'],
+      )!,
+      productName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}product_name'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
+      basePrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_price'],
+      )!,
+      toppingTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}topping_total'],
+      )!,
+      lineTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}line_total'],
+      )!,
+      removedIngredients: $OrderItemsTableTable.$converterremovedIngredientsn
+          .fromSql(
+            attachedDatabase.typeMapping.read(
+              DriftSqlType.string,
+              data['${effectivePrefix}removed_ingredients'],
+            ),
+          ),
+      addedToppings: $OrderItemsTableTable.$converteraddedToppingsn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}added_toppings'],
+        ),
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $OrderItemsTableTable createAlias(String alias) {
+    return $OrderItemsTableTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<List<String>, String> $converterremovedIngredients =
+      const StringListConverter();
+  static TypeConverter<List<String>?, String?> $converterremovedIngredientsn =
+      NullAwareTypeConverter.wrap($converterremovedIngredients);
+  static TypeConverter<List<Map<String, dynamic>>, String>
+  $converteraddedToppings = const MapListConverter();
+  static TypeConverter<List<Map<String, dynamic>>?, String?>
+  $converteraddedToppingsn = NullAwareTypeConverter.wrap(
+    $converteraddedToppings,
+  );
+}
+
+class OrderItemsTableData extends DataClass
+    implements Insertable<OrderItemsTableData> {
+  final String id;
+  final String orderId;
+  final String productId;
+  final String productName;
+  final int quantity;
+  final int basePrice;
+  final int toppingTotal;
+  final int lineTotal;
+  final List<String>? removedIngredients;
+  final List<Map<String, dynamic>>? addedToppings;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const OrderItemsTableData({
+    required this.id,
+    required this.orderId,
+    required this.productId,
+    required this.productName,
+    required this.quantity,
+    required this.basePrice,
+    required this.toppingTotal,
+    required this.lineTotal,
+    this.removedIngredients,
+    this.addedToppings,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['order_id'] = Variable<String>(orderId);
+    map['product_id'] = Variable<String>(productId);
+    map['product_name'] = Variable<String>(productName);
+    map['quantity'] = Variable<int>(quantity);
+    map['base_price'] = Variable<int>(basePrice);
+    map['topping_total'] = Variable<int>(toppingTotal);
+    map['line_total'] = Variable<int>(lineTotal);
+    if (!nullToAbsent || removedIngredients != null) {
+      map['removed_ingredients'] = Variable<String>(
+        $OrderItemsTableTable.$converterremovedIngredientsn.toSql(
+          removedIngredients,
+        ),
+      );
+    }
+    if (!nullToAbsent || addedToppings != null) {
+      map['added_toppings'] = Variable<String>(
+        $OrderItemsTableTable.$converteraddedToppingsn.toSql(addedToppings),
+      );
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  OrderItemsTableCompanion toCompanion(bool nullToAbsent) {
+    return OrderItemsTableCompanion(
+      id: Value(id),
+      orderId: Value(orderId),
+      productId: Value(productId),
+      productName: Value(productName),
+      quantity: Value(quantity),
+      basePrice: Value(basePrice),
+      toppingTotal: Value(toppingTotal),
+      lineTotal: Value(lineTotal),
+      removedIngredients: removedIngredients == null && nullToAbsent
+          ? const Value.absent()
+          : Value(removedIngredients),
+      addedToppings: addedToppings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(addedToppings),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory OrderItemsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OrderItemsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      orderId: serializer.fromJson<String>(json['orderId']),
+      productId: serializer.fromJson<String>(json['productId']),
+      productName: serializer.fromJson<String>(json['productName']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+      basePrice: serializer.fromJson<int>(json['basePrice']),
+      toppingTotal: serializer.fromJson<int>(json['toppingTotal']),
+      lineTotal: serializer.fromJson<int>(json['lineTotal']),
+      removedIngredients: serializer.fromJson<List<String>?>(
+        json['removedIngredients'],
+      ),
+      addedToppings: serializer.fromJson<List<Map<String, dynamic>>?>(
+        json['addedToppings'],
+      ),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'orderId': serializer.toJson<String>(orderId),
+      'productId': serializer.toJson<String>(productId),
+      'productName': serializer.toJson<String>(productName),
+      'quantity': serializer.toJson<int>(quantity),
+      'basePrice': serializer.toJson<int>(basePrice),
+      'toppingTotal': serializer.toJson<int>(toppingTotal),
+      'lineTotal': serializer.toJson<int>(lineTotal),
+      'removedIngredients': serializer.toJson<List<String>?>(
+        removedIngredients,
+      ),
+      'addedToppings': serializer.toJson<List<Map<String, dynamic>>?>(
+        addedToppings,
+      ),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  OrderItemsTableData copyWith({
+    String? id,
+    String? orderId,
+    String? productId,
+    String? productName,
+    int? quantity,
+    int? basePrice,
+    int? toppingTotal,
+    int? lineTotal,
+    Value<List<String>?> removedIngredients = const Value.absent(),
+    Value<List<Map<String, dynamic>>?> addedToppings = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => OrderItemsTableData(
+    id: id ?? this.id,
+    orderId: orderId ?? this.orderId,
+    productId: productId ?? this.productId,
+    productName: productName ?? this.productName,
+    quantity: quantity ?? this.quantity,
+    basePrice: basePrice ?? this.basePrice,
+    toppingTotal: toppingTotal ?? this.toppingTotal,
+    lineTotal: lineTotal ?? this.lineTotal,
+    removedIngredients: removedIngredients.present
+        ? removedIngredients.value
+        : this.removedIngredients,
+    addedToppings: addedToppings.present
+        ? addedToppings.value
+        : this.addedToppings,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  OrderItemsTableData copyWithCompanion(OrderItemsTableCompanion data) {
+    return OrderItemsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      orderId: data.orderId.present ? data.orderId.value : this.orderId,
+      productId: data.productId.present ? data.productId.value : this.productId,
+      productName: data.productName.present
+          ? data.productName.value
+          : this.productName,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      basePrice: data.basePrice.present ? data.basePrice.value : this.basePrice,
+      toppingTotal: data.toppingTotal.present
+          ? data.toppingTotal.value
+          : this.toppingTotal,
+      lineTotal: data.lineTotal.present ? data.lineTotal.value : this.lineTotal,
+      removedIngredients: data.removedIngredients.present
+          ? data.removedIngredients.value
+          : this.removedIngredients,
+      addedToppings: data.addedToppings.present
+          ? data.addedToppings.value
+          : this.addedToppings,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrderItemsTableData(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('productId: $productId, ')
+          ..write('productName: $productName, ')
+          ..write('quantity: $quantity, ')
+          ..write('basePrice: $basePrice, ')
+          ..write('toppingTotal: $toppingTotal, ')
+          ..write('lineTotal: $lineTotal, ')
+          ..write('removedIngredients: $removedIngredients, ')
+          ..write('addedToppings: $addedToppings, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    orderId,
+    productId,
+    productName,
+    quantity,
+    basePrice,
+    toppingTotal,
+    lineTotal,
+    removedIngredients,
+    addedToppings,
+    notes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OrderItemsTableData &&
+          other.id == this.id &&
+          other.orderId == this.orderId &&
+          other.productId == this.productId &&
+          other.productName == this.productName &&
+          other.quantity == this.quantity &&
+          other.basePrice == this.basePrice &&
+          other.toppingTotal == this.toppingTotal &&
+          other.lineTotal == this.lineTotal &&
+          other.removedIngredients == this.removedIngredients &&
+          other.addedToppings == this.addedToppings &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
+  final Value<String> id;
+  final Value<String> orderId;
+  final Value<String> productId;
+  final Value<String> productName;
+  final Value<int> quantity;
+  final Value<int> basePrice;
+  final Value<int> toppingTotal;
+  final Value<int> lineTotal;
+  final Value<List<String>?> removedIngredients;
+  final Value<List<Map<String, dynamic>>?> addedToppings;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const OrderItemsTableCompanion({
+    this.id = const Value.absent(),
+    this.orderId = const Value.absent(),
+    this.productId = const Value.absent(),
+    this.productName = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.basePrice = const Value.absent(),
+    this.toppingTotal = const Value.absent(),
+    this.lineTotal = const Value.absent(),
+    this.removedIngredients = const Value.absent(),
+    this.addedToppings = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OrderItemsTableCompanion.insert({
+    required String id,
+    required String orderId,
+    required String productId,
+    required String productName,
+    required int quantity,
+    required int basePrice,
+    this.toppingTotal = const Value.absent(),
+    required int lineTotal,
+    this.removedIngredients = const Value.absent(),
+    this.addedToppings = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       orderId = Value(orderId),
+       productId = Value(productId),
+       productName = Value(productName),
+       quantity = Value(quantity),
+       basePrice = Value(basePrice),
+       lineTotal = Value(lineTotal);
+  static Insertable<OrderItemsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? orderId,
+    Expression<String>? productId,
+    Expression<String>? productName,
+    Expression<int>? quantity,
+    Expression<int>? basePrice,
+    Expression<int>? toppingTotal,
+    Expression<int>? lineTotal,
+    Expression<String>? removedIngredients,
+    Expression<String>? addedToppings,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (orderId != null) 'order_id': orderId,
+      if (productId != null) 'product_id': productId,
+      if (productName != null) 'product_name': productName,
+      if (quantity != null) 'quantity': quantity,
+      if (basePrice != null) 'base_price': basePrice,
+      if (toppingTotal != null) 'topping_total': toppingTotal,
+      if (lineTotal != null) 'line_total': lineTotal,
+      if (removedIngredients != null) 'removed_ingredients': removedIngredients,
+      if (addedToppings != null) 'added_toppings': addedToppings,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OrderItemsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? orderId,
+    Value<String>? productId,
+    Value<String>? productName,
+    Value<int>? quantity,
+    Value<int>? basePrice,
+    Value<int>? toppingTotal,
+    Value<int>? lineTotal,
+    Value<List<String>?>? removedIngredients,
+    Value<List<Map<String, dynamic>>?>? addedToppings,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return OrderItemsTableCompanion(
+      id: id ?? this.id,
+      orderId: orderId ?? this.orderId,
+      productId: productId ?? this.productId,
+      productName: productName ?? this.productName,
+      quantity: quantity ?? this.quantity,
+      basePrice: basePrice ?? this.basePrice,
+      toppingTotal: toppingTotal ?? this.toppingTotal,
+      lineTotal: lineTotal ?? this.lineTotal,
+      removedIngredients: removedIngredients ?? this.removedIngredients,
+      addedToppings: addedToppings ?? this.addedToppings,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (orderId.present) {
+      map['order_id'] = Variable<String>(orderId.value);
+    }
+    if (productId.present) {
+      map['product_id'] = Variable<String>(productId.value);
+    }
+    if (productName.present) {
+      map['product_name'] = Variable<String>(productName.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (basePrice.present) {
+      map['base_price'] = Variable<int>(basePrice.value);
+    }
+    if (toppingTotal.present) {
+      map['topping_total'] = Variable<int>(toppingTotal.value);
+    }
+    if (lineTotal.present) {
+      map['line_total'] = Variable<int>(lineTotal.value);
+    }
+    if (removedIngredients.present) {
+      map['removed_ingredients'] = Variable<String>(
+        $OrderItemsTableTable.$converterremovedIngredientsn.toSql(
+          removedIngredients.value,
+        ),
+      );
+    }
+    if (addedToppings.present) {
+      map['added_toppings'] = Variable<String>(
+        $OrderItemsTableTable.$converteraddedToppingsn.toSql(
+          addedToppings.value,
+        ),
+      );
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrderItemsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('productId: $productId, ')
+          ..write('productName: $productName, ')
+          ..write('quantity: $quantity, ')
+          ..write('basePrice: $basePrice, ')
+          ..write('toppingTotal: $toppingTotal, ')
+          ..write('lineTotal: $lineTotal, ')
+          ..write('removedIngredients: $removedIngredients, ')
+          ..write('addedToppings: $addedToppings, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2054,6 +3767,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $DefaultIngredientsTableTable(this);
   late final $AddonToppingsTableTable addonToppingsTable =
       $AddonToppingsTableTable(this);
+  late final $OrdersTableTable ordersTable = $OrdersTableTable(this);
+  late final $OrderItemsTableTable orderItemsTable = $OrderItemsTableTable(
+    this,
+  );
   late final CatalogDao catalogDao = CatalogDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -2064,6 +3781,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     productsTable,
     defaultIngredientsTable,
     addonToppingsTable,
+    ordersTable,
+    orderItemsTable,
   ];
 }
 
@@ -3151,6 +4870,809 @@ typedef $$AddonToppingsTableTableProcessedTableManager =
       AddonToppingsTableData,
       PrefetchHooks Function()
     >;
+typedef $$OrdersTableTableCreateCompanionBuilder =
+    OrdersTableCompanion Function({
+      required String id,
+      required String orderNumber,
+      required String orderType,
+      Value<int?> tableNumber,
+      required int subtotal,
+      required int taxAmount,
+      required int grandTotal,
+      Value<String> paymentMethod,
+      Value<String> paymentStatus,
+      Value<int?> cashReceived,
+      Value<int?> cashChange,
+      Value<String> status,
+      Value<String?> cashierId,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$OrdersTableTableUpdateCompanionBuilder =
+    OrdersTableCompanion Function({
+      Value<String> id,
+      Value<String> orderNumber,
+      Value<String> orderType,
+      Value<int?> tableNumber,
+      Value<int> subtotal,
+      Value<int> taxAmount,
+      Value<int> grandTotal,
+      Value<String> paymentMethod,
+      Value<String> paymentStatus,
+      Value<int?> cashReceived,
+      Value<int?> cashChange,
+      Value<String> status,
+      Value<String?> cashierId,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$OrdersTableTableFilterComposer
+    extends Composer<_$AppDatabase, $OrdersTableTable> {
+  $$OrdersTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderNumber => $composableBuilder(
+    column: $table.orderNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tableNumber => $composableBuilder(
+    column: $table.tableNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get taxAmount => $composableBuilder(
+    column: $table.taxAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentStatus => $composableBuilder(
+    column: $table.paymentStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cashChange => $composableBuilder(
+    column: $table.cashChange,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cashierId => $composableBuilder(
+    column: $table.cashierId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$OrdersTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $OrdersTableTable> {
+  $$OrdersTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderNumber => $composableBuilder(
+    column: $table.orderNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get tableNumber => $composableBuilder(
+    column: $table.tableNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get taxAmount => $composableBuilder(
+    column: $table.taxAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paymentStatus => $composableBuilder(
+    column: $table.paymentStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cashChange => $composableBuilder(
+    column: $table.cashChange,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cashierId => $composableBuilder(
+    column: $table.cashierId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$OrdersTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OrdersTableTable> {
+  $$OrdersTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get orderNumber => $composableBuilder(
+    column: $table.orderNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get orderType =>
+      $composableBuilder(column: $table.orderType, builder: (column) => column);
+
+  GeneratedColumn<int> get tableNumber => $composableBuilder(
+    column: $table.tableNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get subtotal =>
+      $composableBuilder(column: $table.subtotal, builder: (column) => column);
+
+  GeneratedColumn<int> get taxAmount =>
+      $composableBuilder(column: $table.taxAmount, builder: (column) => column);
+
+  GeneratedColumn<int> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paymentStatus => $composableBuilder(
+    column: $table.paymentStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get cashChange => $composableBuilder(
+    column: $table.cashChange,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get cashierId =>
+      $composableBuilder(column: $table.cashierId, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$OrdersTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OrdersTableTable,
+          OrdersTableData,
+          $$OrdersTableTableFilterComposer,
+          $$OrdersTableTableOrderingComposer,
+          $$OrdersTableTableAnnotationComposer,
+          $$OrdersTableTableCreateCompanionBuilder,
+          $$OrdersTableTableUpdateCompanionBuilder,
+          (
+            OrdersTableData,
+            BaseReferences<_$AppDatabase, $OrdersTableTable, OrdersTableData>,
+          ),
+          OrdersTableData,
+          PrefetchHooks Function()
+        > {
+  $$OrdersTableTableTableManager(_$AppDatabase db, $OrdersTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OrdersTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OrdersTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OrdersTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> orderNumber = const Value.absent(),
+                Value<String> orderType = const Value.absent(),
+                Value<int?> tableNumber = const Value.absent(),
+                Value<int> subtotal = const Value.absent(),
+                Value<int> taxAmount = const Value.absent(),
+                Value<int> grandTotal = const Value.absent(),
+                Value<String> paymentMethod = const Value.absent(),
+                Value<String> paymentStatus = const Value.absent(),
+                Value<int?> cashReceived = const Value.absent(),
+                Value<int?> cashChange = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> cashierId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrdersTableCompanion(
+                id: id,
+                orderNumber: orderNumber,
+                orderType: orderType,
+                tableNumber: tableNumber,
+                subtotal: subtotal,
+                taxAmount: taxAmount,
+                grandTotal: grandTotal,
+                paymentMethod: paymentMethod,
+                paymentStatus: paymentStatus,
+                cashReceived: cashReceived,
+                cashChange: cashChange,
+                status: status,
+                cashierId: cashierId,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String orderNumber,
+                required String orderType,
+                Value<int?> tableNumber = const Value.absent(),
+                required int subtotal,
+                required int taxAmount,
+                required int grandTotal,
+                Value<String> paymentMethod = const Value.absent(),
+                Value<String> paymentStatus = const Value.absent(),
+                Value<int?> cashReceived = const Value.absent(),
+                Value<int?> cashChange = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> cashierId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrdersTableCompanion.insert(
+                id: id,
+                orderNumber: orderNumber,
+                orderType: orderType,
+                tableNumber: tableNumber,
+                subtotal: subtotal,
+                taxAmount: taxAmount,
+                grandTotal: grandTotal,
+                paymentMethod: paymentMethod,
+                paymentStatus: paymentStatus,
+                cashReceived: cashReceived,
+                cashChange: cashChange,
+                status: status,
+                cashierId: cashierId,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$OrdersTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OrdersTableTable,
+      OrdersTableData,
+      $$OrdersTableTableFilterComposer,
+      $$OrdersTableTableOrderingComposer,
+      $$OrdersTableTableAnnotationComposer,
+      $$OrdersTableTableCreateCompanionBuilder,
+      $$OrdersTableTableUpdateCompanionBuilder,
+      (
+        OrdersTableData,
+        BaseReferences<_$AppDatabase, $OrdersTableTable, OrdersTableData>,
+      ),
+      OrdersTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$OrderItemsTableTableCreateCompanionBuilder =
+    OrderItemsTableCompanion Function({
+      required String id,
+      required String orderId,
+      required String productId,
+      required String productName,
+      required int quantity,
+      required int basePrice,
+      Value<int> toppingTotal,
+      required int lineTotal,
+      Value<List<String>?> removedIngredients,
+      Value<List<Map<String, dynamic>>?> addedToppings,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$OrderItemsTableTableUpdateCompanionBuilder =
+    OrderItemsTableCompanion Function({
+      Value<String> id,
+      Value<String> orderId,
+      Value<String> productId,
+      Value<String> productName,
+      Value<int> quantity,
+      Value<int> basePrice,
+      Value<int> toppingTotal,
+      Value<int> lineTotal,
+      Value<List<String>?> removedIngredients,
+      Value<List<Map<String, dynamic>>?> addedToppings,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$OrderItemsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $OrderItemsTableTable> {
+  $$OrderItemsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderId => $composableBuilder(
+    column: $table.orderId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productId => $composableBuilder(
+    column: $table.productId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productName => $composableBuilder(
+    column: $table.productName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get basePrice => $composableBuilder(
+    column: $table.basePrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get toppingTotal => $composableBuilder(
+    column: $table.toppingTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lineTotal => $composableBuilder(
+    column: $table.lineTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
+  get removedIngredients => $composableBuilder(
+    column: $table.removedIngredients,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<
+    List<Map<String, dynamic>>?,
+    List<Map<String, dynamic>>,
+    String
+  >
+  get addedToppings => $composableBuilder(
+    column: $table.addedToppings,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$OrderItemsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $OrderItemsTableTable> {
+  $$OrderItemsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderId => $composableBuilder(
+    column: $table.orderId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productId => $composableBuilder(
+    column: $table.productId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productName => $composableBuilder(
+    column: $table.productName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get basePrice => $composableBuilder(
+    column: $table.basePrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get toppingTotal => $composableBuilder(
+    column: $table.toppingTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lineTotal => $composableBuilder(
+    column: $table.lineTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get removedIngredients => $composableBuilder(
+    column: $table.removedIngredients,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get addedToppings => $composableBuilder(
+    column: $table.addedToppings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$OrderItemsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OrderItemsTableTable> {
+  $$OrderItemsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get orderId =>
+      $composableBuilder(column: $table.orderId, builder: (column) => column);
+
+  GeneratedColumn<String> get productId =>
+      $composableBuilder(column: $table.productId, builder: (column) => column);
+
+  GeneratedColumn<String> get productName => $composableBuilder(
+    column: $table.productName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<int> get basePrice =>
+      $composableBuilder(column: $table.basePrice, builder: (column) => column);
+
+  GeneratedColumn<int> get toppingTotal => $composableBuilder(
+    column: $table.toppingTotal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lineTotal =>
+      $composableBuilder(column: $table.lineTotal, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>?, String>
+  get removedIngredients => $composableBuilder(
+    column: $table.removedIngredients,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<List<Map<String, dynamic>>?, String>
+  get addedToppings => $composableBuilder(
+    column: $table.addedToppings,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$OrderItemsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OrderItemsTableTable,
+          OrderItemsTableData,
+          $$OrderItemsTableTableFilterComposer,
+          $$OrderItemsTableTableOrderingComposer,
+          $$OrderItemsTableTableAnnotationComposer,
+          $$OrderItemsTableTableCreateCompanionBuilder,
+          $$OrderItemsTableTableUpdateCompanionBuilder,
+          (
+            OrderItemsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $OrderItemsTableTable,
+              OrderItemsTableData
+            >,
+          ),
+          OrderItemsTableData,
+          PrefetchHooks Function()
+        > {
+  $$OrderItemsTableTableTableManager(
+    _$AppDatabase db,
+    $OrderItemsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OrderItemsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OrderItemsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OrderItemsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> orderId = const Value.absent(),
+                Value<String> productId = const Value.absent(),
+                Value<String> productName = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+                Value<int> basePrice = const Value.absent(),
+                Value<int> toppingTotal = const Value.absent(),
+                Value<int> lineTotal = const Value.absent(),
+                Value<List<String>?> removedIngredients = const Value.absent(),
+                Value<List<Map<String, dynamic>>?> addedToppings =
+                    const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrderItemsTableCompanion(
+                id: id,
+                orderId: orderId,
+                productId: productId,
+                productName: productName,
+                quantity: quantity,
+                basePrice: basePrice,
+                toppingTotal: toppingTotal,
+                lineTotal: lineTotal,
+                removedIngredients: removedIngredients,
+                addedToppings: addedToppings,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String orderId,
+                required String productId,
+                required String productName,
+                required int quantity,
+                required int basePrice,
+                Value<int> toppingTotal = const Value.absent(),
+                required int lineTotal,
+                Value<List<String>?> removedIngredients = const Value.absent(),
+                Value<List<Map<String, dynamic>>?> addedToppings =
+                    const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrderItemsTableCompanion.insert(
+                id: id,
+                orderId: orderId,
+                productId: productId,
+                productName: productName,
+                quantity: quantity,
+                basePrice: basePrice,
+                toppingTotal: toppingTotal,
+                lineTotal: lineTotal,
+                removedIngredients: removedIngredients,
+                addedToppings: addedToppings,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$OrderItemsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OrderItemsTableTable,
+      OrderItemsTableData,
+      $$OrderItemsTableTableFilterComposer,
+      $$OrderItemsTableTableOrderingComposer,
+      $$OrderItemsTableTableAnnotationComposer,
+      $$OrderItemsTableTableCreateCompanionBuilder,
+      $$OrderItemsTableTableUpdateCompanionBuilder,
+      (
+        OrderItemsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $OrderItemsTableTable,
+          OrderItemsTableData
+        >,
+      ),
+      OrderItemsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3166,4 +5688,8 @@ class $AppDatabaseManager {
       );
   $$AddonToppingsTableTableTableManager get addonToppingsTable =>
       $$AddonToppingsTableTableTableManager(_db, _db.addonToppingsTable);
+  $$OrdersTableTableTableManager get ordersTable =>
+      $$OrdersTableTableTableManager(_db, _db.ordersTable);
+  $$OrderItemsTableTableTableManager get orderItemsTable =>
+      $$OrderItemsTableTableTableManager(_db, _db.orderItemsTable);
 }

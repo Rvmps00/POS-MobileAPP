@@ -35,11 +35,10 @@ class ToppingSelectionTile extends StatelessWidget {
                 height: 24,
                 child: Checkbox(
                   value: isSelected,
-                  onChanged: isDisabled
-                      ? null
-                      : (v) => onChanged(v ?? false),
+                  onChanged: isDisabled ? null : (v) => onChanged(v ?? false),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4)),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                   activeColor: colorScheme.primary,
                 ),
               ),
@@ -59,8 +58,7 @@ class ToppingSelectionTile extends StatelessWidget {
               ),
               // Price
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: topping.isFree
                       ? Colors.green.withValues(alpha: 0.1)

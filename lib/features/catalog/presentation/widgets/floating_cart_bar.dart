@@ -45,8 +45,10 @@ class FloatingCartBar extends StatelessWidget {
                 onTap: onTap,
                 borderRadius: BorderRadius.circular(100),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
                       // Item count badge
@@ -97,7 +99,9 @@ class FloatingCartBar extends StatelessWidget {
                       // View Cart button
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           color: colorScheme.surface,
                           borderRadius: BorderRadius.circular(100),

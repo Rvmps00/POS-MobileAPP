@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/theme/theme_notifier.dart';
 import '../../../core/l10n/language_notifier.dart';
-
+import '../../../core/settings/tax_notifier.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -13,7 +13,7 @@ class SettingsScreen extends ConsumerWidget {
     final themeMode = ref.watch(themeProvider);
     final locale = ref.watch(languageProvider);
     // Note: Once localization is fully translated, use l10n strings.
-    // final l10n = AppLocalizations.of(context)!; 
+    // final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
@@ -40,12 +40,31 @@ class SettingsScreen extends ConsumerWidget {
                 value: locale.languageCode,
                 items: const [
                   DropdownMenuItem(value: 'en', child: Text('English')),
-                  DropdownMenuItem(value: 'id', child: Text('Bahasa Indonesia')),
+                  DropdownMenuItem(
+                    value: 'id',
+                    child: Text('Bahasa Indonesia'),
+                  ),
                 ],
                 onChanged: (String? newValue) {
                   if (newValue != null) {
                     ref.read(languageProvider.notifier).setLanguage(newValue);
                   }
+                },
+              ),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.receipt_long),
+              title: Text(
+                locale.languageCode == 'en'
+                    ? 'Enable Tax (10%)'
+                    : 'Aktifkan Pajak (10%)',
+              ),
+              trailing: Switch(
+                value: ref.watch(taxEnabledProvider),
+                onChanged: (value) {
+                  ref.read(taxEnabledProvider.notifier).toggleTax(value);
                 },
               ),
             ),
@@ -67,4 +86,3 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 }
-

@@ -10,6 +10,7 @@ import 'widgets/product_grid.dart';
 import 'widgets/floating_cart_bar.dart';
 import 'widgets/order_panel.dart';
 import 'topping_customizer_sheet.dart';
+import '../../cart/data/providers/cart_provider.dart';
 
 class MainPosScreen extends ConsumerWidget {
   const MainPosScreen({super.key});
@@ -45,6 +46,7 @@ class _MobileLayout extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final productsAsync = ref.watch(filteredProductsProvider);
+    final cartState = ref.watch(cartProvider);
 
     return Stack(
       children: [
@@ -54,15 +56,20 @@ class _MobileLayout extends ConsumerWidget {
             SafeArea(
               bottom: false,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.restaurant,
-                            color: colorScheme.onSurface, size: 24),
+                        Icon(
+                          Icons.restaurant,
+                          color: colorScheme.onSurface,
+                          size: 24,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           'Lesehan Surya POS',
@@ -74,24 +81,7 @@ class _MobileLayout extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        // Add product button
-                        IconButton(
-                          icon: Icon(Icons.add_circle_outline,
-                              color: colorScheme.onSurfaceVariant),
-                          onPressed: () => context.push('/pos/product/add'),
-                          tooltip: languageCode == 'en'
-                              ? 'Add Product'
-                              : 'Tambah Produk',
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.settings_outlined,
-                              color: colorScheme.onSurfaceVariant),
-                          onPressed: () => context.push('/settings'),
-                        ),
-                      ],
-                    ),
+                    // Buttons removed since they are now in the Bottom Navbar / Menu Tab
                   ],
                 ),
               ),
@@ -107,8 +97,7 @@ class _MobileLayout extends ConsumerWidget {
                   languageCode: languageCode,
                   onProductTap: (product) =>
                       _showCustomizer(context, ref, product),
-                  onAddTap: (product) =>
-                      _showCustomizer(context, ref, product),
+                  onAddTap: (product) => _showCustomizer(context, ref, product),
                 ),
                 loading: () => ProductGrid(
                   isLoading: true,
@@ -119,8 +108,11 @@ class _MobileLayout extends ConsumerWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline,
-                          size: 48, color: colorScheme.error),
+                      Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: colorScheme.error,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         languageCode == 'en'
@@ -133,7 +125,8 @@ class _MobileLayout extends ConsumerWidget {
                         onPressed: () =>
                             ref.invalidate(filteredProductsProvider),
                         child: Text(
-                            languageCode == 'en' ? 'Retry' : 'Coba Lagi'),
+                          languageCode == 'en' ? 'Retry' : 'Coba Lagi',
+                        ),
                       ),
                     ],
                   ),
@@ -142,27 +135,29 @@ class _MobileLayout extends ConsumerWidget {
             ),
           ],
         ),
-        // Floating Cart Bar (placeholder — connects to cart in Phase 3)
-        FloatingCartBar(
-          itemCount: 0,
-          totalPrice: 0,
-          languageCode: languageCode,
-          onTap: () => context.push('/cart'),
-        ),
+        // Floating Cart Bar (connects to cart in Phase 3)
+        if (cartState.items.isNotEmpty)
+          FloatingCartBar(
+            itemCount: cartState.items.length,
+            totalPrice: cartState.grandTotal,
+            languageCode: languageCode,
+            onTap: () => context.push('/pos/cart'),
+          ),
       ],
     );
   }
 
   void _showCustomizer(
-      BuildContext context, WidgetRef ref, ProductModel product) {
+    BuildContext context,
+    WidgetRef ref,
+    ProductModel product,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => ToppingCustomizerSheet(
-        product: product,
-        languageCode: languageCode,
-      ),
+      builder: (_) =>
+          ToppingCustomizerSheet(product: product, languageCode: languageCode),
     );
   }
 }
@@ -214,7 +209,9 @@ class _TabletLayout extends ConsumerWidget {
                         // Online indicator
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: colorScheme.surfaceContainer,
                             borderRadius: BorderRadius.circular(100),
@@ -244,28 +241,7 @@ class _TabletLayout extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.add_circle_outline,
-                              color: colorScheme.primary),
-                          onPressed: () => context.push('/pos/product/add'),
-                          tooltip: languageCode == 'en'
-                              ? 'Add Product'
-                              : 'Tambah Produk',
-                        ),
-                        IconButton(
-                          icon:
-                              Icon(Icons.wifi, color: colorScheme.primary),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.settings_outlined,
-                              color: colorScheme.primary),
-                          onPressed: () => context.push('/settings'),
-                        ),
-                      ],
-                    ),
+                    // Buttons removed since they are now in the Bottom Navbar / Menu Tab
                   ],
                 ),
               ),
@@ -275,8 +251,7 @@ class _TabletLayout extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceBright.withValues(alpha: 0.8),
                   border: Border(
-                    bottom:
-                        BorderSide(color: colorScheme.surfaceContainerHigh),
+                    bottom: BorderSide(color: colorScheme.surfaceContainerHigh),
                   ),
                 ),
                 child: CategoryTabBar(languageCode: languageCode),
@@ -316,15 +291,16 @@ class _TabletLayout extends ConsumerWidget {
   }
 
   void _showCustomizer(
-      BuildContext context, WidgetRef ref, ProductModel product) {
+    BuildContext context,
+    WidgetRef ref,
+    ProductModel product,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => ToppingCustomizerSheet(
-        product: product,
-        languageCode: languageCode,
-      ),
+      builder: (_) =>
+          ToppingCustomizerSheet(product: product, languageCode: languageCode),
     );
   }
 }

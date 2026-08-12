@@ -6,6 +6,8 @@ import '../data/models/product_model.dart';
 import '../data/models/default_ingredient_model.dart';
 import '../data/models/addon_topping_model.dart';
 import '../data/providers/catalog_providers.dart';
+import '../../cart/data/models/cart_item_model.dart';
+import '../../cart/data/providers/cart_provider.dart';
 import 'widgets/ingredient_toggle_tile.dart';
 import 'widgets/topping_selection_tile.dart';
 import 'widgets/quantity_selector.dart';
@@ -52,8 +54,7 @@ class _ToppingCustomizerSheetState
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final ingredientsAsync =
-        ref.watch(ingredientsProvider(widget.product.id));
+    final ingredientsAsync = ref.watch(ingredientsProvider(widget.product.id));
     final toppingsAsync = ref.watch(toppingsProvider(widget.product.id));
     final lang = widget.languageCode;
 
@@ -65,8 +66,7 @@ class _ToppingCustomizerSheetState
         return Container(
           decoration: BoxDecoration(
             color: colorScheme.surface,
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: Column(
             children: [
@@ -98,13 +98,17 @@ class _ToppingCustomizerSheetState
                           return const SizedBox.shrink();
                         }
                         return _buildIngredientsSection(
-                            ingredients, colorScheme, lang);
+                          ingredients,
+                          colorScheme,
+                          lang,
+                        );
                       },
                       loading: () => const Center(
-                          child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: CircularProgressIndicator(),
-                      )),
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
                       error: (_, __) => const SizedBox.shrink(),
                     ),
                     // Addon Toppings
@@ -112,7 +116,10 @@ class _ToppingCustomizerSheetState
                       data: (toppings) {
                         if (toppings.isEmpty) return const SizedBox.shrink();
                         return _buildToppingsSection(
-                            toppings, colorScheme, lang);
+                          toppings,
+                          colorScheme,
+                          lang,
+                        );
                       },
                       loading: () => const SizedBox.shrink(),
                       error: (_, __) => const SizedBox.shrink(),
@@ -149,7 +156,8 @@ class _ToppingCustomizerSheetState
             borderRadius: BorderRadius.circular(16),
           ),
           clipBehavior: Clip.antiAlias,
-          child: widget.product.imageUrl != null &&
+          child:
+              widget.product.imageUrl != null &&
                   widget.product.imageUrl!.isNotEmpty
               ? CachedNetworkImage(
                   imageUrl: widget.product.imageUrl!,
@@ -212,20 +220,22 @@ class _ToppingCustomizerSheetState
           colorScheme,
         ),
         const SizedBox(height: 8),
-        ...ingredients.map((ingredient) => IngredientToggleTile(
-              ingredient: ingredient,
-              isRemoved: _removedIngredients.contains(ingredient.id),
-              languageCode: lang,
-              onChanged: (removed) {
-                setState(() {
-                  if (removed) {
-                    _removedIngredients.add(ingredient.id);
-                  } else {
-                    _removedIngredients.remove(ingredient.id);
-                  }
-                });
-              },
-            )),
+        ...ingredients.map(
+          (ingredient) => IngredientToggleTile(
+            ingredient: ingredient,
+            isRemoved: _removedIngredients.contains(ingredient.id),
+            languageCode: lang,
+            onChanged: (removed) {
+              setState(() {
+                if (removed) {
+                  _removedIngredients.add(ingredient.id);
+                } else {
+                  _removedIngredients.remove(ingredient.id);
+                }
+              });
+            },
+          ),
+        ),
         const SizedBox(height: 16),
       ],
     );
@@ -244,20 +254,22 @@ class _ToppingCustomizerSheetState
           colorScheme,
         ),
         const SizedBox(height: 8),
-        ...toppings.map((topping) => ToppingSelectionTile(
-              topping: topping,
-              isSelected: _selectedToppings.contains(topping.id),
-              languageCode: lang,
-              onChanged: (selected) {
-                setState(() {
-                  if (selected) {
-                    _selectedToppings.add(topping.id);
-                  } else {
-                    _selectedToppings.remove(topping.id);
-                  }
-                });
-              },
-            )),
+        ...toppings.map(
+          (topping) => ToppingSelectionTile(
+            topping: topping,
+            isSelected: _selectedToppings.contains(topping.id),
+            languageCode: lang,
+            onChanged: (selected) {
+              setState(() {
+                if (selected) {
+                  _selectedToppings.add(topping.id);
+                } else {
+                  _selectedToppings.remove(topping.id);
+                }
+              });
+            },
+          ),
+        ),
       ],
     );
   }
@@ -266,10 +278,7 @@ class _ToppingCustomizerSheetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(
-          lang == 'en' ? 'Quantity' : 'Jumlah',
-          colorScheme,
-        ),
+        _buildSectionHeader(lang == 'en' ? 'Quantity' : 'Jumlah', colorScheme),
         const SizedBox(height: 12),
         Center(
           child: QuantitySelector(
@@ -285,10 +294,7 @@ class _ToppingCustomizerSheetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(
-          lang == 'en' ? 'Notes' : 'Catatan',
-          colorScheme,
-        ),
+        _buildSectionHeader(lang == 'en' ? 'Notes' : 'Catatan', colorScheme),
         const SizedBox(height: 8),
         TextField(
           controller: _notesController,
@@ -302,9 +308,13 @@ class _ToppingCustomizerSheetState
               fontSize: 14,
             ),
             filled: true,
-            fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            fillColor: colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.3,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(color: colorScheme.outlineVariant),
@@ -315,8 +325,7 @@ class _ToppingCustomizerSheetState
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide:
-                  BorderSide(color: colorScheme.primary, width: 1.5),
+              borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
             ),
           ),
         ),
@@ -328,7 +337,9 @@ class _ToppingCustomizerSheetState
     return Row(
       children: [
         Expanded(
-          child: Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
+          child: Divider(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -343,7 +354,9 @@ class _ToppingCustomizerSheetState
           ),
         ),
         Expanded(
-          child: Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
+          child: Divider(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
         ),
       ],
     );
@@ -358,13 +371,15 @@ class _ToppingCustomizerSheetState
     final total = _calculateTotal(toppings);
 
     return Container(
-      padding: const EdgeInsets.all(24).copyWith(
-        bottom: MediaQuery.of(context).padding.bottom + 24,
-      ),
+      padding: const EdgeInsets.all(
+        24,
+      ).copyWith(bottom: MediaQuery.of(context).padding.bottom + 24),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         border: Border(
-          top: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.3)),
+          top: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+          ),
         ),
         boxShadow: [
           BoxShadow(
@@ -399,20 +414,26 @@ class _ToppingCustomizerSheetState
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                // TODO: Connect to cart in Phase 3
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      lang == 'en'
-                          ? 'Added to cart! (Phase 3)'
-                          : 'Ditambahkan ke keranjang! (Phase 3)',
-                    ),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                final removedIngs =
+                    (ref.read(ingredientsProvider(widget.product.id)).value ??
+                            [])
+                        .where((ing) => _removedIngredients.contains(ing.id))
+                        .toList();
+
+                final addedTops = toppings
+                    .where((top) => _selectedToppings.contains(top.id))
+                    .toList();
+
+                final item = CartItemModel(
+                  product: widget.product,
+                  quantity: _quantity,
+                  removedIngredients: removedIngs,
+                  addedToppings: addedTops,
+                  notes: _notesController.text.trim(),
                 );
+
+                ref.read(cartProvider.notifier).addItem(item);
+
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
@@ -422,9 +443,7 @@ class _ToppingCustomizerSheetState
                 ),
               ),
               child: Text(
-                lang == 'en'
-                    ? 'Add to Cart'
-                    : 'Tambah ke Keranjang',
+                lang == 'en' ? 'Add to Cart' : 'Tambah ke Keranjang',
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,

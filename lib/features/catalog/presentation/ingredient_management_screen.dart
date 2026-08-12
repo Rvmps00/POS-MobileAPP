@@ -58,7 +58,8 @@ class _IngredientManagementScreenState
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(
-                foregroundColor: Theme.of(ctx).colorScheme.error),
+              foregroundColor: Theme.of(ctx).colorScheme.error,
+            ),
             child: const Text('Hapus'),
           ),
         ],
@@ -71,11 +72,11 @@ class _IngredientManagementScreenState
     ref.invalidate(ingredientsProvider(widget.productId));
   }
 
-  Future<Map<String, dynamic>?> _showIngredientDialog(
-      {DefaultIngredientModel? ingredient}) async {
+  Future<Map<String, dynamic>?> _showIngredientDialog({
+    DefaultIngredientModel? ingredient,
+  }) async {
     final nameCtrl = TextEditingController(text: ingredient?.name ?? '');
-    final nameEnCtrl =
-        TextEditingController(text: ingredient?.nameEn ?? '');
+    final nameEnCtrl = TextEditingController(text: ingredient?.nameEn ?? '');
     bool isRemovable = ingredient?.isRemovable ?? true;
 
     return showDialog<Map<String, dynamic>>(
@@ -83,8 +84,9 @@ class _IngredientManagementScreenState
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           title: Text(ingredient == null ? 'Tambah Bahan' : 'Edit Bahan'),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -93,7 +95,8 @@ class _IngredientManagementScreenState
                 decoration: InputDecoration(
                   labelText: 'Nama Bahan *',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -102,15 +105,15 @@ class _IngredientManagementScreenState
                 decoration: InputDecoration(
                   labelText: 'Name (English)',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
               SwitchListTile(
                 title: const Text('Bisa dihilangkan?'),
                 value: isRemovable,
-                onChanged: (v) =>
-                    setDialogState(() => isRemovable = v),
+                onChanged: (v) => setDialogState(() => isRemovable = v),
                 contentPadding: EdgeInsets.zero,
               ),
             ],
@@ -142,13 +145,10 @@ class _IngredientManagementScreenState
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final ingredientsAsync =
-        ref.watch(ingredientsProvider(widget.productId));
+    final ingredientsAsync = ref.watch(ingredientsProvider(widget.productId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bahan Bawaan'),
-      ),
+      appBar: AppBar(title: const Text('Bahan Bawaan')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addIngredient,
         icon: const Icon(Icons.add),
@@ -162,9 +162,11 @@ class _IngredientManagementScreenState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.list_alt_outlined,
-                      size: 48,
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4)),
+                  Icon(
+                    Icons.list_alt_outlined,
+                    size: 48,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  ),
                   const SizedBox(height: 16),
                   const Text('Belum ada bahan bawaan'),
                 ],
@@ -179,7 +181,8 @@ class _IngredientManagementScreenState
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: ListTile(
                   leading: Icon(
                     item.isRemovable
@@ -199,14 +202,18 @@ class _IngredientManagementScreenState
                         onPressed: () => _editIngredient(item),
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete_outline,
-                            size: 20, color: colorScheme.error),
+                        icon: Icon(
+                          Icons.delete_outline,
+                          size: 20,
+                          color: colorScheme.error,
+                        ),
                         onPressed: () => _deleteIngredient(item.id),
                       ),
                     ],
                   ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
               );
             },

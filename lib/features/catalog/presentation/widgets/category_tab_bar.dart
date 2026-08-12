@@ -31,19 +31,21 @@ class CategoryTabBar extends ConsumerWidget {
             ),
             const SizedBox(width: 8),
             // Category tabs
-            ...categories.map((category) => Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: _buildTab(
-                    context: context,
-                    label:
-                        '${category.localizedName(languageCode)} ${category.icon ?? ''}',
-                    isSelected: selectedCategory == category.id,
-                    onTap: () => ref
-                        .read(selectedCategoryProvider.notifier)
-                        .select(category.id),
-                    colorScheme: colorScheme,
-                  ),
-                )),
+            ...categories.map(
+              (category) => Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: _buildTab(
+                  context: context,
+                  label:
+                      '${category.localizedName(languageCode)} ${category.icon ?? ''}',
+                  isSelected: selectedCategory == category.id,
+                  onTap: () => ref
+                      .read(selectedCategoryProvider.notifier)
+                      .select(category.id),
+                  colorScheme: colorScheme,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -59,7 +61,9 @@ class CategoryTabBar extends ConsumerWidget {
               child: Container(
                 width: 80,
                 decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  color: colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
+                  ),
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
@@ -87,17 +91,13 @@ class CategoryTabBar extends ConsumerWidget {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected
-                ? colorScheme.primary
-                : Colors.transparent,
+            color: isSelected ? colorScheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(100),
           ),
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected
-                  ? colorScheme.onPrimary
-                  : colorScheme.onSurface,
+              color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
               fontWeight: FontWeight.w500,
               fontSize: 14,
             ),

@@ -8,31 +8,39 @@ import '../tables/addon_toppings_table.dart';
 
 part 'catalog_dao.g.dart';
 
-@DriftAccessor(tables: [
-  CategoriesTable,
-  ProductsTable,
-  DefaultIngredientsTable,
-  AddonToppingsTable,
-])
+@DriftAccessor(
+  tables: [
+    CategoriesTable,
+    ProductsTable,
+    DefaultIngredientsTable,
+    AddonToppingsTable,
+  ],
+)
 class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   CatalogDao(super.db);
 
   // ─── Categories ───
-  Future<List<CategoriesTableData>> getAllCategories() =>
-      (select(categoriesTable)..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
-          .get();
+  Future<List<CategoriesTableData>> getAllCategories() => (select(
+    categoriesTable,
+  )..orderBy([(t) => OrderingTerm.asc(t.sortOrder)])).get();
 
-  Stream<List<CategoriesTableData>> watchAllCategories() =>
-      (select(categoriesTable)..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
-          .watch();
+  Stream<List<CategoriesTableData>> watchAllCategories() => (select(
+    categoriesTable,
+  )..orderBy([(t) => OrderingTerm.asc(t.sortOrder)])).watch();
 
   Future<void> upsertCategory(CategoriesTableCompanion category) =>
       into(categoriesTable).insertOnConflictUpdate(category);
 
-  Future<void> upsertCategories(List<CategoriesTableCompanion> categories) async {
+  Future<void> upsertCategories(
+    List<CategoriesTableCompanion> categories,
+  ) async {
     await batch((batch) {
       for (final category in categories) {
-        batch.insert(categoriesTable, category, onConflict: DoUpdate((_) => category));
+        batch.insert(
+          categoriesTable,
+          category,
+          onConflict: DoUpdate((_) => category),
+        );
       }
     });
   }
@@ -46,8 +54,9 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<List<ProductsTableData>> getAllProducts() =>
       (select(productsTable)..orderBy([(t) => OrderingTerm.asc(t.name)])).get();
 
-  Stream<List<ProductsTableData>> watchAllProducts() =>
-      (select(productsTable)..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
+  Stream<List<ProductsTableData>> watchAllProducts() => (select(
+    productsTable,
+  )..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
 
   Future<List<ProductsTableData>> getProductsByCategory(String categoryId) =>
       (select(productsTable)
@@ -70,7 +79,11 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<void> upsertProducts(List<ProductsTableCompanion> products) async {
     await batch((batch) {
       for (final product in products) {
-        batch.insert(productsTable, product, onConflict: DoUpdate((_) => product));
+        batch.insert(
+          productsTable,
+          product,
+          onConflict: DoUpdate((_) => product),
+        );
       }
     });
   }
@@ -81,13 +94,17 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<void> clearProducts() => delete(productsTable).go();
 
   // ─── Default Ingredients ───
-  Future<List<DefaultIngredientsTableData>> getIngredientsByProduct(String productId) =>
+  Future<List<DefaultIngredientsTableData>> getIngredientsByProduct(
+    String productId,
+  ) =>
       (select(defaultIngredientsTable)
             ..where((t) => t.productId.equals(productId))
             ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
           .get();
 
-  Stream<List<DefaultIngredientsTableData>> watchIngredientsByProduct(String productId) =>
+  Stream<List<DefaultIngredientsTableData>> watchIngredientsByProduct(
+    String productId,
+  ) =>
       (select(defaultIngredientsTable)
             ..where((t) => t.productId.equals(productId))
             ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
@@ -96,10 +113,16 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<void> upsertIngredient(DefaultIngredientsTableCompanion ingredient) =>
       into(defaultIngredientsTable).insertOnConflictUpdate(ingredient);
 
-  Future<void> upsertIngredients(List<DefaultIngredientsTableCompanion> ingredients) async {
+  Future<void> upsertIngredients(
+    List<DefaultIngredientsTableCompanion> ingredients,
+  ) async {
     await batch((batch) {
       for (final ingredient in ingredients) {
-        batch.insert(defaultIngredientsTable, ingredient, onConflict: DoUpdate((_) => ingredient));
+        batch.insert(
+          defaultIngredientsTable,
+          ingredient,
+          onConflict: DoUpdate((_) => ingredient),
+        );
       }
     });
   }
@@ -107,8 +130,9 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<int> deleteIngredient(String id) =>
       (delete(defaultIngredientsTable)..where((t) => t.id.equals(id))).go();
 
-  Future<void> clearIngredientsByProduct(String productId) =>
-      (delete(defaultIngredientsTable)..where((t) => t.productId.equals(productId))).go();
+  Future<void> clearIngredientsByProduct(String productId) => (delete(
+    defaultIngredientsTable,
+  )..where((t) => t.productId.equals(productId))).go();
 
   // ─── Addon Toppings ───
   Future<List<AddonToppingsTableData>> getToppingsByProduct(String productId) =>
@@ -117,7 +141,9 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
             ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
           .get();
 
-  Stream<List<AddonToppingsTableData>> watchToppingsByProduct(String productId) =>
+  Stream<List<AddonToppingsTableData>> watchToppingsByProduct(
+    String productId,
+  ) =>
       (select(addonToppingsTable)
             ..where((t) => t.productId.equals(productId))
             ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
@@ -126,10 +152,16 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<void> upsertTopping(AddonToppingsTableCompanion topping) =>
       into(addonToppingsTable).insertOnConflictUpdate(topping);
 
-  Future<void> upsertToppings(List<AddonToppingsTableCompanion> toppings) async {
+  Future<void> upsertToppings(
+    List<AddonToppingsTableCompanion> toppings,
+  ) async {
     await batch((batch) {
       for (final topping in toppings) {
-        batch.insert(addonToppingsTable, topping, onConflict: DoUpdate((_) => topping));
+        batch.insert(
+          addonToppingsTable,
+          topping,
+          onConflict: DoUpdate((_) => topping),
+        );
       }
     });
   }
@@ -137,6 +169,7 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Future<int> deleteTopping(String id) =>
       (delete(addonToppingsTable)..where((t) => t.id.equals(id))).go();
 
-  Future<void> clearToppingsByProduct(String productId) =>
-      (delete(addonToppingsTable)..where((t) => t.productId.equals(productId))).go();
+  Future<void> clearToppingsByProduct(String productId) => (delete(
+    addonToppingsTable,
+  )..where((t) => t.productId.equals(productId))).go();
 }

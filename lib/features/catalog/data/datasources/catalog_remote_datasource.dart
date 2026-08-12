@@ -21,13 +21,18 @@ class CatalogRemoteDataSource {
   }
 
   Future<CategoryModel> insertCategory(Map<String, dynamic> data) async {
-    final response =
-        await _client.from('categories').insert(data).select().single();
+    final response = await _client
+        .from('categories')
+        .insert(data)
+        .select()
+        .single();
     return CategoryModel.fromJson(response);
   }
 
   Future<CategoryModel> updateCategory(
-      String id, Map<String, dynamic> data) async {
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     final response = await _client
         .from('categories')
         .update(data)
@@ -52,19 +57,27 @@ class CatalogRemoteDataSource {
   }
 
   Future<ProductModel> getProductById(String id) async {
-    final response =
-        await _client.from('products').select().eq('id', id).single();
+    final response = await _client
+        .from('products')
+        .select()
+        .eq('id', id)
+        .single();
     return ProductModel.fromJson(response);
   }
 
   Future<ProductModel> insertProduct(Map<String, dynamic> data) async {
-    final response =
-        await _client.from('products').insert(data).select().single();
+    final response = await _client
+        .from('products')
+        .insert(data)
+        .select()
+        .single();
     return ProductModel.fromJson(response);
   }
 
   Future<ProductModel> updateProduct(
-      String id, Map<String, dynamic> data) async {
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     final response = await _client
         .from('products')
         .update(data)
@@ -79,8 +92,7 @@ class CatalogRemoteDataSource {
   }
 
   // ─── Default Ingredients ───
-  Future<List<DefaultIngredientModel>> getIngredients(
-      String productId) async {
+  Future<List<DefaultIngredientModel>> getIngredients(String productId) async {
     final response = await _client
         .from('default_ingredients')
         .select()
@@ -92,7 +104,8 @@ class CatalogRemoteDataSource {
   }
 
   Future<DefaultIngredientModel> insertIngredient(
-      Map<String, dynamic> data) async {
+    Map<String, dynamic> data,
+  ) async {
     final response = await _client
         .from('default_ingredients')
         .insert(data)
@@ -102,7 +115,9 @@ class CatalogRemoteDataSource {
   }
 
   Future<DefaultIngredientModel> updateIngredient(
-      String id, Map<String, dynamic> data) async {
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     final response = await _client
         .from('default_ingredients')
         .update(data)
@@ -129,13 +144,18 @@ class CatalogRemoteDataSource {
   }
 
   Future<AddonToppingModel> insertTopping(Map<String, dynamic> data) async {
-    final response =
-        await _client.from('addon_toppings').insert(data).select().single();
+    final response = await _client
+        .from('addon_toppings')
+        .insert(data)
+        .select()
+        .single();
     return AddonToppingModel.fromJson(response);
   }
 
   Future<AddonToppingModel> updateTopping(
-      String id, Map<String, dynamic> data) async {
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     final response = await _client
         .from('addon_toppings')
         .update(data)
@@ -152,13 +172,14 @@ class CatalogRemoteDataSource {
   // ─── Image Upload ───
   Future<String> uploadProductImage(String fileName, File imageFile) async {
     final path = 'products/$fileName';
-    await _client.storage.from('product-images').upload(
+    await _client.storage
+        .from('product-images')
+        .upload(
           path,
           imageFile,
           fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
         );
-    final publicUrl =
-        _client.storage.from('product-images').getPublicUrl(path);
+    final publicUrl = _client.storage.from('product-images').getPublicUrl(path);
     return publicUrl;
   }
 

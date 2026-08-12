@@ -16,28 +16,52 @@ class AppTheme {
       onSurface: _primary,
     ),
     textTheme: GoogleFonts.interTextTheme().copyWith(
-      displayLarge: GoogleFonts.plusJakartaSans(color: _primary, fontWeight: FontWeight.bold),
-      displayMedium: GoogleFonts.plusJakartaSans(color: _primary, fontWeight: FontWeight.bold),
-      displaySmall: GoogleFonts.plusJakartaSans(color: _primary, fontWeight: FontWeight.bold),
-      headlineLarge: GoogleFonts.plusJakartaSans(color: _primary, fontWeight: FontWeight.bold),
-      headlineMedium: GoogleFonts.plusJakartaSans(color: _primary, fontWeight: FontWeight.bold),
-      titleLarge: GoogleFonts.plusJakartaSans(color: _primary, fontWeight: FontWeight.w600),
+      displayLarge: GoogleFonts.plusJakartaSans(
+        color: _primary,
+        fontWeight: FontWeight.bold,
+      ),
+      displayMedium: GoogleFonts.plusJakartaSans(
+        color: _primary,
+        fontWeight: FontWeight.bold,
+      ),
+      displaySmall: GoogleFonts.plusJakartaSans(
+        color: _primary,
+        fontWeight: FontWeight.bold,
+      ),
+      headlineLarge: GoogleFonts.plusJakartaSans(
+        color: _primary,
+        fontWeight: FontWeight.bold,
+      ),
+      headlineMedium: GoogleFonts.plusJakartaSans(
+        color: _primary,
+        fontWeight: FontWeight.bold,
+      ),
+      titleLarge: GoogleFonts.plusJakartaSans(
+        color: _primary,
+        fontWeight: FontWeight.w600,
+      ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: _primary,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)), // Pill shape
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100),
+        ), // Pill shape
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
     ),
     cardTheme: CardThemeData(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)), // Fully rounded
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ), // Fully rounded
       elevation: 2,
       color: Colors.white,
     ),
     inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)), // Pill shape
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100),
+      ), // Pill shape
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
     ),
   );
@@ -52,12 +76,30 @@ class AppTheme {
       onSurface: Colors.white,
     ),
     textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
-      displayLarge: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
-      displayMedium: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
-      displaySmall: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
-      headlineLarge: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
-      headlineMedium: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
-      titleLarge: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w600),
+      displayLarge: GoogleFonts.plusJakartaSans(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      displayMedium: GoogleFonts.plusJakartaSans(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      displaySmall: GoogleFonts.plusJakartaSans(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      headlineLarge: GoogleFonts.plusJakartaSans(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      headlineMedium: GoogleFonts.plusJakartaSans(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      titleLarge: GoogleFonts.plusJakartaSans(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+      ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

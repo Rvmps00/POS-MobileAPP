@@ -34,27 +34,31 @@ class ImagePickerWidget extends StatelessWidget {
                 leading: const Icon(Icons.camera_alt_outlined),
                 title: Text(languageCode == 'en' ? 'Camera' : 'Kamera'),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 onTap: () => Navigator.pop(ctx, ImageSource.camera),
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
                 title: Text(languageCode == 'en' ? 'Gallery' : 'Galeri'),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 onTap: () => Navigator.pop(ctx, ImageSource.gallery),
               ),
               if (selectedFile != null || currentImageUrl != null)
                 ListTile(
-                  leading: Icon(Icons.delete_outline,
-                      color: Theme.of(ctx).colorScheme.error),
+                  leading: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(ctx).colorScheme.error,
+                  ),
                   title: Text(
                     languageCode == 'en' ? 'Remove Image' : 'Hapus Gambar',
-                    style:
-                        TextStyle(color: Theme.of(ctx).colorScheme.error),
+                    style: TextStyle(color: Theme.of(ctx).colorScheme.error),
                   ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   onTap: () {
                     onImageSelected(null);
                     Navigator.pop(ctx);
@@ -155,11 +159,7 @@ class ImagePickerWidget extends StatelessWidget {
           color: colorScheme.surface.withValues(alpha: 0.8),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          Icons.edit,
-          size: 18,
-          color: colorScheme.onSurface,
-        ),
+        child: Icon(Icons.edit, size: 18, color: colorScheme.onSurface),
       ),
     );
   }

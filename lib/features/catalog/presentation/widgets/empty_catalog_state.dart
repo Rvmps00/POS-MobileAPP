@@ -19,7 +19,9 @@ class EmptyCatalogState extends StatelessWidget {
               width: 96,
               height: 96,
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                color: colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.5,
+                ),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -30,9 +32,7 @@ class EmptyCatalogState extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              languageCode == 'en'
-                  ? 'No products yet'
-                  : 'Belum ada produk',
+              languageCode == 'en' ? 'No products yet' : 'Belum ada produk',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
