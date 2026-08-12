@@ -1,50 +1,330 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class MainPosScreen extends StatelessWidget {
+import '../../../core/l10n/language_notifier.dart';
+import '../../catalog/data/providers/catalog_providers.dart';
+import '../../catalog/data/models/product_model.dart';
+import 'widgets/category_tab_bar.dart';
+import 'widgets/product_grid.dart';
+import 'widgets/floating_cart_bar.dart';
+import 'widgets/order_panel.dart';
+import 'topping_customizer_sheet.dart';
+
+class MainPosScreen extends ConsumerWidget {
   const MainPosScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(languageProvider);
+    final lang = locale.languageCode;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Main POS (Placeholder)'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Main POS Screen Placeholder', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => context.push('/cart'),
-              child: const Text('Go to Cart'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => context.push('/checkout'),
-              child: const Text('Go to Checkout'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => context.push('/inventory'),
-              child: const Text('Go to Inventory'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => context.push('/orders'),
-              child: const Text('Go to Order History'),
-            ),
-          ],
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isTablet = constraints.maxWidth >= 768;
+          if (isTablet) {
+            return _TabletLayout(languageCode: lang);
+          }
+          return _MobileLayout(languageCode: lang);
+        },
       ),
     );
   }
 }
 
+// ──────────────────────────────────────────────
+// MOBILE LAYOUT
+// ──────────────────────────────────────────────
+class _MobileLayout extends ConsumerWidget {
+  final String languageCode;
+
+  const _MobileLayout({required this.languageCode});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final productsAsync = ref.watch(filteredProductsProvider);
+
+    return Stack(
+      children: [
+        Column(
+          children: [
+            // AppBar
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.restaurant,
+                            color: colorScheme.onSurface, size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Lesehan Surya POS',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        // Add product button
+                        IconButton(
+                          icon: Icon(Icons.add_circle_outline,
+                              color: colorScheme.onSurfaceVariant),
+                          onPressed: () => context.push('/pos/product/add'),
+                          tooltip: languageCode == 'en'
+                              ? 'Add Product'
+                              : 'Tambah Produk',
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.settings_outlined,
+                              color: colorScheme.onSurfaceVariant),
+                          onPressed: () => context.push('/settings'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Category Tabs
+            CategoryTabBar(languageCode: languageCode),
+            const SizedBox(height: 8),
+            // Product Grid
+            Expanded(
+              child: productsAsync.when(
+                data: (products) => ProductGrid(
+                  products: products,
+                  languageCode: languageCode,
+                  onProductTap: (product) =>
+                      _showCustomizer(context, ref, product),
+                  onAddTap: (product) =>
+                      _showCustomizer(context, ref, product),
+                ),
+                loading: () => ProductGrid(
+                  isLoading: true,
+                  languageCode: languageCode,
+                  onProductTap: (_) {},
+                ),
+                error: (e, _) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline,
+                          size: 48, color: colorScheme.error),
+                      const SizedBox(height: 16),
+                      Text(
+                        languageCode == 'en'
+                            ? 'Failed to load products'
+                            : 'Gagal memuat produk',
+                        style: TextStyle(color: colorScheme.onSurfaceVariant),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () =>
+                            ref.invalidate(filteredProductsProvider),
+                        child: Text(
+                            languageCode == 'en' ? 'Retry' : 'Coba Lagi'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        // Floating Cart Bar (placeholder — connects to cart in Phase 3)
+        FloatingCartBar(
+          itemCount: 0,
+          totalPrice: 0,
+          languageCode: languageCode,
+          onTap: () => context.push('/cart'),
+        ),
+      ],
+    );
+  }
+
+  void _showCustomizer(
+      BuildContext context, WidgetRef ref, ProductModel product) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => ToppingCustomizerSheet(
+        product: product,
+        languageCode: languageCode,
+      ),
+    );
+  }
+}
+
+// ──────────────────────────────────────────────
+// TABLET LAYOUT
+// ──────────────────────────────────────────────
+class _TabletLayout extends ConsumerWidget {
+  final String languageCode;
+
+  const _TabletLayout({required this.languageCode});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final productsAsync = ref.watch(filteredProductsProvider);
+
+    return Row(
+      children: [
+        // Left side — Product Canvas
+        Expanded(
+          child: Column(
+            children: [
+              // AppBar
+              Container(
+                height: 72,
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  border: Border(
+                    bottom: BorderSide(color: colorScheme.primary),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Lesehan Surya POS',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: colorScheme.primary,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Online indicator
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainer,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Online',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.add_circle_outline,
+                              color: colorScheme.primary),
+                          onPressed: () => context.push('/pos/product/add'),
+                          tooltip: languageCode == 'en'
+                              ? 'Add Product'
+                              : 'Tambah Produk',
+                        ),
+                        IconButton(
+                          icon:
+                              Icon(Icons.wifi, color: colorScheme.primary),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.settings_outlined,
+                              color: colorScheme.primary),
+                          onPressed: () => context.push('/settings'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              // Category Tabs
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceBright.withValues(alpha: 0.8),
+                  border: Border(
+                    bottom:
+                        BorderSide(color: colorScheme.surfaceContainerHigh),
+                  ),
+                ),
+                child: CategoryTabBar(languageCode: languageCode),
+              ),
+              // Product Grid
+              Expanded(
+                child: productsAsync.when(
+                  data: (products) => ProductGrid(
+                    products: products,
+                    languageCode: languageCode,
+                    onProductTap: (product) =>
+                        _showCustomizer(context, ref, product),
+                    onAddTap: (product) =>
+                        _showCustomizer(context, ref, product),
+                  ),
+                  loading: () => ProductGrid(
+                    isLoading: true,
+                    languageCode: languageCode,
+                    onProductTap: (_) {},
+                  ),
+                  error: (e, _) => Center(
+                    child: Text(
+                      languageCode == 'en'
+                          ? 'Error loading products'
+                          : 'Gagal memuat produk',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Right side — Order Panel
+        OrderPanel(languageCode: languageCode),
+      ],
+    );
+  }
+
+  void _showCustomizer(
+      BuildContext context, WidgetRef ref, ProductModel product) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => ToppingCustomizerSheet(
+        product: product,
+        languageCode: languageCode,
+      ),
+    );
+  }
+}

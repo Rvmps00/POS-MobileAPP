@@ -5,6 +5,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 // Import all screens
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/catalog/presentation/main_pos_screen.dart';
+import '../../features/catalog/presentation/product_form_screen.dart';
+import '../../features/catalog/presentation/ingredient_management_screen.dart';
+import '../../features/catalog/presentation/topping_management_screen.dart';
 import '../../features/cart/presentation/cart_screen.dart';
 import '../../features/checkout/presentation/checkout_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
@@ -50,6 +53,31 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: '/pos',
         builder: (context, state) => const MainPosScreen(),
+        routes: [
+          // Product management routes
+          GoRoute(
+            path: 'product/add',
+            builder: (context, state) => const ProductFormScreen(),
+          ),
+          GoRoute(
+            path: 'product/:id/edit',
+            builder: (context, state) => ProductFormScreen(
+              productId: state.pathParameters['id'],
+            ),
+          ),
+          GoRoute(
+            path: 'product/:id/ingredients',
+            builder: (context, state) => IngredientManagementScreen(
+              productId: state.pathParameters['id']!,
+            ),
+          ),
+          GoRoute(
+            path: 'product/:id/toppings',
+            builder: (context, state) => ToppingManagementScreen(
+              productId: state.pathParameters['id']!,
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: '/cart',
