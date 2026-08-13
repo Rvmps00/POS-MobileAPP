@@ -501,48 +501,52 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             ),
           ),
           SizedBox(height: isTablet ? 12 : 8),
-          InkWell(
-            onTap: () => _showPaymentBottomSheet(grandTotal, colorScheme, lang),
-            borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: isTablet ? 24 : 16,
-                vertical: isTablet ? 24 : 12,
-              ),
-              width: double.infinity,
+          Material(
+            color: Colors.transparent,
+            child: Ink(
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHighest.withValues(
                   alpha: 0.3,
                 ),
                 borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
               ),
-              child: Row(
-                children: [
-                  Text(
-                    'Rp ',
-                    style: TextStyle(
-                      fontSize: isTablet ? 24 : 18,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+              child: InkWell(
+                onTap: () => _showPaymentBottomSheet(grandTotal, colorScheme, lang),
+                borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isTablet ? 24 : 16,
+                    vertical: isTablet ? 24 : 12,
                   ),
-                  Expanded(
-                    child: Text(
-                      _amountController.text.isEmpty
-                          ? '0'
-                          : _amountController.text,
-                      style: TextStyle(
-                        fontSize: isTablet ? 32 : 24,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
+                  child: Row(
+                    children: [
+                      Text(
+                        'Rp ',
+                        style: TextStyle(
+                          fontSize: isTablet ? 24 : 18,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: Text(
+                          _amountController.text.isEmpty
+                              ? '0'
+                              : _amountController.text,
+                          style: TextStyle(
+                            fontSize: isTablet ? 32 : 24,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.edit,
+                        color: colorScheme.primary,
+                        size: isTablet ? 24 : 20,
+                      ),
+                    ],
                   ),
-                  Icon(
-                    Icons.edit,
-                    color: colorScheme.primary,
-                    size: isTablet ? 24 : 20,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -747,25 +751,30 @@ class _NumberPad extends StatelessWidget {
       itemCount: keys.length,
       itemBuilder: (context, index) {
         final key = keys[index];
-        return InkWell(
-          onTap: () => onTap(key),
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
+        return Material(
+          color: Colors.transparent,
+          child: Ink(
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(12),
             ),
-            alignment: Alignment.center,
-            child: key == 'backspace'
-                ? Icon(Icons.backspace_outlined, color: colorScheme.onSurface)
-                : Text(
-                    key,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
+            child: InkWell(
+              onTap: () => onTap(key),
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                alignment: Alignment.center,
+                child: key == 'backspace'
+                    ? Icon(Icons.backspace_outlined, color: colorScheme.onSurface)
+                    : Text(
+                        key,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+              ),
+            ),
           ),
         );
       },
