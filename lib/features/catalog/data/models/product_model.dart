@@ -8,6 +8,7 @@ class ProductModel {
   final String? imageUrl;
   final bool isAvailable;
   final int stockQty;
+  final int lowStockThreshold;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -21,6 +22,7 @@ class ProductModel {
     this.imageUrl,
     this.isAvailable = true,
     this.stockQty = 0,
+    this.lowStockThreshold = 10,
     this.createdAt,
     this.updatedAt,
   });
@@ -36,6 +38,7 @@ class ProductModel {
       imageUrl: json['image_url'] as String?,
       isAvailable: json['is_available'] as bool? ?? true,
       stockQty: (json['stock_qty'] as num?)?.toInt() ?? 0,
+      lowStockThreshold: (json['low_stock_threshold'] as num?)?.toInt() ?? 10,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
@@ -56,6 +59,7 @@ class ProductModel {
       'image_url': imageUrl,
       'is_available': isAvailable,
       'stock_qty': stockQty,
+      'low_stock_threshold': lowStockThreshold,
     };
   }
 
@@ -78,6 +82,8 @@ class ProductModel {
 
   bool get isOutOfStock => !isAvailable || stockQty <= 0;
 
+  bool get isLowStock => stockQty > 0 && stockQty <= lowStockThreshold;
+
   ProductModel copyWith({
     String? id,
     String? name,
@@ -88,6 +94,7 @@ class ProductModel {
     String? imageUrl,
     bool? isAvailable,
     int? stockQty,
+    int? lowStockThreshold,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -101,6 +108,7 @@ class ProductModel {
       imageUrl: imageUrl ?? this.imageUrl,
       isAvailable: isAvailable ?? this.isAvailable,
       stockQty: stockQty ?? this.stockQty,
+      lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

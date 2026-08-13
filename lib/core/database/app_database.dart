@@ -10,6 +10,8 @@ import 'tables/default_ingredients_table.dart';
 import 'tables/addon_toppings_table.dart';
 import 'tables/orders_table.dart';
 import 'tables/order_items_table.dart';
+import 'tables/stock_history_table.dart';
+import 'tables/sync_queue_table.dart';
 import 'daos/catalog_dao.dart';
 import 'converters/json_list_converter.dart';
 
@@ -23,6 +25,8 @@ part 'app_database.g.dart';
     AddonToppingsTable,
     OrdersTable,
     OrderItemsTable,
+    StockHistoryTable,
+    SyncQueueTable,
   ],
   daos: [CatalogDao],
 )
@@ -30,7 +34,31 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          // Add new columns to existing tables
+          await m.addColumn(productsTable, productsTable.lowStockThreshold);
+          await m.addColumn(addonToppingsTable, addonToppingsTable.stockQty);
+          await m.addColumn(
+            addonToppingsTable,
+            addonToppingsTable.lowStockThreshold,
+          );
+
+          // Create new tables
+          await m.createTable(stockHistoryTable);
+          await m.createTable(syncQueueTable);
+        }
+      },
+    );
+  }
 
   static LazyDatabase _openConnection() {
     return LazyDatabase(() async {

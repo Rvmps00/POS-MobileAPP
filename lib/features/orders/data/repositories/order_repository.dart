@@ -1,20 +1,22 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:intl/intl.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/sync/sync_engine.dart';
 import '../../../cart/data/models/cart_state_model.dart';
-import '../../../cart/data/models/cart_item_model.dart';
+import '../../../inventory/data/repositories/inventory_repository.dart';
 
 import 'package:uuid/uuid.dart';
 
 class OrderRepository {
   final AppDatabase _db;
   final SupabaseClient _supabase;
+  final SyncEngine _syncEngine;
+  final InventoryRepository _inventoryRepo;
   final _uuid = const Uuid();
 
-  OrderRepository(this._db, this._supabase);
+  OrderRepository(this._db, this._supabase, this._syncEngine, this._inventoryRepo);
 
   /// Generates order number format: LS-YYYYMMDD-NNN
   Future<String> generateOrderNumber() async {
@@ -52,6 +54,7 @@ class OrderRepository {
     final orderNumber = await generateOrderNumber();
     final orderId = _uuid.v4();
     final cashierId = _supabase.auth.currentUser?.id;
+    final now = DateTime.now();
 
     final orderData = OrdersTableCompanion.insert(
       id: orderId,
@@ -73,7 +76,7 @@ class OrderRepository {
         id: _uuid.v4(),
         orderId: orderId,
         productId: item.product.id,
-        productName: item.product.name, // Or whatever local name is primary
+        productName: item.product.name,
         quantity: item.quantity,
         basePrice: item.product.basePrice,
         toppingTotal: drift.Value(item.unitPrice - item.product.basePrice),
@@ -98,67 +101,92 @@ class OrderRepository {
       }
     });
 
-    // Try syncing to Supabase immediately (fire and forget / catch error)
-    _syncToSupabase(orderId, cartState, cashReceived, cashChange).catchError((
-      e,
-    ) {
-      print('Offline: Order $orderId queued for later sync. Error: $e');
-    });
-  }
+    // Deduct stock for each item in the order
+    final deductions = <OrderItemDeduction>[];
+    for (final item in cartState.items) {
+      // Get current product stock
+      final product = await (_db.select(_db.productsTable)
+            ..where((t) => t.id.equals(item.product.id)))
+          .getSingleOrNull();
 
-  Future<void> _syncToSupabase(
-    String orderId,
-    CartState cartState,
-    int cashReceived,
-    int cashChange,
-  ) async {
-    // Read the saved order from local DB to get exactly what was saved (including generated dates if any)
-    final savedOrder = await (_db.select(
-      _db.ordersTable,
-    )..where((t) => t.id.equals(orderId))).getSingle();
-    final savedItems = await (_db.select(
-      _db.orderItemsTable,
-    )..where((t) => t.orderId.equals(orderId))).get();
+      if (product != null) {
+        // Build topping deductions
+        final toppingDeductions = <ToppingDeduction>[];
+        for (final topping in item.addedToppings) {
+          final toppingData = await (_db.select(_db.addonToppingsTable)
+                ..where((t) => t.id.equals(topping.id)))
+              .getSingleOrNull();
 
-    await _supabase.from('orders').insert({
-      'id': savedOrder.id,
-      'order_number': savedOrder.orderNumber,
-      'order_type': savedOrder.orderType,
-      'table_number': savedOrder.tableNumber,
-      'subtotal': savedOrder.subtotal,
-      'tax_amount': savedOrder.taxAmount,
-      'grand_total': savedOrder.grandTotal,
-      'payment_method': savedOrder.paymentMethod,
-      'payment_status': savedOrder.paymentStatus,
-      'cash_received': savedOrder.cashReceived,
-      'cash_change': savedOrder.cashChange,
-      'status': savedOrder.status,
-      'cashier_id': savedOrder.cashierId,
-      'notes': savedOrder.notes,
-      'created_at': savedOrder.createdAt.toUtc().toIso8601String(),
-    });
+          if (toppingData != null) {
+            toppingDeductions.add(ToppingDeduction(
+              toppingId: topping.id,
+              currentStock: toppingData.stockQty,
+            ));
+          }
+        }
 
-    final supabaseItems = savedItems
-        .map(
-          (item) => {
-            'id': item.id,
-            'order_id': item.orderId,
-            'product_id': item.productId,
-            'product_name': item.productName,
-            'quantity': item.quantity,
-            'base_price': item.basePrice,
-            'topping_total': item.toppingTotal,
-            'line_total': item.lineTotal,
-            'removed_ingredients': item.removedIngredients,
-            'added_toppings': item.addedToppings,
-            'notes': item.notes,
-            'created_at': item.createdAt.toUtc().toIso8601String(),
-          },
-        )
-        .toList();
+        deductions.add(OrderItemDeduction(
+          productId: item.product.id,
+          quantity: item.quantity,
+          currentProductStock: product.stockQty,
+          orderNumber: orderNumber,
+          toppings: toppingDeductions,
+        ));
+      }
+    }
 
-    if (supabaseItems.isNotEmpty) {
-      await _supabase.from('order_items').insert(supabaseItems);
+    // Deduct stock (logs history + queues sync automatically)
+    await _inventoryRepo.deductStockForOrder(deductions);
+
+    // Queue order sync to Supabase
+    await _syncEngine.enqueue(
+      tableName: 'orders',
+      recordId: orderId,
+      operation: 'INSERT',
+      payload: {
+        'id': orderId,
+        'order_number': orderNumber,
+        'order_type':
+            cartState.orderType.name == 'dineIn' ? 'DINE_IN' : 'TAKEAWAY',
+        'table_number': cartState.tableNumber,
+        'subtotal': cartState.subtotal,
+        'tax_amount': cartState.taxAmount,
+        'grand_total': cartState.grandTotal,
+        'payment_method': 'CASH',
+        'payment_status': 'PAID',
+        'cash_received': cashReceived,
+        'cash_change': cashChange,
+        'status': 'COMPLETED',
+        'cashier_id': cashierId,
+        'created_at': now.toUtc().toIso8601String(),
+      },
+    );
+
+    // Queue order items sync
+    for (final item in cartState.items) {
+      final itemId = _uuid.v4();
+      await _syncEngine.enqueue(
+        tableName: 'order_items',
+        recordId: itemId,
+        operation: 'INSERT',
+        payload: {
+          'id': itemId,
+          'order_id': orderId,
+          'product_id': item.product.id,
+          'product_name': item.product.name,
+          'quantity': item.quantity,
+          'base_price': item.product.basePrice,
+          'topping_total': item.unitPrice - item.product.basePrice,
+          'line_total': item.lineTotal,
+          'removed_ingredients':
+              item.removedIngredients.map((e) => e.name).toList(),
+          'added_toppings': item.addedToppings
+              .map((e) => {'name': e.name, 'price': e.price})
+              .toList(),
+          'notes': item.notes,
+          'created_at': now.toUtc().toIso8601String(),
+        },
+      );
     }
   }
 }

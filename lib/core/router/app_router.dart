@@ -11,6 +11,8 @@ import '../../features/catalog/presentation/menu_management_screen.dart';
 import '../../features/cart/presentation/cart_screen.dart';
 import '../../features/checkout/presentation/checkout_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
+import '../../features/inventory/presentation/batch_restock_screen.dart';
+import '../../features/inventory/presentation/stock_history_screen.dart';
 import '../../features/orders/presentation/order_history_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/printer_setup_screen.dart';
@@ -111,6 +113,18 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: '/inventory',
                 builder: (context, state) => const InventoryScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'batch-restock',
+                    builder: (context, state) => const BatchRestockScreen(),
+                  ),
+                  GoRoute(
+                    path: ':id/history',
+                    builder: (context, state) => StockHistoryScreen(
+                      productId: state.pathParameters['id']!,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

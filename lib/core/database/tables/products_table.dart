@@ -13,6 +13,7 @@ class ProductsTable extends Table {
   TextColumn get imageUrl => text().nullable()();
   BoolColumn get isAvailable => boolean().withDefault(const Constant(true))();
   IntColumn get stockQty => integer().withDefault(const Constant(0))();
+  IntColumn get lowStockThreshold => integer().withDefault(const Constant(10))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 

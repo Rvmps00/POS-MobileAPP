@@ -13,6 +13,8 @@ class CatalogLocalDataSource {
 
   // ─── Categories ───
   Future<List<CategoryModel>> getCategories() async {
+    // Run a quick cleanup of orphaned data just in case
+    await _dao.cleanupOrphanedData();
     final rows = await _dao.getAllCategories();
     return rows.map(_categoryFromRow).toList();
   }
@@ -51,7 +53,28 @@ class CatalogLocalDataSource {
   }
 
   Future<void> cacheProducts(List<ProductModel> products) async {
-    final companions = products.map(_productToCompanion).toList();
+    final localProducts = await getProducts();
+    
+    final preservedProducts = <ProductModel>[];
+    for (final remote in products) {
+      final hasPending = await _dao.customSelect(
+          "SELECT 1 FROM sync_queue WHERE table_name = 'products' AND record_id = '${remote.id}' AND status IN ('PENDING', 'FAILED')")
+          .get();
+          
+      if (hasPending.isNotEmpty) {
+        final local = localProducts.where((p) => p.id == remote.id).firstOrNull;
+        if (local != null) {
+          preservedProducts.add(remote.copyWith(
+            stockQty: local.stockQty,
+            isAvailable: local.isAvailable,
+          ));
+          continue;
+        }
+      }
+      preservedProducts.add(remote);
+    }
+
+    final companions = preservedProducts.map(_productToCompanion).toList();
     await _dao.upsertProducts(companions);
   }
 
@@ -100,8 +123,29 @@ class CatalogLocalDataSource {
     String productId,
     List<AddonToppingModel> toppings,
   ) async {
+    final localToppings = await getToppings(productId);
+    
+    final preservedToppings = <AddonToppingModel>[];
+    for (final remote in toppings) {
+      final hasPending = await _dao.customSelect(
+          "SELECT 1 FROM sync_queue WHERE table_name = 'addon_toppings' AND record_id = '${remote.id}' AND status IN ('PENDING', 'FAILED')")
+          .get();
+          
+      if (hasPending.isNotEmpty) {
+        final local = localToppings.where((t) => t.id == remote.id).firstOrNull;
+        if (local != null) {
+          preservedToppings.add(remote.copyWith(
+            stockQty: local.stockQty,
+            isAvailable: local.isAvailable,
+          ));
+          continue;
+        }
+      }
+      preservedToppings.add(remote);
+    }
+
     await _dao.clearToppingsByProduct(productId);
-    final companions = toppings.map(_toppingToCompanion).toList();
+    final companions = preservedToppings.map(_toppingToCompanion).toList();
     await _dao.upsertToppings(companions);
   }
 
@@ -143,6 +187,7 @@ class CatalogLocalDataSource {
       imageUrl: row.imageUrl,
       isAvailable: row.isAvailable,
       stockQty: row.stockQty,
+      lowStockThreshold: row.lowStockThreshold,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     );
@@ -159,6 +204,7 @@ class CatalogLocalDataSource {
       imageUrl: Value(model.imageUrl),
       isAvailable: Value(model.isAvailable),
       stockQty: Value(model.stockQty),
+      lowStockThreshold: Value(model.lowStockThreshold),
       createdAt: Value(model.createdAt ?? DateTime.now()),
       updatedAt: Value(model.updatedAt ?? DateTime.now()),
     );
@@ -196,6 +242,8 @@ class CatalogLocalDataSource {
       nameEn: row.nameEn,
       price: row.price,
       isAvailable: row.isAvailable,
+      stockQty: row.stockQty,
+      lowStockThreshold: row.lowStockThreshold,
       sortOrder: row.sortOrder,
     );
   }
@@ -208,6 +256,8 @@ class CatalogLocalDataSource {
       nameEn: Value(model.nameEn),
       price: Value(model.price),
       isAvailable: Value(model.isAvailable),
+      stockQty: Value(model.stockQty),
+      lowStockThreshold: Value(model.lowStockThreshold),
       sortOrder: Value(model.sortOrder),
     );
   }

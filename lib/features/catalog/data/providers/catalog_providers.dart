@@ -50,21 +50,21 @@ final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
 });
 
 // ─── Products (filtered by category) ───
-final productsProvider = FutureProvider.family<List<ProductModel>, String?>((
+final productsProvider = StreamProvider.family<List<ProductModel>, String?>((
   ref,
   categoryId,
-) async {
+) {
   final repo = ref.watch(catalogRepositoryProvider);
-  return repo.getProducts(categoryId: categoryId);
+  return repo.watchProducts(categoryId: categoryId);
 });
 
 // ─── Filtered Products (uses selectedCategoryProvider) ───
-final filteredProductsProvider = FutureProvider<List<ProductModel>>((
+final filteredProductsProvider = StreamProvider<List<ProductModel>>((
   ref,
-) async {
+) {
   final categoryId = ref.watch(selectedCategoryProvider);
   final repo = ref.watch(catalogRepositoryProvider);
-  return repo.getProducts(categoryId: categoryId);
+  return repo.watchProducts(categoryId: categoryId);
 });
 
 // ─── Product Detail ───
@@ -87,9 +87,9 @@ final ingredientsProvider =
     });
 
 // ─── Toppings for a Product ───
-final toppingsProvider = FutureProvider.family<List<AddonToppingModel>, String>(
-  (ref, productId) async {
+final toppingsProvider = StreamProvider.family<List<AddonToppingModel>, String>(
+  (ref, productId) {
     final repo = ref.watch(catalogRepositoryProvider);
-    return repo.getToppings(productId);
+    return repo.watchToppings(productId);
   },
 );

@@ -88,8 +88,23 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
     });
   }
 
-  Future<int> deleteProduct(String id) =>
-      (delete(productsTable)..where((t) => t.id.equals(id))).go();
+  Future<int> deleteProduct(String id) {
+    return transaction(() async {
+      await (delete(defaultIngredientsTable)
+            ..where((t) => t.productId.equals(id)))
+          .go();
+      await (delete(addonToppingsTable)..where((t) => t.productId.equals(id)))
+          .go();
+      return await (delete(productsTable)..where((t) => t.id.equals(id))).go();
+    });
+  }
+
+  Future<void> cleanupOrphanedData() async {
+    await customStatement(
+        'DELETE FROM addon_toppings WHERE product_id NOT IN (SELECT id FROM products)');
+    await customStatement(
+        'DELETE FROM default_ingredients WHERE product_id NOT IN (SELECT id FROM products)');
+  }
 
   Future<void> clearProducts() => delete(productsTable).go();
 

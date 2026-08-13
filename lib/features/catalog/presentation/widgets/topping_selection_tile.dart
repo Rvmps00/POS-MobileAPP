@@ -18,7 +18,7 @@ class ToppingSelectionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDisabled = !topping.isAvailable;
+    final isDisabled = topping.isOutOfStock;
 
     return Material(
       color: Colors.transparent,
@@ -56,26 +56,45 @@ class ToppingSelectionTile extends StatelessWidget {
                   ),
                 ),
               ),
-              // Price
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: topping.isFree
-                      ? Colors.green.withValues(alpha: 0.1)
-                      : colorScheme.surfaceContainer,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Text(
-                  topping.formattedPrice,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+              // Price or Out of stock badge
+              if (isDisabled)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Text(
+                    languageCode == 'en' ? 'OUT' : 'HABIS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.error,
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
                     color: topping.isFree
-                        ? Colors.green.shade700
-                        : colorScheme.primary,
+                        ? Colors.green.withValues(alpha: 0.1)
+                        : colorScheme.surfaceContainer,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Text(
+                    topping.formattedPrice,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: topping.isFree
+                          ? Colors.green.shade700
+                          : colorScheme.primary,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

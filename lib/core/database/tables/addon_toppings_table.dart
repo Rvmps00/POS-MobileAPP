@@ -10,6 +10,8 @@ class AddonToppingsTable extends Table {
   TextColumn get nameEn => text().nullable()();
   IntColumn get price => integer().withDefault(const Constant(0))();
   BoolColumn get isAvailable => boolean().withDefault(const Constant(true))();
+  IntColumn get stockQty => integer().withDefault(const Constant(0))();
+  IntColumn get lowStockThreshold => integer().withDefault(const Constant(10))();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
 
   @override

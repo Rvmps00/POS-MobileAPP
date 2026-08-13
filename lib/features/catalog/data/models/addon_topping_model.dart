@@ -5,6 +5,8 @@ class AddonToppingModel {
   final String? nameEn;
   final int price;
   final bool isAvailable;
+  final int stockQty;
+  final int lowStockThreshold;
   final int sortOrder;
 
   const AddonToppingModel({
@@ -14,6 +16,8 @@ class AddonToppingModel {
     this.nameEn,
     this.price = 0,
     this.isAvailable = true,
+    this.stockQty = 0,
+    this.lowStockThreshold = 10,
     this.sortOrder = 0,
   });
 
@@ -25,6 +29,8 @@ class AddonToppingModel {
       nameEn: json['name_en'] as String?,
       price: (json['price'] as num?)?.toInt() ?? 0,
       isAvailable: json['is_available'] as bool? ?? true,
+      stockQty: (json['stock_qty'] as num?)?.toInt() ?? 0,
+      lowStockThreshold: (json['low_stock_threshold'] as num?)?.toInt() ?? 10,
       sortOrder: (json['sort_order'] as num?)?.toInt() ?? 0,
     );
   }
@@ -37,6 +43,8 @@ class AddonToppingModel {
       'name_en': nameEn,
       'price': price,
       'is_available': isAvailable,
+      'stock_qty': stockQty,
+      'low_stock_threshold': lowStockThreshold,
       'sort_order': sortOrder,
     };
   }
@@ -61,6 +69,10 @@ class AddonToppingModel {
     return name;
   }
 
+  bool get isOutOfStock => !isAvailable || stockQty <= 0;
+
+  bool get isLowStock => stockQty > 0 && stockQty <= lowStockThreshold;
+
   AddonToppingModel copyWith({
     String? id,
     String? productId,
@@ -68,6 +80,8 @@ class AddonToppingModel {
     String? nameEn,
     int? price,
     bool? isAvailable,
+    int? stockQty,
+    int? lowStockThreshold,
     int? sortOrder,
   }) {
     return AddonToppingModel(
@@ -77,6 +91,8 @@ class AddonToppingModel {
       nameEn: nameEn ?? this.nameEn,
       price: price ?? this.price,
       isAvailable: isAvailable ?? this.isAvailable,
+      stockQty: stockQty ?? this.stockQty,
+      lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
       sortOrder: sortOrder ?? this.sortOrder,
     );
   }

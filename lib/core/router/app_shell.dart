@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/language_notifier.dart';
+import '../sync/connectivity_service.dart';
+import '../../features/inventory/data/providers/inventory_providers.dart';
 
 class AppShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -13,6 +15,8 @@ class AppShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(languageProvider);
     final lang = locale.languageCode;
+    final lowStockCount = ref.watch(lowStockCountProvider).value ?? 0;
+    final isOnline = ref.watch(isOnlineProvider).value ?? true;
 
     return Scaffold(
       body: navigationShell,
@@ -36,13 +40,31 @@ class AppShell extends ConsumerWidget {
             label: 'Menu',
           ),
           NavigationDestination(
-            icon: const Icon(Icons.inventory_2_outlined),
-            selectedIcon: const Icon(Icons.inventory_2),
+            icon: Badge(
+              isLabelVisible: lowStockCount > 0,
+              label: Text('$lowStockCount'),
+              child: const Icon(Icons.inventory_2_outlined),
+            ),
+            selectedIcon: Badge(
+              isLabelVisible: lowStockCount > 0,
+              label: Text('$lowStockCount'),
+              child: const Icon(Icons.inventory_2),
+            ),
             label: lang == 'en' ? 'Inventory' : 'Stok',
           ),
           NavigationDestination(
-            icon: const Icon(Icons.settings_outlined),
-            selectedIcon: const Icon(Icons.settings),
+            icon: Badge(
+              isLabelVisible: !isOnline,
+              smallSize: 10,
+              backgroundColor: Colors.red,
+              child: const Icon(Icons.settings_outlined),
+            ),
+            selectedIcon: Badge(
+              isLabelVisible: !isOnline,
+              smallSize: 10,
+              backgroundColor: Colors.red,
+              child: const Icon(Icons.settings),
+            ),
             label: lang == 'en' ? 'Settings' : 'Pengaturan',
           ),
         ],
