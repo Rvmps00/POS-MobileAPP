@@ -1,6 +1,13 @@
 <h1 align="center">Lesehan Surya POS 📱✨</h1>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" />
+  <img src="https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white" />
+</p>
+
+<p align="center">
   A modern, offline-first mobile Point of Sale (POS) application built with Flutter, designed specifically for restaurants and cafes.
 </p>
 
@@ -36,6 +43,14 @@
 ---
 
 ## 🛠️ Tech Stack
+
+<p>
+  <img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=flat-square&logo=Flutter&logoColor=white" />
+  <img src="https://img.shields.io/badge/Dart-%230175C2.svg?style=flat-square&logo=dart&logoColor=white" />
+  <img src="https://img.shields.io/badge/Riverpod-000000?style=flat-square&logo=dart&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/SQLite-07405E?style=flat-square&logo=sqlite&logoColor=white" />
+</p>
 
 - **Framework:** [Flutter](https://flutter.dev/) (Dart)
 - **State Management:** [Riverpod](https://riverpod.dev/) (Code Generation)
