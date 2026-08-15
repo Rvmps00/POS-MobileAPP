@@ -9,44 +9,43 @@ import '../../../inventory/data/repositories/inventory_repository.dart';
 
 import 'package:uuid/uuid.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class OrderRepository {
   final AppDatabase _db;
   final SupabaseClient _supabase;
   final SyncEngine _syncEngine;
   final InventoryRepository _inventoryRepo;
+  final SharedPreferences _prefs;
   final _uuid = const Uuid();
 
-  OrderRepository(this._db, this._supabase, this._syncEngine, this._inventoryRepo);
+  OrderRepository(this._db, this._supabase, this._syncEngine, this._inventoryRepo, this._prefs);
 
   /// Generates order number format: LS-YYYYMMDD-NNN
   Future<String> generateOrderNumber() async {
     final today = DateTime.now();
     final dateStr = DateFormat('yyyyMMdd').format(today);
 
-    // Find highest order number today from local db
-    final todayStart = DateTime(today.year, today.month, today.day);
-    final tomorrowStart = todayStart.add(const Duration(days: 1));
-
-    final query = _db.select(_db.ordersTable)
-      ..where((t) => t.createdAt.isBetweenValues(todayStart, tomorrowStart))
-      ..orderBy([(t) => drift.OrderingTerm.desc(t.orderNumber)])
-      ..limit(1);
-
-    final lastOrder = await query.getSingleOrNull();
-
+    // Get current queue date and sequence from SharedPreferences
+    final lastQueueDate = _prefs.getString('queue_date');
     int nextSequence = 1;
-    if (lastOrder != null) {
-      final parts = lastOrder.orderNumber.split('-');
-      if (parts.length == 3) {
-        nextSequence = (int.tryParse(parts[2]) ?? 0) + 1;
-      }
+    
+    if (lastQueueDate == dateStr) {
+      // Same day, increment sequence
+      nextSequence = (_prefs.getInt('queue_sequence') ?? 0) + 1;
+    } else {
+      // New day (or reset), reset sequence to 1 and save new date
+      await _prefs.setString('queue_date', dateStr);
     }
+    
+    // Save new sequence
+    await _prefs.setInt('queue_sequence', nextSequence);
 
     final sequenceStr = nextSequence.toString().padLeft(3, '0');
     return 'LS-$dateStr-$sequenceStr';
   }
 
-  Future<void> saveOrder({
+  Future<String> saveOrder({
     required CartState cartState,
     required int cashReceived,
     required int cashChange,
@@ -188,5 +187,7 @@ class OrderRepository {
         },
       );
     }
+
+    return orderNumber;
   }
 }

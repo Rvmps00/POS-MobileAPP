@@ -4,6 +4,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/theme/theme_notifier.dart';
 import '../../../core/l10n/language_notifier.dart';
 import '../../../core/settings/tax_notifier.dart';
+import 'printer_setup_screen.dart';
+import 'restaurant_info_screen.dart';
+import '../../../core/printer/printer_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -67,6 +70,62 @@ class SettingsScreen extends ConsumerWidget {
                   ref.read(taxEnabledProvider.notifier).toggleTax(value);
                 },
               ),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.print),
+              title: const Text('Printer Setup'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PrinterSetupScreen()),
+                );
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.storefront),
+              title: const Text('Restaurant Info'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RestaurantInfoScreen()),
+                );
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.numbers),
+              title: const Text('Reset Queue Number'),
+              subtitle: const Text('Reset the receipt queue to 0'),
+              trailing: const Icon(Icons.restore),
+              onTap: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Reset Queue?'),
+                    content: const Text('Are you sure you want to reset the queue number? The next order will be Antrian: 001.'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('CANCEL')),
+                      TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('RESET')),
+                    ],
+                  ),
+                );
+                if (confirm == true) {
+                  final prefs = ref.read(sharedPreferencesProvider);
+                  await prefs.setInt('queue_sequence', 0);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Queue number reset to 0.'), backgroundColor: Colors.green),
+                    );
+                  }
+                }
+              },
             ),
           ),
           const SizedBox(height: 24),

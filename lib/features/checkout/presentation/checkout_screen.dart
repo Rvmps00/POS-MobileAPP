@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/theme/theme_notifier.dart';
 import '../../../core/l10n/language_notifier.dart';
+import '../../../core/printer/printer_providers.dart';
+import '../../../core/printer/receipt_builder.dart';
 import '../../cart/data/providers/cart_provider.dart';
 import '../../cart/data/models/cart_state_model.dart';
 import '../../orders/data/providers/order_provider.dart';
@@ -75,13 +79,45 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
     try {
       final cartState = ref.read(cartProvider);
-      await ref
+      final orderNumber = await ref
           .read(orderRepositoryProvider)
           .saveOrder(
             cartState: cartState,
             cashReceived: _cashReceived,
             cashChange: _cashReceived - grandTotal,
           );
+
+      // Print Receipt
+      final printerService = ref.read(printerServiceProvider);
+      if (await printerService.isConnected) {
+        final prefs = ref.read(sharedPreferencesProvider);
+        final storeName = prefs.getString('store_name') ?? 'LESEHAN SURYA';
+        final storeAddress = prefs.getString('store_address') ?? '';
+        final storePhone = prefs.getString('store_phone') ?? '';
+        final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';
+        
+        final cashierEmail = Supabase.instance.client.auth.currentUser?.email;
+        final cashierName = cashierEmail?.split('@').first ?? 'Kasir';
+
+        final bytes = await ReceiptBuilder.buildReceipt(
+          orderNumber: orderNumber,
+          cartState: cartState,
+          cashReceived: _cashReceived,
+          cashChange: _cashReceived - grandTotal,
+          cashierName: cashierName,
+          storeName: storeName,
+          storeAddress: storeAddress,
+          storePhone: storePhone,
+          footerMessage: storeFooter,
+        );
+
+        final printSuccess = await printerService.printBytes(bytes);
+        if (!printSuccess && mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(content: Text('Failed to print receipt.'), backgroundColor: Colors.red),
+           );
+        }
+      }
 
       // Clear cart
       ref.read(cartProvider.notifier).clearCart();

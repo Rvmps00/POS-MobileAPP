@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'core/l10n/app_localizations.dart';
+import 'core/printer/printer_providers.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_notifier.dart';
@@ -19,7 +22,14 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnZ2Fmcnd6cml0ZWZ0c2xtbmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzAzNDksImV4cCI6MjEwMjAwNjM0OX0.rJZxPFCei76-eVEePa-tPgHZOa0yDSzal8PUPVQxGio',
   );
 
-  runApp(const ProviderScope(child: LesehanSuryaApp()));
+  final prefs = await SharedPreferences.getInstance();
+
+  runApp(ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+    ],
+    child: const LesehanSuryaApp(),
+  ));
 }
 
 class LesehanSuryaApp extends ConsumerWidget {

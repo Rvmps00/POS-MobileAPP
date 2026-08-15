@@ -34,7 +34,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -55,6 +55,11 @@ class AppDatabase extends _$AppDatabase {
           // Create new tables
           await m.createTable(stockHistoryTable);
           await m.createTable(syncQueueTable);
+        }
+        if (from < 3) {
+          // Add Orders tables that were missed in earlier migrations
+          await m.createTable(ordersTable);
+          await m.createTable(orderItemsTable);
         }
       },
     );
