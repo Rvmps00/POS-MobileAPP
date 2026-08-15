@@ -188,6 +188,7 @@ class CatalogLocalDataSource {
       isAvailable: row.isAvailable,
       stockQty: row.stockQty,
       lowStockThreshold: row.lowStockThreshold,
+      variations: row.variations ?? [],
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     );
@@ -205,6 +206,7 @@ class CatalogLocalDataSource {
       isAvailable: Value(model.isAvailable),
       stockQty: Value(model.stockQty),
       lowStockThreshold: Value(model.lowStockThreshold),
+      variations: Value(model.variations),
       createdAt: Value(model.createdAt ?? DateTime.now()),
       updatedAt: Value(model.updatedAt ?? DateTime.now()),
     );

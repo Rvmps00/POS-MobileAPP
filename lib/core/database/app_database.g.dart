@@ -621,6 +621,15 @@ class $ProductsTableTable extends ProductsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(10),
   );
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>?, String>
+  variations = GeneratedColumn<String>(
+    'variations',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<List<String>?>($ProductsTableTable.$convertervariationsn);
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -657,6 +666,7 @@ class $ProductsTableTable extends ProductsTable
     isAvailable,
     stockQty,
     lowStockThreshold,
+    variations,
     createdAt,
     updatedAt,
   ];
@@ -805,6 +815,12 @@ class $ProductsTableTable extends ProductsTable
         DriftSqlType.int,
         data['${effectivePrefix}low_stock_threshold'],
       )!,
+      variations: $ProductsTableTable.$convertervariationsn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}variations'],
+        ),
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -820,6 +836,11 @@ class $ProductsTableTable extends ProductsTable
   $ProductsTableTable createAlias(String alias) {
     return $ProductsTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<List<String>, String> $convertervariations =
+      const StringListConverter();
+  static TypeConverter<List<String>?, String?> $convertervariationsn =
+      NullAwareTypeConverter.wrap($convertervariations);
 }
 
 class ProductsTableData extends DataClass
@@ -834,6 +855,7 @@ class ProductsTableData extends DataClass
   final bool isAvailable;
   final int stockQty;
   final int lowStockThreshold;
+  final List<String>? variations;
   final DateTime createdAt;
   final DateTime updatedAt;
   const ProductsTableData({
@@ -847,6 +869,7 @@ class ProductsTableData extends DataClass
     required this.isAvailable,
     required this.stockQty,
     required this.lowStockThreshold,
+    this.variations,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -871,6 +894,11 @@ class ProductsTableData extends DataClass
     map['is_available'] = Variable<bool>(isAvailable);
     map['stock_qty'] = Variable<int>(stockQty);
     map['low_stock_threshold'] = Variable<int>(lowStockThreshold);
+    if (!nullToAbsent || variations != null) {
+      map['variations'] = Variable<String>(
+        $ProductsTableTable.$convertervariationsn.toSql(variations),
+      );
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -896,6 +924,9 @@ class ProductsTableData extends DataClass
       isAvailable: Value(isAvailable),
       stockQty: Value(stockQty),
       lowStockThreshold: Value(lowStockThreshold),
+      variations: variations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(variations),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -917,6 +948,7 @@ class ProductsTableData extends DataClass
       isAvailable: serializer.fromJson<bool>(json['isAvailable']),
       stockQty: serializer.fromJson<int>(json['stockQty']),
       lowStockThreshold: serializer.fromJson<int>(json['lowStockThreshold']),
+      variations: serializer.fromJson<List<String>?>(json['variations']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -935,6 +967,7 @@ class ProductsTableData extends DataClass
       'isAvailable': serializer.toJson<bool>(isAvailable),
       'stockQty': serializer.toJson<int>(stockQty),
       'lowStockThreshold': serializer.toJson<int>(lowStockThreshold),
+      'variations': serializer.toJson<List<String>?>(variations),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -951,6 +984,7 @@ class ProductsTableData extends DataClass
     bool? isAvailable,
     int? stockQty,
     int? lowStockThreshold,
+    Value<List<String>?> variations = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => ProductsTableData(
@@ -964,6 +998,7 @@ class ProductsTableData extends DataClass
     isAvailable: isAvailable ?? this.isAvailable,
     stockQty: stockQty ?? this.stockQty,
     lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
+    variations: variations.present ? variations.value : this.variations,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -987,6 +1022,9 @@ class ProductsTableData extends DataClass
       lowStockThreshold: data.lowStockThreshold.present
           ? data.lowStockThreshold.value
           : this.lowStockThreshold,
+      variations: data.variations.present
+          ? data.variations.value
+          : this.variations,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1005,6 +1043,7 @@ class ProductsTableData extends DataClass
           ..write('isAvailable: $isAvailable, ')
           ..write('stockQty: $stockQty, ')
           ..write('lowStockThreshold: $lowStockThreshold, ')
+          ..write('variations: $variations, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1023,6 +1062,7 @@ class ProductsTableData extends DataClass
     isAvailable,
     stockQty,
     lowStockThreshold,
+    variations,
     createdAt,
     updatedAt,
   );
@@ -1040,6 +1080,7 @@ class ProductsTableData extends DataClass
           other.isAvailable == this.isAvailable &&
           other.stockQty == this.stockQty &&
           other.lowStockThreshold == this.lowStockThreshold &&
+          other.variations == this.variations &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1055,6 +1096,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
   final Value<bool> isAvailable;
   final Value<int> stockQty;
   final Value<int> lowStockThreshold;
+  final Value<List<String>?> variations;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -1069,6 +1111,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     this.isAvailable = const Value.absent(),
     this.stockQty = const Value.absent(),
     this.lowStockThreshold = const Value.absent(),
+    this.variations = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1084,6 +1127,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     this.isAvailable = const Value.absent(),
     this.stockQty = const Value.absent(),
     this.lowStockThreshold = const Value.absent(),
+    this.variations = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1101,6 +1145,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     Expression<bool>? isAvailable,
     Expression<int>? stockQty,
     Expression<int>? lowStockThreshold,
+    Expression<String>? variations,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -1116,6 +1161,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
       if (isAvailable != null) 'is_available': isAvailable,
       if (stockQty != null) 'stock_qty': stockQty,
       if (lowStockThreshold != null) 'low_stock_threshold': lowStockThreshold,
+      if (variations != null) 'variations': variations,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1133,6 +1179,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     Value<bool>? isAvailable,
     Value<int>? stockQty,
     Value<int>? lowStockThreshold,
+    Value<List<String>?>? variations,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -1148,6 +1195,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
       isAvailable: isAvailable ?? this.isAvailable,
       stockQty: stockQty ?? this.stockQty,
       lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
+      variations: variations ?? this.variations,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1187,6 +1235,11 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
     if (lowStockThreshold.present) {
       map['low_stock_threshold'] = Variable<int>(lowStockThreshold.value);
     }
+    if (variations.present) {
+      map['variations'] = Variable<String>(
+        $ProductsTableTable.$convertervariationsn.toSql(variations.value),
+      );
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1212,6 +1265,7 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
           ..write('isAvailable: $isAvailable, ')
           ..write('stockQty: $stockQty, ')
           ..write('lowStockThreshold: $lowStockThreshold, ')
+          ..write('variations: $variations, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -3234,6 +3288,18 @@ class $OrderItemsTableTable extends OrderItemsTable
       ).withConverter<List<Map<String, dynamic>>?>(
         $OrderItemsTableTable.$converteraddedToppingsn,
       );
+  static const VerificationMeta _selectedVariationMeta = const VerificationMeta(
+    'selectedVariation',
+  );
+  @override
+  late final GeneratedColumn<String> selectedVariation =
+      GeneratedColumn<String>(
+        'selected_variation',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -3279,6 +3345,7 @@ class $OrderItemsTableTable extends OrderItemsTable
     lineTotal,
     removedIngredients,
     addedToppings,
+    selectedVariation,
     notes,
     createdAt,
     updatedAt,
@@ -3360,6 +3427,15 @@ class $OrderItemsTableTable extends OrderItemsTable
     } else if (isInserting) {
       context.missing(_lineTotalMeta);
     }
+    if (data.containsKey('selected_variation')) {
+      context.handle(
+        _selectedVariationMeta,
+        selectedVariation.isAcceptableOrUnknown(
+          data['selected_variation']!,
+          _selectedVariationMeta,
+        ),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -3432,6 +3508,10 @@ class $OrderItemsTableTable extends OrderItemsTable
           data['${effectivePrefix}added_toppings'],
         ),
       ),
+      selectedVariation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}selected_variation'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -3476,6 +3556,7 @@ class OrderItemsTableData extends DataClass
   final int lineTotal;
   final List<String>? removedIngredients;
   final List<Map<String, dynamic>>? addedToppings;
+  final String? selectedVariation;
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -3490,6 +3571,7 @@ class OrderItemsTableData extends DataClass
     required this.lineTotal,
     this.removedIngredients,
     this.addedToppings,
+    this.selectedVariation,
     this.notes,
     required this.createdAt,
     required this.updatedAt,
@@ -3517,6 +3599,9 @@ class OrderItemsTableData extends DataClass
         $OrderItemsTableTable.$converteraddedToppingsn.toSql(addedToppings),
       );
     }
+    if (!nullToAbsent || selectedVariation != null) {
+      map['selected_variation'] = Variable<String>(selectedVariation);
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
@@ -3541,6 +3626,9 @@ class OrderItemsTableData extends DataClass
       addedToppings: addedToppings == null && nullToAbsent
           ? const Value.absent()
           : Value(addedToppings),
+      selectedVariation: selectedVariation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(selectedVariation),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -3569,6 +3657,9 @@ class OrderItemsTableData extends DataClass
       addedToppings: serializer.fromJson<List<Map<String, dynamic>>?>(
         json['addedToppings'],
       ),
+      selectedVariation: serializer.fromJson<String?>(
+        json['selectedVariation'],
+      ),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -3592,6 +3683,7 @@ class OrderItemsTableData extends DataClass
       'addedToppings': serializer.toJson<List<Map<String, dynamic>>?>(
         addedToppings,
       ),
+      'selectedVariation': serializer.toJson<String?>(selectedVariation),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -3609,6 +3701,7 @@ class OrderItemsTableData extends DataClass
     int? lineTotal,
     Value<List<String>?> removedIngredients = const Value.absent(),
     Value<List<Map<String, dynamic>>?> addedToppings = const Value.absent(),
+    Value<String?> selectedVariation = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -3627,6 +3720,9 @@ class OrderItemsTableData extends DataClass
     addedToppings: addedToppings.present
         ? addedToppings.value
         : this.addedToppings,
+    selectedVariation: selectedVariation.present
+        ? selectedVariation.value
+        : this.selectedVariation,
     notes: notes.present ? notes.value : this.notes,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -3651,6 +3747,9 @@ class OrderItemsTableData extends DataClass
       addedToppings: data.addedToppings.present
           ? data.addedToppings.value
           : this.addedToppings,
+      selectedVariation: data.selectedVariation.present
+          ? data.selectedVariation.value
+          : this.selectedVariation,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -3670,6 +3769,7 @@ class OrderItemsTableData extends DataClass
           ..write('lineTotal: $lineTotal, ')
           ..write('removedIngredients: $removedIngredients, ')
           ..write('addedToppings: $addedToppings, ')
+          ..write('selectedVariation: $selectedVariation, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -3689,6 +3789,7 @@ class OrderItemsTableData extends DataClass
     lineTotal,
     removedIngredients,
     addedToppings,
+    selectedVariation,
     notes,
     createdAt,
     updatedAt,
@@ -3707,6 +3808,7 @@ class OrderItemsTableData extends DataClass
           other.lineTotal == this.lineTotal &&
           other.removedIngredients == this.removedIngredients &&
           other.addedToppings == this.addedToppings &&
+          other.selectedVariation == this.selectedVariation &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -3723,6 +3825,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
   final Value<int> lineTotal;
   final Value<List<String>?> removedIngredients;
   final Value<List<Map<String, dynamic>>?> addedToppings;
+  final Value<String?> selectedVariation;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -3738,6 +3841,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
     this.lineTotal = const Value.absent(),
     this.removedIngredients = const Value.absent(),
     this.addedToppings = const Value.absent(),
+    this.selectedVariation = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -3754,6 +3858,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
     required int lineTotal,
     this.removedIngredients = const Value.absent(),
     this.addedToppings = const Value.absent(),
+    this.selectedVariation = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -3776,6 +3881,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
     Expression<int>? lineTotal,
     Expression<String>? removedIngredients,
     Expression<String>? addedToppings,
+    Expression<String>? selectedVariation,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -3792,6 +3898,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
       if (lineTotal != null) 'line_total': lineTotal,
       if (removedIngredients != null) 'removed_ingredients': removedIngredients,
       if (addedToppings != null) 'added_toppings': addedToppings,
+      if (selectedVariation != null) 'selected_variation': selectedVariation,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -3810,6 +3917,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
     Value<int>? lineTotal,
     Value<List<String>?>? removedIngredients,
     Value<List<Map<String, dynamic>>?>? addedToppings,
+    Value<String?>? selectedVariation,
     Value<String?>? notes,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -3826,6 +3934,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
       lineTotal: lineTotal ?? this.lineTotal,
       removedIngredients: removedIngredients ?? this.removedIngredients,
       addedToppings: addedToppings ?? this.addedToppings,
+      selectedVariation: selectedVariation ?? this.selectedVariation,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -3874,6 +3983,9 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
         ),
       );
     }
+    if (selectedVariation.present) {
+      map['selected_variation'] = Variable<String>(selectedVariation.value);
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -3902,6 +4014,7 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItemsTableData> {
           ..write('lineTotal: $lineTotal, ')
           ..write('removedIngredients: $removedIngredients, ')
           ..write('addedToppings: $addedToppings, ')
+          ..write('selectedVariation: $selectedVariation, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -5336,6 +5449,7 @@ typedef $$ProductsTableTableCreateCompanionBuilder =
       Value<bool> isAvailable,
       Value<int> stockQty,
       Value<int> lowStockThreshold,
+      Value<List<String>?> variations,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -5352,6 +5466,7 @@ typedef $$ProductsTableTableUpdateCompanionBuilder =
       Value<bool> isAvailable,
       Value<int> stockQty,
       Value<int> lowStockThreshold,
+      Value<List<String>?> variations,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -5414,6 +5529,12 @@ class $$ProductsTableTableFilterComposer
   ColumnFilters<int> get lowStockThreshold => $composableBuilder(
     column: $table.lowStockThreshold,
     builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
+  get variations => $composableBuilder(
+    column: $table.variations,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
@@ -5486,6 +5607,11 @@ class $$ProductsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get variations => $composableBuilder(
+    column: $table.variations,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -5544,6 +5670,12 @@ class $$ProductsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumnWithTypeConverter<List<String>?, String> get variations =>
+      $composableBuilder(
+        column: $table.variations,
+        builder: (column) => column,
+      );
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -5596,6 +5728,7 @@ class $$ProductsTableTableTableManager
                 Value<bool> isAvailable = const Value.absent(),
                 Value<int> stockQty = const Value.absent(),
                 Value<int> lowStockThreshold = const Value.absent(),
+                Value<List<String>?> variations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -5610,6 +5743,7 @@ class $$ProductsTableTableTableManager
                 isAvailable: isAvailable,
                 stockQty: stockQty,
                 lowStockThreshold: lowStockThreshold,
+                variations: variations,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -5626,6 +5760,7 @@ class $$ProductsTableTableTableManager
                 Value<bool> isAvailable = const Value.absent(),
                 Value<int> stockQty = const Value.absent(),
                 Value<int> lowStockThreshold = const Value.absent(),
+                Value<List<String>?> variations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -5640,6 +5775,7 @@ class $$ProductsTableTableTableManager
                 isAvailable: isAvailable,
                 stockQty: stockQty,
                 lowStockThreshold: lowStockThreshold,
+                variations: variations,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -6637,6 +6773,7 @@ typedef $$OrderItemsTableTableCreateCompanionBuilder =
       required int lineTotal,
       Value<List<String>?> removedIngredients,
       Value<List<Map<String, dynamic>>?> addedToppings,
+      Value<String?> selectedVariation,
       Value<String?> notes,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -6654,6 +6791,7 @@ typedef $$OrderItemsTableTableUpdateCompanionBuilder =
       Value<int> lineTotal,
       Value<List<String>?> removedIngredients,
       Value<List<Map<String, dynamic>>?> addedToppings,
+      Value<String?> selectedVariation,
       Value<String?> notes,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -6723,6 +6861,11 @@ class $$OrderItemsTableTableFilterComposer
   get addedToppings => $composableBuilder(
     column: $table.addedToppings,
     builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get selectedVariation => $composableBuilder(
+    column: $table.selectedVariation,
+    builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<String> get notes => $composableBuilder(
@@ -6800,6 +6943,11 @@ class $$OrderItemsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get selectedVariation => $composableBuilder(
+    column: $table.selectedVariation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -6865,6 +7013,11 @@ class $$OrderItemsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get selectedVariation => $composableBuilder(
+    column: $table.selectedVariation,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
@@ -6923,6 +7076,7 @@ class $$OrderItemsTableTableTableManager
                 Value<List<String>?> removedIngredients = const Value.absent(),
                 Value<List<Map<String, dynamic>>?> addedToppings =
                     const Value.absent(),
+                Value<String?> selectedVariation = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -6938,6 +7092,7 @@ class $$OrderItemsTableTableTableManager
                 lineTotal: lineTotal,
                 removedIngredients: removedIngredients,
                 addedToppings: addedToppings,
+                selectedVariation: selectedVariation,
                 notes: notes,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -6956,6 +7111,7 @@ class $$OrderItemsTableTableTableManager
                 Value<List<String>?> removedIngredients = const Value.absent(),
                 Value<List<Map<String, dynamic>>?> addedToppings =
                     const Value.absent(),
+                Value<String?> selectedVariation = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -6971,6 +7127,7 @@ class $$OrderItemsTableTableTableManager
                 lineTotal: lineTotal,
                 removedIngredients: removedIngredients,
                 addedToppings: addedToppings,
+                selectedVariation: selectedVariation,
                 notes: notes,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

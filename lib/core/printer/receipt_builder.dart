@@ -115,6 +115,10 @@ class ReceiptBuilder {
         ),
       ]);
 
+      if (item.selectedVariation != null) {
+        bytes += generator.text('  (${item.selectedVariation})');
+      }
+
       // Modifiers
       for (final topping in item.addedToppings) {
         final tPrice = topping.price > 0 ? '(+${formatRp(topping.price)})' : '(FREE)';

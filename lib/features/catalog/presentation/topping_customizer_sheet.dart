@@ -34,6 +34,15 @@ class _ToppingCustomizerSheetState
   final Set<String> _removedIngredients = {};
   final Set<String> _selectedToppings = {};
   final TextEditingController _notesController = TextEditingController();
+  String? _selectedVariation;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.product.variations.isNotEmpty) {
+      _selectedVariation = widget.product.variations.first;
+    }
+  }
 
   @override
   void dispose() {
@@ -91,6 +100,11 @@ class _ToppingCustomizerSheetState
                     // Product Header
                     _buildProductHeader(colorScheme, lang),
                     const SizedBox(height: 24),
+                    // Variations
+                    if (widget.product.variations.isNotEmpty) ...[
+                      _buildVariationsSection(colorScheme, lang),
+                      const SizedBox(height: 24),
+                    ],
                     // Default Ingredients
                     ingredientsAsync.when(
                       data: (ingredients) {
@@ -147,61 +161,132 @@ class _ToppingCustomizerSheetState
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Product image
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child:
-              widget.product.imageUrl != null &&
-                  widget.product.imageUrl!.isNotEmpty
-              ? CachedNetworkImage(
-                  imageUrl: widget.product.imageUrl!,
-                  fit: BoxFit.cover,
-                )
-              : Icon(
-                  Icons.restaurant_outlined,
-                  size: 36,
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+        // Image
+        Hero(
+          tag: 'product_image_${widget.product.id}',
+          child: Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: colorScheme.shadow.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
+              ],
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: widget.product.imageUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: widget.product.imageUrl!,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => Icon(
+                      Icons.fastfood_rounded,
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      size: 32,
+                    ),
+                  )
+                : Icon(
+                    Icons.fastfood_rounded,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                    size: 32,
+                  ),
+          ),
         ),
         const SizedBox(width: 16),
-        // Product info
+        // Info
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.product.localizedName(lang),
-                style: TextStyle(
-                  fontSize: 22,
+                lang == 'en'
+                    ? (widget.product.nameEn ?? widget.product.name)
+                    : widget.product.name,
+                style: const TextStyle(
+                  fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  color: colorScheme.onSurface,
+                  height: 1.2,
                 ),
               ),
-              if (widget.product.nameEn != null && lang == 'id')
+              if (widget.product.description != null &&
+                  widget.product.description!.isNotEmpty) ...[
+                const SizedBox(height: 4),
                 Text(
-                  widget.product.nameEn!,
+                  widget.product.description!,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: colorScheme.onSurfaceVariant,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              const SizedBox(height: 4),
-              Text(
-                widget.product.formattedPrice,
+              ],
+              const SizedBox(height: 8),
+              PriceDisplay(
+                price: widget.product.basePrice,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: colorScheme.primary,
                 ),
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVariationsSection(ColorScheme colorScheme, String lang) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          lang == 'en' ? 'Variations' : 'Variasi',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: widget.product.variations.map((variation) {
+            final isSelected = _selectedVariation == variation;
+            return ChoiceChip(
+              label: Text(variation),
+              selected: isSelected,
+              onSelected: (selected) {
+                if (selected) {
+                  setState(() => _selectedVariation = variation);
+                }
+              },
+              backgroundColor: colorScheme.surface,
+              selectedColor: colorScheme.primaryContainer,
+              labelStyle: TextStyle(
+                color: isSelected
+                    ? colorScheme.onPrimaryContainer
+                    : colorScheme.onSurface,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+                side: BorderSide(
+                  color: isSelected
+                      ? colorScheme.primary
+                      : colorScheme.outlineVariant,
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
@@ -429,6 +514,7 @@ class _ToppingCustomizerSheetState
                   quantity: _quantity,
                   removedIngredients: removedIngs,
                   addedToppings: addedTops,
+                  selectedVariation: _selectedVariation,
                   notes: _notesController.text.trim(),
                 );
 

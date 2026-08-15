@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class ProductModel {
   final String id;
   final String name;
@@ -9,6 +11,7 @@ class ProductModel {
   final bool isAvailable;
   final int stockQty;
   final int lowStockThreshold;
+  final List<String> variations;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -23,6 +26,7 @@ class ProductModel {
     this.isAvailable = true,
     this.stockQty = 0,
     this.lowStockThreshold = 10,
+    this.variations = const [],
     this.createdAt,
     this.updatedAt,
   });
@@ -39,6 +43,7 @@ class ProductModel {
       isAvailable: json['is_available'] as bool? ?? true,
       stockQty: (json['stock_qty'] as num?)?.toInt() ?? 0,
       lowStockThreshold: (json['low_stock_threshold'] as num?)?.toInt() ?? 10,
+      variations: (json['variations'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
@@ -60,6 +65,7 @@ class ProductModel {
       'is_available': isAvailable,
       'stock_qty': stockQty,
       'low_stock_threshold': lowStockThreshold,
+      'variations': variations,
     };
   }
 
@@ -109,8 +115,46 @@ class ProductModel {
       isAvailable: isAvailable ?? this.isAvailable,
       stockQty: stockQty ?? this.stockQty,
       lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
+      variations: variations ?? this.variations,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is ProductModel &&
+      other.id == id &&
+      other.name == name &&
+      other.nameEn == nameEn &&
+      other.description == description &&
+      other.basePrice == basePrice &&
+      other.categoryId == categoryId &&
+      other.imageUrl == imageUrl &&
+      other.isAvailable == isAvailable &&
+      other.stockQty == stockQty &&
+      other.lowStockThreshold == lowStockThreshold &&
+      listEquals(other.variations, variations) &&
+      other.createdAt == createdAt &&
+      other.updatedAt == updatedAt;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      name.hashCode ^
+      nameEn.hashCode ^
+      description.hashCode ^
+      basePrice.hashCode ^
+      categoryId.hashCode ^
+      imageUrl.hashCode ^
+      isAvailable.hashCode ^
+      stockQty.hashCode ^
+      lowStockThreshold.hashCode ^
+      variations.hashCode ^
+      createdAt.hashCode ^
+      updatedAt.hashCode;
   }
 }

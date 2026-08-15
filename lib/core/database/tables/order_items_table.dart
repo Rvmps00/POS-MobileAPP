@@ -18,6 +18,7 @@ class OrderItemsTable extends Table {
   TextColumn get addedToppings =>
       text().map(const MapListConverter()).nullable()();
 
+  TextColumn get selectedVariation => text().nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();

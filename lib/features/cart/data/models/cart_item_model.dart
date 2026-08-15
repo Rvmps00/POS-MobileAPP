@@ -7,6 +7,7 @@ class CartItemModel {
   final int quantity;
   final List<DefaultIngredientModel> removedIngredients;
   final List<AddonToppingModel> addedToppings;
+  final String? selectedVariation;
   final String? notes;
 
   CartItemModel({
@@ -14,6 +15,7 @@ class CartItemModel {
     this.quantity = 1,
     this.removedIngredients = const [],
     this.addedToppings = const [],
+    this.selectedVariation,
     this.notes,
   });
 
@@ -32,6 +34,7 @@ class CartItemModel {
     int? quantity,
     List<DefaultIngredientModel>? removedIngredients,
     List<AddonToppingModel>? addedToppings,
+    String? selectedVariation,
     String? notes,
   }) {
     return CartItemModel(
@@ -39,6 +42,7 @@ class CartItemModel {
       quantity: quantity ?? this.quantity,
       removedIngredients: removedIngredients ?? this.removedIngredients,
       addedToppings: addedToppings ?? this.addedToppings,
+      selectedVariation: selectedVariation ?? this.selectedVariation,
       notes: notes ?? this.notes,
     );
   }

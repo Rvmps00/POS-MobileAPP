@@ -49,7 +49,10 @@ class CartItemTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.product.localizedName(languageCode),
+                        item.product.localizedName(languageCode) +
+                            (item.selectedVariation != null
+                                ? ' (${item.selectedVariation})'
+                                : ''),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

@@ -88,6 +88,7 @@ class OrderRepository {
               .map((e) => {'name': e.name, 'price': e.price})
               .toList(),
         ),
+        selectedVariation: drift.Value(item.selectedVariation),
         notes: drift.Value(item.notes),
       );
     }).toList();
@@ -182,6 +183,7 @@ class OrderRepository {
           'added_toppings': item.addedToppings
               .map((e) => {'name': e.name, 'price': e.price})
               .toList(),
+          'selected_variation': item.selectedVariation,
           'notes': item.notes,
           'created_at': now.toUtc().toIso8601String(),
         },

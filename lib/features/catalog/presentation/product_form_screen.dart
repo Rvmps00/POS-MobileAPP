@@ -27,6 +27,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   final _priceController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _stockController = TextEditingController(text: '100');
+  final _variationsController = TextEditingController();
 
   String? _selectedCategoryId;
   bool _isAvailable = true;
@@ -42,6 +43,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     _priceController.dispose();
     _descriptionController.dispose();
     _stockController.dispose();
+    _variationsController.dispose();
     super.dispose();
   }
 
@@ -53,6 +55,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     _priceController.text = product.basePrice.toString();
     _descriptionController.text = product.description ?? '';
     _stockController.text = product.stockQty.toString();
+    _variationsController.text = product.variations.join(', ');
     _selectedCategoryId = product.categoryId;
     _isAvailable = product.isAvailable;
     _currentImageUrl = product.imageUrl;
@@ -85,6 +88,11 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             : _descriptionController.text.trim(),
         'is_available': _isAvailable,
         'stock_qty': int.tryParse(_stockController.text.trim()) ?? 0,
+        'variations': _variationsController.text
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList(),
         'image_url': imageUrl,
       };
 
@@ -288,6 +296,20 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 }
                 return null;
               },
+            ),
+            const SizedBox(height: 16),
+
+            // Variations
+            TextFormField(
+              controller: _variationsController,
+              decoration: InputDecoration(
+                labelText: 'Variasi (Opsional)',
+                hintText: 'Contoh: Panas, Dingin',
+                helperText: 'Pisahkan dengan koma (,) untuk pilihan tunggal',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
             ),
             const SizedBox(height: 16),
 

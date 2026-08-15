@@ -17,6 +17,7 @@ class CartNotifier extends Notifier<CartState> {
     // Check if identical item (same product, same toppings, same removed ingredients) exists
     final existingIndex = state.items.indexWhere((i) {
       if (i.product.id != item.product.id) return false;
+      if (i.selectedVariation != item.selectedVariation) return false;
       if (i.notes != item.notes) return false;
       // Compare removed ingredients
       if (i.removedIngredients.length != item.removedIngredients.length) {
