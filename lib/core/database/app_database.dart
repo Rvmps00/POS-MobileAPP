@@ -12,6 +12,7 @@ import 'tables/orders_table.dart';
 import 'tables/order_items_table.dart';
 import 'tables/stock_history_table.dart';
 import 'tables/sync_queue_table.dart';
+import 'tables/shifts_table.dart';
 import 'daos/catalog_dao.dart';
 import 'converters/json_list_converter.dart';
 
@@ -27,6 +28,7 @@ part 'app_database.g.dart';
     OrderItemsTable,
     StockHistoryTable,
     SyncQueueTable,
+    ShiftsTable,
   ],
   daos: [CatalogDao],
 )
@@ -34,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -64,6 +66,9 @@ class AppDatabase extends _$AppDatabase {
         if (from < 4) {
           await m.addColumn(productsTable, productsTable.variations);
           await m.addColumn(orderItemsTable, orderItemsTable.selectedVariation);
+        }
+        if (from < 5) {
+          await m.createTable(shiftsTable);
         }
       },
     );

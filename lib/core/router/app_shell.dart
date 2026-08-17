@@ -35,6 +35,11 @@ class AppShell extends ConsumerWidget {
             label: lang == 'en' ? 'Order' : 'Pesanan',
           ),
           NavigationDestination(
+            icon: const Icon(Icons.dashboard_outlined),
+            selectedIcon: const Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          NavigationDestination(
             icon: const Icon(Icons.restaurant_menu_outlined),
             selectedIcon: const Icon(Icons.restaurant_menu),
             label: 'Menu',

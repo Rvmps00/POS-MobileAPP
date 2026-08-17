@@ -45,6 +45,11 @@ class OrderRepository {
     return 'LS-$dateStr-$sequenceStr';
   }
 
+  Future<void> resetQueue() async {
+    await _prefs.remove('queue_sequence');
+    await _prefs.remove('queue_date');
+  }
+
   Future<String> saveOrder({
     required CartState cartState,
     required int cashReceived,
@@ -191,5 +196,50 @@ class OrderRepository {
     }
 
     return orderNumber;
+  }
+
+  // --- NEW PHASE 6 METHODS --- //
+
+  /// Fetch all orders, optionally filtered by date range or search query
+  Future<List<OrdersTableData>> getOrders({DateTime? startDate, DateTime? endDate, String? searchQuery}) async {
+    var query = _db.select(_db.ordersTable);
+
+    if (startDate != null && endDate != null) {
+      query.where((t) => t.createdAt.isBetweenValues(startDate, endDate));
+    }
+
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      query.where((t) => t.orderNumber.like('%$searchQuery%'));
+    }
+
+    query.orderBy([(t) => drift.OrderingTerm(expression: t.createdAt, mode: drift.OrderingMode.desc)]);
+
+    return await query.get();
+  }
+
+  /// Fetch items for a specific order
+  Future<List<OrderItemsTableData>> getOrderItems(String orderId) async {
+    return await (_db.select(_db.orderItemsTable)
+      ..where((t) => t.orderId.equals(orderId)))
+      .get();
+  }
+
+  /// Cancel an order
+  Future<void> cancelOrder(String orderId) async {
+    // 1. Update local DB
+    await (_db.update(_db.ordersTable)..where((t) => t.id.equals(orderId)))
+        .write(const OrdersTableCompanion(status: drift.Value('CANCELLED')));
+
+    // 2. Queue sync to Supabase
+    await _syncEngine.enqueue(
+      tableName: 'orders',
+      recordId: orderId,
+      operation: 'UPDATE',
+      payload: {
+        'status': 'CANCELLED',
+      },
+    );
+
+    // Note: In a complete system, we might also want to RESTOCK the inventory here.
   }
 }

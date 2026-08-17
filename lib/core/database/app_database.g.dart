@@ -5135,6 +5135,540 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueData> {
   }
 }
 
+class $ShiftsTableTable extends ShiftsTable
+    with TableInfo<$ShiftsTableTable, ShiftEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ShiftsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startTimeMeta = const VerificationMeta(
+    'startTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startTime = GeneratedColumn<DateTime>(
+    'start_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endTimeMeta = const VerificationMeta(
+    'endTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endTime = GeneratedColumn<DateTime>(
+    'end_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _startingCashMeta = const VerificationMeta(
+    'startingCash',
+  );
+  @override
+  late final GeneratedColumn<double> startingCash = GeneratedColumn<double>(
+    'starting_cash',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expectedEndingCashMeta =
+      const VerificationMeta('expectedEndingCash');
+  @override
+  late final GeneratedColumn<double> expectedEndingCash =
+      GeneratedColumn<double>(
+        'expected_ending_cash',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _actualEndingCashMeta = const VerificationMeta(
+    'actualEndingCash',
+  );
+  @override
+  late final GeneratedColumn<double> actualEndingCash = GeneratedColumn<double>(
+    'actual_ending_cash',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('OPEN'),
+  );
+  static const VerificationMeta _cashierIdMeta = const VerificationMeta(
+    'cashierId',
+  );
+  @override
+  late final GeneratedColumn<String> cashierId = GeneratedColumn<String>(
+    'cashier_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    startTime,
+    endTime,
+    startingCash,
+    expectedEndingCash,
+    actualEndingCash,
+    status,
+    cashierId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'shifts_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ShiftEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('start_time')) {
+      context.handle(
+        _startTimeMeta,
+        startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startTimeMeta);
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(
+        _endTimeMeta,
+        endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta),
+      );
+    }
+    if (data.containsKey('starting_cash')) {
+      context.handle(
+        _startingCashMeta,
+        startingCash.isAcceptableOrUnknown(
+          data['starting_cash']!,
+          _startingCashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startingCashMeta);
+    }
+    if (data.containsKey('expected_ending_cash')) {
+      context.handle(
+        _expectedEndingCashMeta,
+        expectedEndingCash.isAcceptableOrUnknown(
+          data['expected_ending_cash']!,
+          _expectedEndingCashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('actual_ending_cash')) {
+      context.handle(
+        _actualEndingCashMeta,
+        actualEndingCash.isAcceptableOrUnknown(
+          data['actual_ending_cash']!,
+          _actualEndingCashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('cashier_id')) {
+      context.handle(
+        _cashierIdMeta,
+        cashierId.isAcceptableOrUnknown(data['cashier_id']!, _cashierIdMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ShiftEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ShiftEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      startTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_time'],
+      )!,
+      endTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_time'],
+      ),
+      startingCash: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}starting_cash'],
+      )!,
+      expectedEndingCash: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}expected_ending_cash'],
+      ),
+      actualEndingCash: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}actual_ending_cash'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      cashierId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cashier_id'],
+      ),
+    );
+  }
+
+  @override
+  $ShiftsTableTable createAlias(String alias) {
+    return $ShiftsTableTable(attachedDatabase, alias);
+  }
+}
+
+class ShiftEntry extends DataClass implements Insertable<ShiftEntry> {
+  final String id;
+  final DateTime startTime;
+  final DateTime? endTime;
+  final double startingCash;
+  final double? expectedEndingCash;
+  final double? actualEndingCash;
+  final String status;
+  final String? cashierId;
+  const ShiftEntry({
+    required this.id,
+    required this.startTime,
+    this.endTime,
+    required this.startingCash,
+    this.expectedEndingCash,
+    this.actualEndingCash,
+    required this.status,
+    this.cashierId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['start_time'] = Variable<DateTime>(startTime);
+    if (!nullToAbsent || endTime != null) {
+      map['end_time'] = Variable<DateTime>(endTime);
+    }
+    map['starting_cash'] = Variable<double>(startingCash);
+    if (!nullToAbsent || expectedEndingCash != null) {
+      map['expected_ending_cash'] = Variable<double>(expectedEndingCash);
+    }
+    if (!nullToAbsent || actualEndingCash != null) {
+      map['actual_ending_cash'] = Variable<double>(actualEndingCash);
+    }
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || cashierId != null) {
+      map['cashier_id'] = Variable<String>(cashierId);
+    }
+    return map;
+  }
+
+  ShiftsTableCompanion toCompanion(bool nullToAbsent) {
+    return ShiftsTableCompanion(
+      id: Value(id),
+      startTime: Value(startTime),
+      endTime: endTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endTime),
+      startingCash: Value(startingCash),
+      expectedEndingCash: expectedEndingCash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expectedEndingCash),
+      actualEndingCash: actualEndingCash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(actualEndingCash),
+      status: Value(status),
+      cashierId: cashierId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cashierId),
+    );
+  }
+
+  factory ShiftEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ShiftEntry(
+      id: serializer.fromJson<String>(json['id']),
+      startTime: serializer.fromJson<DateTime>(json['startTime']),
+      endTime: serializer.fromJson<DateTime?>(json['endTime']),
+      startingCash: serializer.fromJson<double>(json['startingCash']),
+      expectedEndingCash: serializer.fromJson<double?>(
+        json['expectedEndingCash'],
+      ),
+      actualEndingCash: serializer.fromJson<double?>(json['actualEndingCash']),
+      status: serializer.fromJson<String>(json['status']),
+      cashierId: serializer.fromJson<String?>(json['cashierId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'startTime': serializer.toJson<DateTime>(startTime),
+      'endTime': serializer.toJson<DateTime?>(endTime),
+      'startingCash': serializer.toJson<double>(startingCash),
+      'expectedEndingCash': serializer.toJson<double?>(expectedEndingCash),
+      'actualEndingCash': serializer.toJson<double?>(actualEndingCash),
+      'status': serializer.toJson<String>(status),
+      'cashierId': serializer.toJson<String?>(cashierId),
+    };
+  }
+
+  ShiftEntry copyWith({
+    String? id,
+    DateTime? startTime,
+    Value<DateTime?> endTime = const Value.absent(),
+    double? startingCash,
+    Value<double?> expectedEndingCash = const Value.absent(),
+    Value<double?> actualEndingCash = const Value.absent(),
+    String? status,
+    Value<String?> cashierId = const Value.absent(),
+  }) => ShiftEntry(
+    id: id ?? this.id,
+    startTime: startTime ?? this.startTime,
+    endTime: endTime.present ? endTime.value : this.endTime,
+    startingCash: startingCash ?? this.startingCash,
+    expectedEndingCash: expectedEndingCash.present
+        ? expectedEndingCash.value
+        : this.expectedEndingCash,
+    actualEndingCash: actualEndingCash.present
+        ? actualEndingCash.value
+        : this.actualEndingCash,
+    status: status ?? this.status,
+    cashierId: cashierId.present ? cashierId.value : this.cashierId,
+  );
+  ShiftEntry copyWithCompanion(ShiftsTableCompanion data) {
+    return ShiftEntry(
+      id: data.id.present ? data.id.value : this.id,
+      startTime: data.startTime.present ? data.startTime.value : this.startTime,
+      endTime: data.endTime.present ? data.endTime.value : this.endTime,
+      startingCash: data.startingCash.present
+          ? data.startingCash.value
+          : this.startingCash,
+      expectedEndingCash: data.expectedEndingCash.present
+          ? data.expectedEndingCash.value
+          : this.expectedEndingCash,
+      actualEndingCash: data.actualEndingCash.present
+          ? data.actualEndingCash.value
+          : this.actualEndingCash,
+      status: data.status.present ? data.status.value : this.status,
+      cashierId: data.cashierId.present ? data.cashierId.value : this.cashierId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ShiftEntry(')
+          ..write('id: $id, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('startingCash: $startingCash, ')
+          ..write('expectedEndingCash: $expectedEndingCash, ')
+          ..write('actualEndingCash: $actualEndingCash, ')
+          ..write('status: $status, ')
+          ..write('cashierId: $cashierId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    startTime,
+    endTime,
+    startingCash,
+    expectedEndingCash,
+    actualEndingCash,
+    status,
+    cashierId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ShiftEntry &&
+          other.id == this.id &&
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime &&
+          other.startingCash == this.startingCash &&
+          other.expectedEndingCash == this.expectedEndingCash &&
+          other.actualEndingCash == this.actualEndingCash &&
+          other.status == this.status &&
+          other.cashierId == this.cashierId);
+}
+
+class ShiftsTableCompanion extends UpdateCompanion<ShiftEntry> {
+  final Value<String> id;
+  final Value<DateTime> startTime;
+  final Value<DateTime?> endTime;
+  final Value<double> startingCash;
+  final Value<double?> expectedEndingCash;
+  final Value<double?> actualEndingCash;
+  final Value<String> status;
+  final Value<String?> cashierId;
+  final Value<int> rowid;
+  const ShiftsTableCompanion({
+    this.id = const Value.absent(),
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
+    this.startingCash = const Value.absent(),
+    this.expectedEndingCash = const Value.absent(),
+    this.actualEndingCash = const Value.absent(),
+    this.status = const Value.absent(),
+    this.cashierId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ShiftsTableCompanion.insert({
+    required String id,
+    required DateTime startTime,
+    this.endTime = const Value.absent(),
+    required double startingCash,
+    this.expectedEndingCash = const Value.absent(),
+    this.actualEndingCash = const Value.absent(),
+    this.status = const Value.absent(),
+    this.cashierId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       startTime = Value(startTime),
+       startingCash = Value(startingCash);
+  static Insertable<ShiftEntry> custom({
+    Expression<String>? id,
+    Expression<DateTime>? startTime,
+    Expression<DateTime>? endTime,
+    Expression<double>? startingCash,
+    Expression<double>? expectedEndingCash,
+    Expression<double>? actualEndingCash,
+    Expression<String>? status,
+    Expression<String>? cashierId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
+      if (startingCash != null) 'starting_cash': startingCash,
+      if (expectedEndingCash != null)
+        'expected_ending_cash': expectedEndingCash,
+      if (actualEndingCash != null) 'actual_ending_cash': actualEndingCash,
+      if (status != null) 'status': status,
+      if (cashierId != null) 'cashier_id': cashierId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ShiftsTableCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? startTime,
+    Value<DateTime?>? endTime,
+    Value<double>? startingCash,
+    Value<double?>? expectedEndingCash,
+    Value<double?>? actualEndingCash,
+    Value<String>? status,
+    Value<String?>? cashierId,
+    Value<int>? rowid,
+  }) {
+    return ShiftsTableCompanion(
+      id: id ?? this.id,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      startingCash: startingCash ?? this.startingCash,
+      expectedEndingCash: expectedEndingCash ?? this.expectedEndingCash,
+      actualEndingCash: actualEndingCash ?? this.actualEndingCash,
+      status: status ?? this.status,
+      cashierId: cashierId ?? this.cashierId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (startTime.present) {
+      map['start_time'] = Variable<DateTime>(startTime.value);
+    }
+    if (endTime.present) {
+      map['end_time'] = Variable<DateTime>(endTime.value);
+    }
+    if (startingCash.present) {
+      map['starting_cash'] = Variable<double>(startingCash.value);
+    }
+    if (expectedEndingCash.present) {
+      map['expected_ending_cash'] = Variable<double>(expectedEndingCash.value);
+    }
+    if (actualEndingCash.present) {
+      map['actual_ending_cash'] = Variable<double>(actualEndingCash.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (cashierId.present) {
+      map['cashier_id'] = Variable<String>(cashierId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ShiftsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('startingCash: $startingCash, ')
+          ..write('expectedEndingCash: $expectedEndingCash, ')
+          ..write('actualEndingCash: $actualEndingCash, ')
+          ..write('status: $status, ')
+          ..write('cashierId: $cashierId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5153,6 +5687,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $StockHistoryTableTable stockHistoryTable =
       $StockHistoryTableTable(this);
   late final $SyncQueueTableTable syncQueueTable = $SyncQueueTableTable(this);
+  late final $ShiftsTableTable shiftsTable = $ShiftsTableTable(this);
   late final CatalogDao catalogDao = CatalogDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -5167,6 +5702,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     orderItemsTable,
     stockHistoryTable,
     syncQueueTable,
+    shiftsTable,
   ];
 }
 
@@ -7733,6 +8269,269 @@ typedef $$SyncQueueTableTableProcessedTableManager =
       SyncQueueData,
       PrefetchHooks Function()
     >;
+typedef $$ShiftsTableTableCreateCompanionBuilder =
+    ShiftsTableCompanion Function({
+      required String id,
+      required DateTime startTime,
+      Value<DateTime?> endTime,
+      required double startingCash,
+      Value<double?> expectedEndingCash,
+      Value<double?> actualEndingCash,
+      Value<String> status,
+      Value<String?> cashierId,
+      Value<int> rowid,
+    });
+typedef $$ShiftsTableTableUpdateCompanionBuilder =
+    ShiftsTableCompanion Function({
+      Value<String> id,
+      Value<DateTime> startTime,
+      Value<DateTime?> endTime,
+      Value<double> startingCash,
+      Value<double?> expectedEndingCash,
+      Value<double?> actualEndingCash,
+      Value<String> status,
+      Value<String?> cashierId,
+      Value<int> rowid,
+    });
+
+class $$ShiftsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ShiftsTableTable> {
+  $$ShiftsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startingCash => $composableBuilder(
+    column: $table.startingCash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get expectedEndingCash => $composableBuilder(
+    column: $table.expectedEndingCash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get actualEndingCash => $composableBuilder(
+    column: $table.actualEndingCash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cashierId => $composableBuilder(
+    column: $table.cashierId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ShiftsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ShiftsTableTable> {
+  $$ShiftsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startingCash => $composableBuilder(
+    column: $table.startingCash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get expectedEndingCash => $composableBuilder(
+    column: $table.expectedEndingCash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get actualEndingCash => $composableBuilder(
+    column: $table.actualEndingCash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cashierId => $composableBuilder(
+    column: $table.cashierId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ShiftsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ShiftsTableTable> {
+  $$ShiftsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startTime =>
+      $composableBuilder(column: $table.startTime, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endTime =>
+      $composableBuilder(column: $table.endTime, builder: (column) => column);
+
+  GeneratedColumn<double> get startingCash => $composableBuilder(
+    column: $table.startingCash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get expectedEndingCash => $composableBuilder(
+    column: $table.expectedEndingCash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get actualEndingCash => $composableBuilder(
+    column: $table.actualEndingCash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get cashierId =>
+      $composableBuilder(column: $table.cashierId, builder: (column) => column);
+}
+
+class $$ShiftsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ShiftsTableTable,
+          ShiftEntry,
+          $$ShiftsTableTableFilterComposer,
+          $$ShiftsTableTableOrderingComposer,
+          $$ShiftsTableTableAnnotationComposer,
+          $$ShiftsTableTableCreateCompanionBuilder,
+          $$ShiftsTableTableUpdateCompanionBuilder,
+          (
+            ShiftEntry,
+            BaseReferences<_$AppDatabase, $ShiftsTableTable, ShiftEntry>,
+          ),
+          ShiftEntry,
+          PrefetchHooks Function()
+        > {
+  $$ShiftsTableTableTableManager(_$AppDatabase db, $ShiftsTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ShiftsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ShiftsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ShiftsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> startTime = const Value.absent(),
+                Value<DateTime?> endTime = const Value.absent(),
+                Value<double> startingCash = const Value.absent(),
+                Value<double?> expectedEndingCash = const Value.absent(),
+                Value<double?> actualEndingCash = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> cashierId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ShiftsTableCompanion(
+                id: id,
+                startTime: startTime,
+                endTime: endTime,
+                startingCash: startingCash,
+                expectedEndingCash: expectedEndingCash,
+                actualEndingCash: actualEndingCash,
+                status: status,
+                cashierId: cashierId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime startTime,
+                Value<DateTime?> endTime = const Value.absent(),
+                required double startingCash,
+                Value<double?> expectedEndingCash = const Value.absent(),
+                Value<double?> actualEndingCash = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> cashierId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ShiftsTableCompanion.insert(
+                id: id,
+                startTime: startTime,
+                endTime: endTime,
+                startingCash: startingCash,
+                expectedEndingCash: expectedEndingCash,
+                actualEndingCash: actualEndingCash,
+                status: status,
+                cashierId: cashierId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ShiftsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ShiftsTableTable,
+      ShiftEntry,
+      $$ShiftsTableTableFilterComposer,
+      $$ShiftsTableTableOrderingComposer,
+      $$ShiftsTableTableAnnotationComposer,
+      $$ShiftsTableTableCreateCompanionBuilder,
+      $$ShiftsTableTableUpdateCompanionBuilder,
+      (
+        ShiftEntry,
+        BaseReferences<_$AppDatabase, $ShiftsTableTable, ShiftEntry>,
+      ),
+      ShiftEntry,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7756,4 +8555,6 @@ class $AppDatabaseManager {
       $$StockHistoryTableTableTableManager(_db, _db.stockHistoryTable);
   $$SyncQueueTableTableTableManager get syncQueueTable =>
       $$SyncQueueTableTableTableManager(_db, _db.syncQueueTable);
+  $$ShiftsTableTableTableManager get shiftsTable =>
+      $$ShiftsTableTableTableManager(_db, _db.shiftsTable);
 }

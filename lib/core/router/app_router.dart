@@ -14,6 +14,8 @@ import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/inventory/presentation/batch_restock_screen.dart';
 import '../../features/inventory/presentation/stock_history_screen.dart';
 import '../../features/orders/presentation/order_history_screen.dart';
+import '../../features/dashboard/presentation/dashboard_screen.dart';
+import '../../features/dashboard/presentation/shift_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/printer_setup_screen.dart';
 import 'app_shell.dart';
@@ -50,6 +52,7 @@ GoRouter appRouter(Ref ref) {
     },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/shift', builder: (context, state) => const ShiftScreen()),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppShell(navigationShell: navigationShell);
@@ -74,7 +77,16 @@ GoRouter appRouter(Ref ref) {
               ),
             ],
           ),
-          // Tab 2: Menu Management
+          // Tab 2: Dashboard
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/dashboard',
+                builder: (context, state) => const DashboardScreen(),
+              ),
+            ],
+          ),
+          // Tab 3: Menu Management
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -107,7 +119,7 @@ GoRouter appRouter(Ref ref) {
               ),
             ],
           ),
-          // Tab 3: Inventory
+          // Tab 4: Inventory
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -128,7 +140,7 @@ GoRouter appRouter(Ref ref) {
               ),
             ],
           ),
-          // Tab 4: Settings
+          // Tab 5: Settings
           StatefulShellBranch(
             routes: [
               GoRoute(
