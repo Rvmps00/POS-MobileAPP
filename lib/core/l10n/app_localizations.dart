@@ -205,6 +205,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm Order'**
   String get confirmOrder;
+
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// No description provided for @shiftManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift Management'**
+  String get shiftManagement;
+
+  /// No description provided for @startShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Shift'**
+  String get startShift;
+
+  /// No description provided for @endShift.
+  ///
+  /// In en, this message translates to:
+  /// **'End Shift & Generate Report'**
+  String get endShift;
+
+  /// No description provided for @startingCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Cash'**
+  String get startingCash;
+
+  /// No description provided for @actualEndingCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual Ending Cash'**
+  String get actualEndingCash;
+
+  /// No description provided for @expectedEndingCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected Ending Cash'**
+  String get expectedEndingCash;
+
+  /// No description provided for @revenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue'**
+  String get revenue;
+
+  /// No description provided for @orderCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Orders'**
+  String get orderCount;
+
+  /// No description provided for @averageOrderValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Order Value'**
+  String get averageOrderValue;
+
+  /// No description provided for @itemsSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Items Sold'**
+  String get itemsSold;
+
+  /// No description provided for @noActiveShift.
+  ///
+  /// In en, this message translates to:
+  /// **'No active shift. Please start a shift first.'**
+  String get noActiveShift;
+
+  /// No description provided for @recentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity'**
+  String get recentActivity;
+
+  /// No description provided for @orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get orders;
 }
 
 class _AppLocalizationsDelegate

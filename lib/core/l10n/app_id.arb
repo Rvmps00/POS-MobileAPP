@@ -17,5 +17,19 @@
   "subtotal": "Subtotal",
   "tax": "Pajak",
   "grandTotal": "Total Akhir",
-  "confirmOrder": "Konfirmasi Pesanan"
+  "confirmOrder": "Konfirmasi Pesanan",
+  "dashboard": "Dasbor",
+  "shiftManagement": "Manajemen Shift",
+  "startShift": "Mulai Shift",
+  "endShift": "Akhiri Shift & Buat Laporan",
+  "startingCash": "Saldo Awal Shift",
+  "actualEndingCash": "Saldo Akhir Aktual",
+  "expectedEndingCash": "Estimasi Saldo Akhir",
+  "revenue": "Pendapatan",
+  "orderCount": "Total Pesanan",
+  "averageOrderValue": "Rata-rata Pesanan",
+  "itemsSold": "Barang Terjual",
+  "noActiveShift": "Tidak ada shift aktif. Silakan mulai shift terlebih dahulu.",
+  "recentActivity": "Aktivitas Terbaru",
+  "orders": "Pesanan"
 }

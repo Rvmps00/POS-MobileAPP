@@ -1,7 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 // Import all screens
+import '../../features/dashboard/data/providers/shift_provider.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/catalog/presentation/main_pos_screen.dart';
 import '../../features/catalog/presentation/product_form_screen.dart';
@@ -33,6 +36,7 @@ Stream<AuthState> authState(Ref ref) {
 GoRouter appRouter(Ref ref) {
   final authState = ref.watch(authStateProvider);
   final isAuthenticated = authState.value?.session != null;
+  final shiftState = ref.watch(shiftProvider);
 
   return GoRouter(
     initialLocation: '/pos',
@@ -48,6 +52,17 @@ GoRouter appRouter(Ref ref) {
       if (isAuthenticated && isLoggingIn) {
         return '/pos';
       }
+
+      if (isAuthenticated) {
+        final isPosRoute = state.uri.path == '/pos' || state.uri.path.startsWith('/pos/');
+        if (isPosRoute && !shiftState.isLoading) {
+          if (shiftState.value == null) {
+            // No active shift, lock POS screen
+            return '/shift';
+          }
+        }
+      }
+
       return null;
     },
     routes: [

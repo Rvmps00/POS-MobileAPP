@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 
 import 'package:pos_mobile_app/core/database/app_database.dart';
 import '../data/providers/order_provider.dart';
+import '../../../../core/printer/printer_providers.dart';
+import '../../../../core/printer/receipt_builder.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OrderDetailScreen extends ConsumerWidget {
   final OrdersTableData order;
@@ -54,11 +57,45 @@ class OrderDetailScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.print),
             tooltip: 'Reprint Receipt',
-            onPressed: () {
-              // TODO: Wire up to PrinterService
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Reprinting receipt...')),
-              );
+            onPressed: () async {
+              final printerService = ref.read(printerServiceProvider);
+              if (await printerService.isConnected) {
+                final prefs = ref.read(sharedPreferencesProvider);
+                final storeName = prefs.getString('store_name') ?? 'LESEHAN SURYA';
+                final storeAddress = prefs.getString('store_address') ?? '';
+                final storePhone = prefs.getString('store_phone') ?? '';
+                final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';
+                
+                final cashierEmail = Supabase.instance.client.auth.currentUser?.email;
+                final cashierName = cashierEmail?.split('@').first ?? 'Kasir';
+
+                final items = itemsAsync.value ?? [];
+
+                final bytes = await ReceiptBuilder.buildReceiptFromOrder(
+                  order: order,
+                  items: items,
+                  cashierName: cashierName,
+                  storeName: storeName,
+                  storeAddress: storeAddress,
+                  storePhone: storePhone,
+                  footerMessage: storeFooter,
+                );
+
+                final printSuccess = await printerService.printBytes(bytes);
+                if (!printSuccess && context.mounted) {
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     const SnackBar(content: Text('Failed to print receipt.'), backgroundColor: Colors.red),
+                   );
+                } else if (context.mounted) {
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     const SnackBar(content: Text('Receipt printed successfully.')),
+                   );
+                }
+              } else if (context.mounted) {
+                 ScaffoldMessenger.of(context).showSnackBar(
+                   const SnackBar(content: Text('Printer not connected.'), backgroundColor: Colors.red),
+                 );
+              }
             },
           ),
         ],

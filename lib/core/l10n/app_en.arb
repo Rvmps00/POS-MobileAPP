@@ -20,5 +20,19 @@
   "subtotal": "Subtotal",
   "tax": "Tax",
   "grandTotal": "Grand Total",
-  "confirmOrder": "Confirm Order"
+  "confirmOrder": "Confirm Order",
+  "dashboard": "Dashboard",
+  "shiftManagement": "Shift Management",
+  "startShift": "Start Shift",
+  "endShift": "End Shift & Generate Report",
+  "startingCash": "Starting Cash",
+  "actualEndingCash": "Actual Ending Cash",
+  "expectedEndingCash": "Expected Ending Cash",
+  "revenue": "Revenue",
+  "orderCount": "Total Orders",
+  "averageOrderValue": "Average Order Value",
+  "itemsSold": "Items Sold",
+  "noActiveShift": "No active shift. Please start a shift first.",
+  "recentActivity": "Recent Activity",
+  "orders": "Orders"
 }

@@ -2,7 +2,9 @@ import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:intl/intl.dart';
 
 import '../../features/cart/data/models/cart_state_model.dart';
+import '../../features/cart/data/models/cart_state_model.dart';
 import '../../features/cart/data/models/cart_item_model.dart';
+import '../database/app_database.dart';
 
 class ReceiptBuilder {
   /// Format money (no decimals, dot separator)
@@ -177,6 +179,146 @@ class ReceiptBuilder {
     
     // Cut paper (if supported by printer, usually not for mini portable ones, but safe to send)
     // bytes += generator.cut(); 
+
+    return bytes;
+  }
+
+  static Future<List<int>> buildReceiptFromOrder({
+    required OrdersTableData order,
+    required List<OrderItemsTableData> items,
+    required String cashierName,
+    String storeName = 'LESEHAN SURYA',
+    String storeAddress = '',
+    String storePhone = '',
+    String footerMessage = 'Terima Kasih!\nSelamat Menikmati 🙏',
+  }) async {
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(PaperSize.mm58, profile);
+    List<int> bytes = [];
+
+    bytes += generator.reset();
+
+    // === HEADER ===
+    bytes += generator.text(
+      storeName,
+      styles: const PosStyles(
+        align: PosAlign.center,
+        bold: true,
+        height: PosTextSize.size2,
+        width: PosTextSize.size2,
+      ),
+    );
+    if (storeAddress.isNotEmpty) {
+      bytes += generator.text(storeAddress, styles: const PosStyles(align: PosAlign.center));
+    }
+    if (storePhone.isNotEmpty) {
+      bytes += generator.text(storePhone, styles: const PosStyles(align: PosAlign.center));
+    }
+    bytes += generator.emptyLines(1);
+
+    // === QUEUE NUMBER ===
+    final queueNumber = getQueueNumber(order.orderNumber);
+    bytes += generator.text(
+      'ANTRIAN: $queueNumber',
+      styles: const PosStyles(
+        align: PosAlign.center,
+        bold: true,
+        height: PosTextSize.size2,
+        width: PosTextSize.size2,
+      ),
+    );
+    bytes += generator.emptyLines(1);
+
+    // === ORDER INFO ===
+    bytes += generator.hr(ch: '=');
+    bytes += generator.text('*** REPRINT ***', styles: const PosStyles(align: PosAlign.center, bold: true));
+    final dateStr = DateFormat('dd/MM/yyyy  HH:mm').format(order.createdAt);
+    bytes += generator.text('Waktu: $dateStr');
+    bytes += generator.text('Kasir: $cashierName');
+    bytes += generator.text('Order: ${order.orderNumber}');
+    
+    final typeStr = order.orderType == 'DINE_IN' ? 'Dine-in' : 'Takeaway';
+    if (order.orderType == 'DINE_IN' && order.tableNumber != null) {
+      bytes += generator.text('Tipe : $typeStr    Meja: ${order.tableNumber}');
+    } else {
+      bytes += generator.text('Tipe : $typeStr');
+    }
+    bytes += generator.hr();
+
+    // === ITEMS ===
+    for (final item in items) {
+      final qtyStr = 'x${item.quantity}';
+      final totalStr = formatRp(item.lineTotal);
+      
+      bytes += generator.row([
+        PosColumn(
+          text: item.productName,
+          width: 6,
+          styles: const PosStyles(bold: true),
+        ),
+        PosColumn(
+          text: qtyStr,
+          width: 2,
+          styles: const PosStyles(align: PosAlign.right),
+        ),
+        PosColumn(
+          text: totalStr,
+          width: 4,
+          styles: const PosStyles(align: PosAlign.right),
+        ),
+      ]);
+
+      if (item.selectedVariation != null && item.selectedVariation!.isNotEmpty) {
+        bytes += generator.text('  (${item.selectedVariation})');
+      }
+
+      if (item.notes != null && item.notes!.isNotEmpty) {
+        bytes += generator.text('  Catatan: ${item.notes}');
+      }
+    }
+    bytes += generator.hr();
+
+    // === TOTALS ===
+    bytes += generator.row([
+      PosColumn(text: 'Subtotal:', width: 6),
+      PosColumn(text: formatRp(order.subtotal), width: 6, styles: const PosStyles(align: PosAlign.right)),
+    ]);
+    if (order.taxAmount > 0) {
+      bytes += generator.row([
+        PosColumn(text: 'Pajak (10%):', width: 6),
+        PosColumn(text: formatRp(order.taxAmount), width: 6, styles: const PosStyles(align: PosAlign.right)),
+      ]);
+    }
+    
+    bytes += generator.text('                  ============', styles: const PosStyles(align: PosAlign.right));
+    bytes += generator.row([
+      PosColumn(text: 'TOTAL:', width: 6, styles: const PosStyles(bold: true)),
+      PosColumn(text: formatRp(order.grandTotal), width: 6, styles: const PosStyles(align: PosAlign.right, bold: true)),
+    ]);
+    bytes += generator.text('                  ============', styles: const PosStyles(align: PosAlign.right));
+    bytes += generator.emptyLines(1);
+
+    // === PAYMENT ===
+    bytes += generator.row([
+      PosColumn(text: 'Pembayaran:', width: 6),
+      PosColumn(text: order.paymentMethod ?? 'CASH', width: 6, styles: const PosStyles(align: PosAlign.right)),
+    ]);
+    bytes += generator.row([
+      PosColumn(text: 'Tunai:', width: 6),
+      PosColumn(text: formatRp(order.cashReceived ?? order.grandTotal), width: 6, styles: const PosStyles(align: PosAlign.right)),
+    ]);
+    bytes += generator.row([
+      PosColumn(text: 'Kembali:', width: 6),
+      PosColumn(text: formatRp(order.cashChange ?? 0), width: 6, styles: const PosStyles(align: PosAlign.right)),
+    ]);
+    bytes += generator.hr();
+
+    // === FOOTER ===
+    bytes += generator.text(
+      footerMessage,
+      styles: const PosStyles(align: PosAlign.center),
+    );
+    bytes += generator.emptyLines(2);
 
     return bytes;
   }

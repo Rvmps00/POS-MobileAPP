@@ -11,12 +11,14 @@ class DashboardMetrics {
   final int orderCount;
   final double averageOrderValue;
   final int itemsSold;
+  final Map<int, double> hourlySales;
 
   DashboardMetrics({
     required this.revenue,
     required this.orderCount,
     required this.averageOrderValue,
     required this.itemsSold,
+    required this.hourlySales,
   });
 }
 
@@ -36,8 +38,15 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
   final orders = await ordersQuery.get();
   
   double totalRevenue = 0;
+  Map<int, double> hourlySales = {};
+  for (int i = 0; i < 24; i++) {
+    hourlySales[i] = 0.0;
+  }
+
   for (final order in orders) {
     totalRevenue += order.grandTotal;
+    final hour = order.createdAt.hour;
+    hourlySales[hour] = (hourlySales[hour] ?? 0) + order.grandTotal;
   }
   
   int orderCount = orders.length;
@@ -62,5 +71,6 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
     orderCount: orderCount,
     averageOrderValue: averageOrderValue,
     itemsSold: itemsSold,
+    hourlySales: hourlySales,
   );
 });

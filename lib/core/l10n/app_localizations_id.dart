@@ -61,4 +61,47 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get confirmOrder => 'Konfirmasi Pesanan';
+
+  @override
+  String get dashboard => 'Dasbor';
+
+  @override
+  String get shiftManagement => 'Manajemen Shift';
+
+  @override
+  String get startShift => 'Mulai Shift';
+
+  @override
+  String get endShift => 'Akhiri Shift & Buat Laporan';
+
+  @override
+  String get startingCash => 'Saldo Awal Shift';
+
+  @override
+  String get actualEndingCash => 'Saldo Akhir Aktual';
+
+  @override
+  String get expectedEndingCash => 'Estimasi Saldo Akhir';
+
+  @override
+  String get revenue => 'Pendapatan';
+
+  @override
+  String get orderCount => 'Total Pesanan';
+
+  @override
+  String get averageOrderValue => 'Rata-rata Pesanan';
+
+  @override
+  String get itemsSold => 'Barang Terjual';
+
+  @override
+  String get noActiveShift =>
+      'Tidak ada shift aktif. Silakan mulai shift terlebih dahulu.';
+
+  @override
+  String get recentActivity => 'Aktivitas Terbaru';
+
+  @override
+  String get orders => 'Pesanan';
 }

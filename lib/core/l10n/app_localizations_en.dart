@@ -61,4 +61,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmOrder => 'Confirm Order';
+
+  @override
+  String get dashboard => 'Dashboard';
+
+  @override
+  String get shiftManagement => 'Shift Management';
+
+  @override
+  String get startShift => 'Start Shift';
+
+  @override
+  String get endShift => 'End Shift & Generate Report';
+
+  @override
+  String get startingCash => 'Starting Cash';
+
+  @override
+  String get actualEndingCash => 'Actual Ending Cash';
+
+  @override
+  String get expectedEndingCash => 'Expected Ending Cash';
+
+  @override
+  String get revenue => 'Revenue';
+
+  @override
+  String get orderCount => 'Total Orders';
+
+  @override
+  String get averageOrderValue => 'Average Order Value';
+
+  @override
+  String get itemsSold => 'Items Sold';
+
+  @override
+  String get noActiveShift => 'No active shift. Please start a shift first.';
+
+  @override
+  String get recentActivity => 'Recent Activity';
+
+  @override
+  String get orders => 'Orders';
 }
