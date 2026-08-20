@@ -90,7 +90,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get orderCount => 'Total Pesanan';
 
   @override
-  String get averageOrderValue => 'Rata-rata Pesanan';
+  String get averageOrderValue => 'Rata2 Pesanan';
 
   @override
   String get itemsSold => 'Barang Terjual';

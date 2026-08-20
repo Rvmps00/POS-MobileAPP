@@ -263,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @averageOrderValue.
   ///
   /// In en, this message translates to:
-  /// **'Average Order Value'**
+  /// **'Avg. Order'**
   String get averageOrderValue;
 
   /// No description provided for @itemsSold.

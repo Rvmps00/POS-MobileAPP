@@ -30,7 +30,7 @@
   "expectedEndingCash": "Expected Ending Cash",
   "revenue": "Revenue",
   "orderCount": "Total Orders",
-  "averageOrderValue": "Average Order Value",
+  "averageOrderValue": "Avg. Order",
   "itemsSold": "Items Sold",
   "noActiveShift": "No active shift. Please start a shift first.",
   "recentActivity": "Recent Activity",
