@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/theme/theme_notifier.dart';
 import '../../../core/l10n/language_notifier.dart';
+import '../../auth/data/providers/auth_provider.dart';
 import '../../../core/printer/printer_providers.dart';
 import '../../../core/printer/receipt_builder.dart';
 import '../../cart/data/providers/cart_provider.dart';
@@ -79,13 +80,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
     try {
       final cartState = ref.read(cartProvider);
-      final orderNumber = await ref
-          .read(orderRepositoryProvider)
-          .saveOrder(
-            cartState: cartState,
-            cashReceived: _cashReceived,
-            cashChange: _cashReceived - grandTotal,
-          );
+      final orderRepo = ref.read(orderRepositoryProvider);
+      final cashierId = ref.read(activeStaffProvider)?.id;
+
+      final orderNumber = await orderRepo.saveOrder(
+        cartState: cartState,
+        cashReceived: _cashReceived,
+        cashChange: _cashReceived - grandTotal,
+        cashierId: cashierId,
+      );
 
       // Print Receipt
       final printerService = ref.read(printerServiceProvider);

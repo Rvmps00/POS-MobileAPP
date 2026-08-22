@@ -33,7 +33,7 @@ final class ShiftNotifierProvider
   ShiftNotifier create() => ShiftNotifier();
 }
 
-String _$shiftNotifierHash() => r'b3dbd525747963165ae7409c8d333104e9e8906a';
+String _$shiftNotifierHash() => r'b45d05aab1702f7894cfb68dc1dfe6a5fc490078';
 
 abstract class _$ShiftNotifier extends $AsyncNotifier<ShiftModel?> {
   FutureOr<ShiftModel?> build();

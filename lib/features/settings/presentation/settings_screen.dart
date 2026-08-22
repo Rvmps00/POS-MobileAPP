@@ -6,7 +6,10 @@ import '../../../core/l10n/language_notifier.dart';
 import '../../../core/settings/tax_notifier.dart';
 import 'printer_setup_screen.dart';
 import 'restaurant_info_screen.dart';
+import 'staff_management_screen.dart';
+import '../../auth/data/providers/auth_provider.dart';
 import '../../../core/printer/printer_providers.dart';
+import '../../../core/router/role_guard.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -98,6 +101,22 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
           ),
+          RoleGuard(
+            allowedRoles: const ['OWNER'],
+            child: Card(
+              child: ListTile(
+                leading: const Icon(Icons.people),
+                title: const Text('Staff Management'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const StaffManagementScreen()),
+                  );
+                },
+              ),
+            ),
+          ),
           Card(
             child: ListTile(
               leading: const Icon(Icons.numbers),
@@ -132,6 +151,8 @@ class SettingsScreen extends ConsumerWidget {
           ElevatedButton.icon(
             onPressed: () async {
               await Supabase.instance.client.auth.signOut();
+              // Also clear active staff
+              ref.read(activeStaffProvider.notifier).clearActiveStaff();
             },
             icon: const Icon(Icons.logout),
             label: const Text('Logout'),

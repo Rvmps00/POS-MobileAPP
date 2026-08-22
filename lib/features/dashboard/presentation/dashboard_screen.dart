@@ -6,6 +6,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/language_notifier.dart';
+import '../../auth/data/providers/auth_provider.dart';
 import '../data/providers/dashboard_provider.dart';
 import '../data/providers/shift_provider.dart';
 
@@ -19,6 +21,8 @@ class DashboardScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
     final l10n = AppLocalizations.of(context)!;
+    final activeStaff = ref.watch(activeStaffProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
@@ -47,6 +51,15 @@ class DashboardScreen extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: Text(
+                    'Hello, ${activeStaff?.fullName ?? 'Owner'} 👋',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 // Shift Status Banner
                 shiftState.when(
                   loading: () => const SizedBox.shrink(),

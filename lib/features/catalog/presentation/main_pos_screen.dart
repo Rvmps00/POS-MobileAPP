@@ -11,6 +11,7 @@ import 'widgets/floating_cart_bar.dart';
 import 'widgets/order_panel.dart';
 import 'topping_customizer_sheet.dart';
 import '../../cart/data/providers/cart_provider.dart';
+import '../../auth/data/providers/auth_provider.dart';
 
 class MainPosScreen extends ConsumerWidget {
   const MainPosScreen({super.key});
@@ -81,7 +82,14 @@ class _MobileLayout extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    // Buttons removed since they are now in the Bottom Navbar / Menu Tab
+                    // Switch User Button
+                    IconButton(
+                      icon: const Icon(Icons.person_outline),
+                      tooltip: languageCode == 'en' ? 'Switch User' : 'Ganti Pengguna',
+                      onPressed: () {
+                        ref.read(activeStaffProvider.notifier).clearActiveStaff();
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -241,7 +249,14 @@ class _TabletLayout extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    // Buttons removed since they are now in the Bottom Navbar / Menu Tab
+                    // Switch User Button
+                    IconButton(
+                      icon: const Icon(Icons.person_outline),
+                      tooltip: languageCode == 'en' ? 'Switch User' : 'Ganti Pengguna',
+                      onPressed: () {
+                        ref.read(activeStaffProvider.notifier).clearActiveStaff();
+                      },
+                    ),
                   ],
                 ),
               ),

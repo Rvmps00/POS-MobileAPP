@@ -54,10 +54,11 @@ class OrderRepository {
     required CartState cartState,
     required int cashReceived,
     required int cashChange,
+    String? cashierId,
   }) async {
     final orderNumber = await generateOrderNumber();
     final orderId = _uuid.v4();
-    final cashierId = _supabase.auth.currentUser?.id;
+    final effectiveCashierId = cashierId ?? _supabase.auth.currentUser?.id;
     final now = DateTime.now();
 
     final orderData = OrdersTableCompanion.insert(
@@ -72,7 +73,7 @@ class OrderRepository {
       paymentStatus: const drift.Value('PAID'),
       cashReceived: drift.Value(cashReceived),
       cashChange: drift.Value(cashChange),
-      cashierId: drift.Value(cashierId),
+      cashierId: drift.Value(effectiveCashierId),
     );
 
     final itemCompanions = cartState.items.map((item) {
@@ -162,7 +163,7 @@ class OrderRepository {
         'cash_received': cashReceived,
         'cash_change': cashChange,
         'status': 'COMPLETED',
-        'cashier_id': cashierId,
+        'cashier_id': effectiveCashierId,
         'created_at': now.toUtc().toIso8601String(),
       },
     );

@@ -1,11 +1,13 @@
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 // Import all screens
 import '../../features/dashboard/data/providers/shift_provider.dart';
 import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/pin_lock_screen.dart';
+import '../../features/auth/data/providers/auth_provider.dart';
+import '../../core/router/role_guard.dart';
 import '../../features/catalog/presentation/main_pos_screen.dart';
 import '../../features/catalog/presentation/product_form_screen.dart';
 import '../../features/catalog/presentation/ingredient_management_screen.dart';
@@ -35,6 +37,7 @@ Stream<AuthState> authState(Ref ref) {
 @riverpod
 GoRouter appRouter(Ref ref) {
   final authState = ref.watch(authStateProvider);
+  final activeStaff = ref.watch(activeStaffProvider);
   final isAuthenticated = authState.value?.session != null;
   final shiftState = ref.watch(shiftProvider);
 
@@ -45,17 +48,26 @@ GoRouter appRouter(Ref ref) {
       if (authState.isLoading) return null;
 
       final isLoggingIn = state.uri.path == '/login';
+      final isLockScreen = state.uri.path == '/lock';
 
       if (!isAuthenticated && !isLoggingIn) {
         return '/login';
       }
-      if (isAuthenticated && isLoggingIn) {
-        return '/pos';
-      }
-
+      
       if (isAuthenticated) {
+        // Enforce lock screen
+        if (activeStaff == null && !isLockScreen) {
+          return '/lock';
+        }
+        
+        // Prevent going to login or lock if already set up
+        if ((isLoggingIn || isLockScreen) && activeStaff != null) {
+          return '/pos';
+        }
+
+        // Enforce shift active on POS tab
         final isPosRoute = state.uri.path == '/pos' || state.uri.path.startsWith('/pos/');
-        if (isPosRoute && !shiftState.isLoading) {
+        if (isPosRoute && !shiftState.isLoading && activeStaff != null) {
           if (shiftState.value == null) {
             // No active shift, lock POS screen
             return '/shift';
@@ -67,6 +79,7 @@ GoRouter appRouter(Ref ref) {
     },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/lock', builder: (context, state) => const PinLockScreen()),
       GoRoute(path: '/shift', builder: (context, state) => const ShiftScreen()),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -97,7 +110,11 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/dashboard',
-                builder: (context, state) => const DashboardScreen(),
+                builder: (context, state) => const RoleGuard(
+                  allowedRoles: ['OWNER', 'MANAGER'],
+                  fallback: Center(child: Text('Access Denied. Contact your manager.')),
+                  child: DashboardScreen(),
+                ),
               ),
             ],
           ),
@@ -106,7 +123,11 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/menu',
-                builder: (context, state) => const MenuManagementScreen(),
+                builder: (context, state) => const RoleGuard(
+                  allowedRoles: ['OWNER', 'MANAGER'],
+                  fallback: Center(child: Text('Access Denied.')),
+                  child: MenuManagementScreen(),
+                ),
                 routes: [
                   GoRoute(
                     path: 'add',
@@ -139,7 +160,11 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/inventory',
-                builder: (context, state) => const InventoryScreen(),
+                builder: (context, state) => const RoleGuard(
+                  allowedRoles: ['OWNER', 'MANAGER'],
+                  fallback: Center(child: Text('Access Denied.')),
+                  child: InventoryScreen(),
+                ),
                 routes: [
                   GoRoute(
                     path: 'batch-restock',
