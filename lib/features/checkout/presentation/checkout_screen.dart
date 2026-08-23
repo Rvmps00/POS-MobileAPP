@@ -99,8 +99,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         final storePhone = prefs.getString('store_phone') ?? '';
         final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';
         
-        final cashierEmail = Supabase.instance.client.auth.currentUser?.email;
-        final cashierName = cashierEmail?.split('@').first ?? 'Kasir';
+        final activeStaff = ref.read(activeStaffProvider);
+        final cashierName = activeStaff?.fullName ?? 'Kasir';
 
         final bytes = await ReceiptBuilder.buildReceipt(
           orderNumber: orderNumber,

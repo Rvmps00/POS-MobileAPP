@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/language_notifier.dart';
 import '../sync/connectivity_service.dart';
 import '../../features/inventory/data/providers/inventory_providers.dart';
+import '../../features/auth/data/providers/auth_provider.dart';
 
 class AppShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -17,62 +18,75 @@ class AppShell extends ConsumerWidget {
     final lang = locale.languageCode;
     final lowStockCount = ref.watch(lowStockCountProvider).value ?? 0;
     final isOnline = ref.watch(isOnlineProvider).value ?? true;
+    
+    final activeStaff = ref.watch(activeStaffProvider);
+    final isCashier = activeStaff?.role == 'CASHIER';
+
+    // Map visible tab indices to branch indices
+    final List<int> visibleBranches = isCashier ? [0, 4] : [0, 1, 2, 3, 4];
+    
+    final allDestinations = [
+      NavigationDestination(
+        icon: const Icon(Icons.point_of_sale_outlined),
+        selectedIcon: const Icon(Icons.point_of_sale),
+        label: lang == 'en' ? 'Order' : 'Pesanan',
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.dashboard_outlined),
+        selectedIcon: const Icon(Icons.dashboard),
+        label: 'Dashboard',
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.restaurant_menu_outlined),
+        selectedIcon: const Icon(Icons.restaurant_menu),
+        label: 'Menu',
+      ),
+      NavigationDestination(
+        icon: Badge(
+          isLabelVisible: lowStockCount > 0,
+          label: Text('$lowStockCount'),
+          child: const Icon(Icons.inventory_2_outlined),
+        ),
+        selectedIcon: Badge(
+          isLabelVisible: lowStockCount > 0,
+          label: Text('$lowStockCount'),
+          child: const Icon(Icons.inventory_2),
+        ),
+        label: lang == 'en' ? 'Inventory' : 'Stok',
+      ),
+      NavigationDestination(
+        icon: Badge(
+          isLabelVisible: !isOnline,
+          smallSize: 10,
+          backgroundColor: Colors.red,
+          child: const Icon(Icons.settings_outlined),
+        ),
+        selectedIcon: Badge(
+          isLabelVisible: !isOnline,
+          smallSize: 10,
+          backgroundColor: Colors.red,
+          child: const Icon(Icons.settings),
+        ),
+        label: lang == 'en' ? 'Settings' : 'Pengaturan',
+      ),
+    ];
+
+    final destinations = visibleBranches.map((idx) => allDestinations[idx]).toList();
+    final visibleIndex = visibleBranches.indexOf(navigationShell.currentIndex);
+    final selectedIndex = visibleIndex != -1 ? visibleIndex : 0;
 
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationShell.currentIndex,
+        selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
+          final targetBranch = visibleBranches[index];
           navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
+            targetBranch,
+            initialLocation: targetBranch == navigationShell.currentIndex,
           );
         },
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.point_of_sale_outlined),
-            selectedIcon: const Icon(Icons.point_of_sale),
-            label: lang == 'en' ? 'Order' : 'Pesanan',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.dashboard_outlined),
-            selectedIcon: const Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.restaurant_menu_outlined),
-            selectedIcon: const Icon(Icons.restaurant_menu),
-            label: 'Menu',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: lowStockCount > 0,
-              label: Text('$lowStockCount'),
-              child: const Icon(Icons.inventory_2_outlined),
-            ),
-            selectedIcon: Badge(
-              isLabelVisible: lowStockCount > 0,
-              label: Text('$lowStockCount'),
-              child: const Icon(Icons.inventory_2),
-            ),
-            label: lang == 'en' ? 'Inventory' : 'Stok',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: !isOnline,
-              smallSize: 10,
-              backgroundColor: Colors.red,
-              child: const Icon(Icons.settings_outlined),
-            ),
-            selectedIcon: Badge(
-              isLabelVisible: !isOnline,
-              smallSize: 10,
-              backgroundColor: Colors.red,
-              child: const Icon(Icons.settings),
-            ),
-            label: lang == 'en' ? 'Settings' : 'Pengaturan',
-          ),
-        ],
+        destinations: destinations,
       ),
     );
   }

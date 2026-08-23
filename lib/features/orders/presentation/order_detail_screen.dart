@@ -7,7 +7,7 @@ import '../data/providers/order_provider.dart';
 import '../../../../core/printer/printer_providers.dart';
 import '../../../../core/printer/receipt_builder.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import '../../auth/data/providers/auth_provider.dart';
 class OrderDetailScreen extends ConsumerWidget {
   final OrdersTableData order;
 
@@ -66,8 +66,8 @@ class OrderDetailScreen extends ConsumerWidget {
                 final storePhone = prefs.getString('store_phone') ?? '';
                 final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';
                 
-                final cashierEmail = Supabase.instance.client.auth.currentUser?.email;
-                final cashierName = cashierEmail?.split('@').first ?? 'Kasir';
+                final activeStaff = ref.read(activeStaffProvider);
+                final cashierName = activeStaff?.fullName ?? 'Kasir';
 
                 final items = itemsAsync.value ?? [];
 
