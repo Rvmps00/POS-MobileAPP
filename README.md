@@ -91,4 +91,4 @@
 
 ---
 
-*Developed with ❤️ for Lesehan Surya.*
+*Developed with ❤️ for modern cafes and restaurants.*

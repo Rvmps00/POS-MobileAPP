@@ -54,6 +54,7 @@ class OrderRepository {
     required CartState cartState,
     required int cashReceived,
     required int cashChange,
+    String paymentMethod = 'CASH',
     String? cashierId,
   }) async {
     final orderNumber = await generateOrderNumber();
@@ -69,7 +70,7 @@ class OrderRepository {
       subtotal: cartState.subtotal,
       taxAmount: cartState.taxAmount,
       grandTotal: cartState.grandTotal,
-      paymentMethod: const drift.Value('CASH'),
+      paymentMethod: drift.Value(paymentMethod),
       paymentStatus: const drift.Value('PAID'),
       cashReceived: drift.Value(cashReceived),
       cashChange: drift.Value(cashChange),
@@ -158,7 +159,7 @@ class OrderRepository {
         'subtotal': cartState.subtotal,
         'tax_amount': cartState.taxAmount,
         'grand_total': cartState.grandTotal,
-        'payment_method': 'CASH',
+        'payment_method': paymentMethod,
         'payment_status': 'PAID',
         'cash_received': cashReceived,
         'cash_change': cashChange,

@@ -21,7 +21,7 @@ final orderRepositoryProvider = Provider<OrderRepository>((ref) {
 // --- PHASE 6 PROVIDERS ---
 
 // Provider to fetch list of orders with optional search query
-final orderHistoryProvider = FutureProvider.family<List<OrdersTableData>, String?>((ref, searchQuery) async {
+final orderHistoryProvider = FutureProvider.family.autoDispose<List<OrdersTableData>, String?>((ref, searchQuery) async {
   final repo = ref.watch(orderRepositoryProvider);
   return repo.getOrders(searchQuery: searchQuery);
 });

@@ -73,7 +73,7 @@ class _MobileLayout extends ConsumerWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Lesehan Surya POS',
+                          'POS (Point of Sale)',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
@@ -205,7 +205,7 @@ class _TabletLayout extends ConsumerWidget {
                     Row(
                       children: [
                         Text(
-                          'Lesehan Surya POS',
+                          'POS (Point of Sale)',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w800,

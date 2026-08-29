@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/sync/sync_providers.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -34,6 +36,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
+      
+      // Perform initial sync down to SQLite
+      await ref.read(syncEngineProvider).performInitialSync();
+      
       // Navigation will be handled by GoRouter's redirect based on auth state change
     } catch (e) {
       if (mounted) {
@@ -74,6 +80,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         idToken: idToken,
         accessToken: accessToken,
       );
+      
+      // Perform initial sync down to SQLite
+      await ref.read(syncEngineProvider).performInitialSync();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -120,7 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   // Header
                   Text(
-                    "Lesehan Surya",
+                    "POS",
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
@@ -153,7 +162,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      hintText: "admin@lesehansurya.com",
+                      hintText: "admin@example.com",
                       prefixIcon: Icon(
                         Icons.mail_outline,
                         color: colorScheme.onSurfaceVariant,
@@ -284,7 +293,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ],
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () => context.push('/forgot-password'),
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                             minimumSize: Size.zero,
@@ -383,11 +392,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 16),
+                  
+                  // Sign Up Link
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account?",
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => context.push('/register'),
+                        child: Text(
+                          "Sign Up",
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
 
                   // Footer
                   Text(
-                    "Lesehan Surya POS",
+                    "POS (Point of Sale)",
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),

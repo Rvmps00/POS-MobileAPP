@@ -86,4 +86,12 @@ class AppDatabase extends _$AppDatabase {
       return NativeDatabase.createInBackground(file);
     });
   }
+
+  Future<void> clearAllData() async {
+    await transaction(() async {
+      for (final table in allTables) {
+        await delete(table).go();
+      }
+    });
+  }
 }

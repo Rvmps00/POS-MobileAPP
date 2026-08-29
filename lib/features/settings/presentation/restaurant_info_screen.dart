@@ -24,7 +24,7 @@ class _RestaurantInfoScreenState extends ConsumerState<RestaurantInfoScreen> {
   void initState() {
     super.initState();
     _prefs = ref.read(sharedPreferencesProvider);
-    _nameController.text = _prefs.getString('store_name') ?? 'LESEHAN SURYA';
+    _nameController.text = _prefs.getString('store_name') ?? 'POINT OF SALE';
     _addressController.text = _prefs.getString('store_address') ?? '';
     _phoneController.text = _prefs.getString('store_phone') ?? '';
     _footerController.text = _prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';

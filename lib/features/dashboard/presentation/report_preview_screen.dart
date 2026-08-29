@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/providers/shift_provider.dart';
 import '../data/providers/dashboard_provider.dart';
@@ -39,7 +40,7 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
     final shiftState = ref.watch(shiftProvider).value;
     final metricsAsync = ref.watch(dashboardMetricsProvider(null));
     final reportService = ref.watch(reportServiceProvider);
-    final receiverEmail = dotenv.env['SMTP_EMAIL'] ?? 'Not Configured';
+    final receiverEmail = Supabase.instance.client.auth.currentUser?.email ?? dotenv.env['SMTP_EMAIL'] ?? 'Not Configured';
 
     if (shiftState == null || metricsAsync.isLoading) {
       return const Scaffold(

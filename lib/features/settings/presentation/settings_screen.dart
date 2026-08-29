@@ -10,6 +10,8 @@ import 'staff_management_screen.dart';
 import '../../auth/data/providers/auth_provider.dart';
 import '../../../core/printer/printer_providers.dart';
 import '../../../core/router/role_guard.dart';
+import '../../../core/database/app_database.dart';
+import '../../catalog/data/providers/catalog_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -150,9 +152,15 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () async {
+              final db = ref.read(appDatabaseProvider);
+              final activeStaffNotifier = ref.read(activeStaffProvider.notifier);
+              
+              // Wipe local DB to prevent data leaks across accounts
+              await db.clearAllData();
+              // Clear active staff
+              activeStaffNotifier.clearActiveStaff();
+              
               await Supabase.instance.client.auth.signOut();
-              // Also clear active staff
-              ref.read(activeStaffProvider.notifier).clearActiveStaff();
             },
             icon: const Icon(Icons.logout),
             label: const Text('Logout'),

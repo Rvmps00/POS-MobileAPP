@@ -118,8 +118,8 @@ class SyncEngine {
         await _supabase.from(item.tableName_).upsert(payload);
         break;
       case 'UPDATE':
-        final id = payload.remove('id');
-        await _supabase.from(item.tableName_).update(payload).eq('id', id);
+        payload.remove('id'); // Don't try to update the primary key
+        await _supabase.from(item.tableName_).update(payload).eq('id', item.recordId);
         break;
       case 'DELETE':
         await _supabase.from(item.tableName_).delete().eq('id', item.recordId);
@@ -146,6 +146,105 @@ class SyncEngine {
           ..where((t) => t.status.equals('SYNCED'))
           ..where((t) => t.createdAt.isSmallerThanValue(cutoff)))
         .go();
+  }
+
+  /// Perform initial downsync from Supabase to repopulate empty local DB
+  Future<void> performInitialSync() async {
+    try {
+      // 1. Categories
+      final cats = await _supabase.from('categories').select();
+      await _db.transaction(() async {
+        for (final row in cats) {
+          final entry = CategoriesTableCompanion.insert(
+            id: row['id'],
+            name: row['name'],
+            nameEn: drift.Value(row['name_en']),
+            sortOrder: drift.Value(row['sort_order'] ?? 0),
+            createdAt: drift.Value(row['created_at'] != null ? DateTime.parse(row['created_at']) : DateTime.now()),
+            updatedAt: drift.Value(row['updated_at'] != null ? DateTime.parse(row['updated_at']) : DateTime.now()),
+          );
+          await _db.into(_db.categoriesTable).insertOnConflictUpdate(entry);
+        }
+      });
+
+      // 2. Products
+      final prods = await _supabase.from('products').select();
+      await _db.transaction(() async {
+        for (final row in prods) {
+          final entry = ProductsTableCompanion.insert(
+            id: row['id'],
+            categoryId: drift.Value(row['category_id']),
+            name: row['name'],
+            nameEn: drift.Value(row['name_en']),
+            description: drift.Value(row['description']),
+            basePrice: row['base_price'],
+            imageUrl: drift.Value(row['image_url']),
+            stockQty: drift.Value(row['stock_qty'] ?? 0),
+            isAvailable: drift.Value(row['is_available'] ?? true),
+            variations: drift.Value(row['variations'] != null ? List<String>.from(row['variations']) : null),
+            lowStockThreshold: drift.Value(row['low_stock_threshold'] ?? 10),
+            createdAt: drift.Value(row['created_at'] != null ? DateTime.parse(row['created_at']) : DateTime.now()),
+            updatedAt: drift.Value(row['updated_at'] != null ? DateTime.parse(row['updated_at']) : DateTime.now()),
+          );
+          await _db.into(_db.productsTable).insertOnConflictUpdate(entry);
+        }
+      });
+
+      // 3. Default Ingredients
+      final ingr = await _supabase.from('default_ingredients').select();
+      await _db.transaction(() async {
+        for (final row in ingr) {
+          final entry = DefaultIngredientsTableCompanion.insert(
+            id: row['id'],
+            productId: row['product_id'],
+            name: row['name'],
+            nameEn: drift.Value(row['name_en']),
+            isRemovable: drift.Value(row['is_removable'] ?? true),
+            sortOrder: drift.Value(row['sort_order'] ?? 0),
+          );
+          await _db.into(_db.defaultIngredientsTable).insertOnConflictUpdate(entry);
+        }
+      });
+
+      // 4. Addon Toppings
+      final tops = await _supabase.from('addon_toppings').select();
+      await _db.transaction(() async {
+        for (final row in tops) {
+          final entry = AddonToppingsTableCompanion.insert(
+            id: row['id'],
+            productId: row['product_id'],
+            name: row['name'],
+            nameEn: drift.Value(row['name_en']),
+            price: drift.Value(row['price'] ?? 0),
+            isAvailable: drift.Value(row['is_available'] ?? true),
+            stockQty: drift.Value(row['stock_qty'] ?? 0),
+            lowStockThreshold: drift.Value(row['low_stock_threshold'] ?? 10),
+            sortOrder: drift.Value(row['sort_order'] ?? 0),
+          );
+          await _db.into(_db.addonToppingsTable).insertOnConflictUpdate(entry);
+        }
+      });
+
+      // 5. Staff Profiles
+      final staff = await _supabase.from('staff_profiles').select();
+      await _db.transaction(() async {
+        for (final row in staff) {
+          final entry = StaffProfilesTableCompanion.insert(
+            id: row['id'],
+            fullName: row['full_name'],
+            role: row['role'],
+            pin: row['pin'],
+            isActive: drift.Value(row['is_active'] ?? true),
+            createdAt: drift.Value(row['created_at'] != null ? DateTime.parse(row['created_at']) : DateTime.now()),
+            updatedAt: drift.Value(row['updated_at'] != null ? DateTime.parse(row['updated_at']) : DateTime.now()),
+          );
+          await _db.into(_db.staffProfilesTable).insertOnConflictUpdate(entry);
+        }
+      });
+      
+    } catch (e) {
+      debugPrint('Initial sync failed: $e');
+    }
   }
 
   void dispose() {

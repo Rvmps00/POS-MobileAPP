@@ -61,7 +61,14 @@ class PrinterService {
 
   /// Check connection status
   Future<bool> get isConnected async {
-    return await PrintBluetoothThermal.connectionStatus;
+    try {
+      return await PrintBluetoothThermal.connectionStatus.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () => false,
+      );
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Send raw bytes to printer

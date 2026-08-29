@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 // Import all screens
 import '../../features/dashboard/data/providers/shift_provider.dart';
 import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/register_screen.dart';
+import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/pin_lock_screen.dart';
 import '../../features/auth/data/providers/auth_provider.dart';
 import '../../core/router/role_guard.dart';
@@ -48,9 +50,12 @@ GoRouter appRouter(Ref ref) {
       if (authState.isLoading) return null;
 
       final isLoggingIn = state.uri.path == '/login';
+      final isRegistering = state.uri.path == '/register';
+      final isForgotPassword = state.uri.path == '/forgot-password';
+      final isAuthRoute = isLoggingIn || isRegistering || isForgotPassword;
       final isLockScreen = state.uri.path == '/lock';
 
-      if (!isAuthenticated && !isLoggingIn) {
+      if (!isAuthenticated && !isAuthRoute) {
         return '/login';
       }
       
@@ -60,8 +65,8 @@ GoRouter appRouter(Ref ref) {
           return '/lock';
         }
         
-        // Prevent going to login or lock if already set up
-        if ((isLoggingIn || isLockScreen) && activeStaff != null) {
+        // Prevent going to auth routes if already set up
+        if ((isAuthRoute || isLockScreen) && activeStaff != null) {
           return '/pos';
         }
 
@@ -79,6 +84,8 @@ GoRouter appRouter(Ref ref) {
     },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
+      GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
       GoRoute(path: '/lock', builder: (context, state) => const PinLockScreen()),
       GoRoute(path: '/shift', builder: (context, state) => const ShiftScreen()),
       StatefulShellRoute.indexedStack(

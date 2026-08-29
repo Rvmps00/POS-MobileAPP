@@ -68,7 +68,18 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         error: (err, st) => Center(child: Text('Error: $err')),
         data: (orders) {
           if (orders.isEmpty) {
-            return const Center(child: Text('No orders found.'));
+            return RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(orderHistoryProvider);
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height - kToolbarHeight - 100,
+                  child: const Center(child: Text('No orders found.')),
+                ),
+              ),
+            );
           }
 
           return RefreshIndicator(

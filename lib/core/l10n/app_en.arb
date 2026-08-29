@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "Lesehan Surya POS",
+  "appName": "POS (Point of Sale)",
   "@appName": {
     "description": "The name of the application"
   },

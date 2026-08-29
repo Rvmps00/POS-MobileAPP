@@ -24,6 +24,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   final TextEditingController _amountController = TextEditingController();
   int _cashReceived = 0;
   bool _isProcessing = false;
+  String _paymentMethod = 'CASH';
 
   @override
   void dispose() {
@@ -74,7 +75,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   Future<void> _processOrder(int grandTotal) async {
-    if (_cashReceived < grandTotal) return;
+    final effectiveCashReceived = _paymentMethod == 'QRIS' ? grandTotal : _cashReceived;
+    final effectiveChange = _paymentMethod == 'QRIS' ? 0 : (_cashReceived - grandTotal);
+    
+    if (_paymentMethod == 'CASH' && _cashReceived < grandTotal) return;
 
     setState(() => _isProcessing = true);
 
@@ -85,8 +89,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
       final orderNumber = await orderRepo.saveOrder(
         cartState: cartState,
-        cashReceived: _cashReceived,
-        cashChange: _cashReceived - grandTotal,
+        cashReceived: effectiveCashReceived,
+        cashChange: effectiveChange,
+        paymentMethod: _paymentMethod,
         cashierId: cashierId,
       );
 
@@ -94,7 +99,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       final printerService = ref.read(printerServiceProvider);
       if (await printerService.isConnected) {
         final prefs = ref.read(sharedPreferencesProvider);
-        final storeName = prefs.getString('store_name') ?? 'LESEHAN SURYA';
+        final storeName = prefs.getString('store_name') ?? 'POINT OF SALE';
         final storeAddress = prefs.getString('store_address') ?? '';
         final storePhone = prefs.getString('store_phone') ?? '';
         final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';
@@ -105,8 +110,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         final bytes = await ReceiptBuilder.buildReceipt(
           orderNumber: orderNumber,
           cartState: cartState,
-          cashReceived: _cashReceived,
-          cashChange: _cashReceived - grandTotal,
+          cashReceived: effectiveCashReceived,
+          cashChange: effectiveChange,
           cashierName: cashierName,
           storeName: storeName,
           storeAddress: storeAddress,
@@ -122,8 +127,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         }
       }
 
-      // Clear cart
+      // Clear cart and invalidate history
       ref.read(cartProvider.notifier).clearCart();
+      ref.invalidate(orderHistoryProvider);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -160,9 +166,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
 
     final grandTotal = cartState.grandTotal;
-    final change = _cashReceived - grandTotal;
+    final change = _paymentMethod == 'QRIS' ? 0 : (_cashReceived - grandTotal);
     final canProcess =
-        _cashReceived >= grandTotal &&
+        (_paymentMethod == 'QRIS' || _cashReceived >= grandTotal) &&
         !_isProcessing &&
         cartState.items.isNotEmpty;
 
@@ -192,7 +198,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ),
                   )
                 : Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: _buildLeftSide(
                       lang,
                       cartState,
@@ -275,7 +281,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.all(isTablet ? 24 : 20),
+            padding: EdgeInsets.only(
+              left: isTablet ? 24 : 20, 
+              right: isTablet ? 24 : 20, 
+              top: isTablet ? 20 : 16, 
+              bottom: isTablet ? 12 : 8,
+            ),
             child: Text(
               lang == 'en' ? 'Order Summary' : 'Ringkasan Pesanan',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -290,7 +301,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(isTablet ? 24 : 20),
+            padding: EdgeInsets.only(
+              left: isTablet ? 24 : 20,
+              right: isTablet ? 24 : 20,
+              top: isTablet ? 12 : 8,
+              bottom: isTablet ? 16 : 12,
+            ),
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerLowest,
               border: Border(
@@ -317,7 +333,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: isTablet ? 8 : 4),
+                SizedBox(height: isTablet ? 6 : 2),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -337,7 +353,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: isTablet ? 12 : 8),
+                  padding: EdgeInsets.symmetric(vertical: isTablet ? 8 : 4),
                   child: const Divider(),
                 ),
                 Row(
@@ -529,102 +545,186 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            lang == 'en'
-                ? 'Cash Amount Received'
-                : 'Jumlah Uang Tunai Diterima',
-            style: TextStyle(
-              fontSize: isTablet ? 14 : 12,
-              color: colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: isTablet ? 12 : 8),
-          Material(
-            color: Colors.transparent,
-            child: Ink(
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.3,
-                ),
-                borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
-              ),
-              child: InkWell(
-                onTap: () => _showPaymentBottomSheet(grandTotal, colorScheme, lang),
-                borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isTablet ? 24 : 16,
-                    vertical: isTablet ? 24 : 12,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Payment Method Selector
+                  Text(
+                    lang == 'en' ? 'Payment Method' : 'Metode Pembayaran',
+                    style: TextStyle(
+                      fontSize: isTablet ? 14 : 12,
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Rp ',
-                        style: TextStyle(
-                          fontSize: isTablet ? 24 : 18,
-                          color: colorScheme.onSurfaceVariant,
+                  SizedBox(height: isTablet ? 12 : 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: SegmentedButton<String>(
+                      segments: [
+                        ButtonSegment<String>(
+                          value: 'CASH',
+                          label: Text(lang == 'en' ? 'Cash' : 'Tunai'),
+                          icon: const Icon(Icons.money),
                         ),
+                        const ButtonSegment<String>(
+                          value: 'QRIS',
+                          label: Text('QRIS'),
+                          icon: Icon(Icons.qr_code_2),
+                        ),
+                      ],
+                      selected: {_paymentMethod},
+                      onSelectionChanged: (Set<String> newSelection) {
+                        setState(() {
+                          _paymentMethod = newSelection.first;
+                        });
+                      },
+                      style: SegmentedButton.styleFrom(
+                        backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        selectedBackgroundColor: colorScheme.primaryContainer,
+                        selectedForegroundColor: colorScheme.onPrimaryContainer,
                       ),
-                      Expanded(
-                        child: Text(
-                          _amountController.text.isEmpty
-                              ? '0'
-                              : _amountController.text,
-                          style: TextStyle(
-                            fontSize: isTablet ? 32 : 24,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
+                    ),
+                  ),
+                  SizedBox(height: isTablet ? 24 : 16),
+
+                  if (_paymentMethod == 'CASH') ...[
+                    Text(
+                      lang == 'en'
+                          ? 'Cash Amount Received'
+                          : 'Jumlah Uang Tunai Diterima',
+                      style: TextStyle(
+                        fontSize: isTablet ? 14 : 12,
+                        color: colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: isTablet ? 12 : 8),
+                    Material(
+                      color: Colors.transparent,
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest.withValues(
+                            alpha: 0.3,
+                          ),
+                          borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
+                        ),
+                        child: InkWell(
+                          onTap: () => _showPaymentBottomSheet(grandTotal, colorScheme, lang),
+                          borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isTablet ? 24 : 16,
+                              vertical: isTablet ? 24 : 12,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Rp ',
+                                  style: TextStyle(
+                                    fontSize: isTablet ? 24 : 18,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    _amountController.text.isEmpty
+                                        ? '0'
+                                        : _amountController.text,
+                                    style: TextStyle(
+                                      fontSize: isTablet ? 32 : 24,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.edit,
+                                  color: colorScheme.primary,
+                                  size: isTablet ? 24 : 20,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Icon(
-                        Icons.edit,
-                        color: colorScheme.primary,
-                        size: isTablet ? 24 : 20,
+                    ),
+                  ] else ...[
+                    // QRIS Instructions
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(isTablet ? 24 : 16),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
+                        border: Border.all(
+                          color: colorScheme.primary.withValues(alpha: 0.3),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.qr_code_scanner,
+                            size: isTablet ? 48 : 32,
+                            color: colorScheme.primary,
+                          ),
+                          SizedBox(height: isTablet ? 16 : 12),
+                          Text(
+                            lang == 'en' 
+                                ? 'Please direct the customer to scan the QRIS standee.'
+                                : 'Silakan arahkan pelanggan untuk scan QRIS.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: isTablet ? 16 : 14,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ),
-          const Spacer(),
           // Change Display
-          Container(
-            padding: EdgeInsets.all(isTablet ? 24 : 12),
-            decoration: BoxDecoration(
-              color: change >= 0
-                  ? colorScheme.primaryContainer
-                  : colorScheme.errorContainer,
-              borderRadius: BorderRadius.circular(isTablet ? 24 : 12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  lang == 'en' ? 'Change' : 'Kembalian',
-                  style: TextStyle(
-                    fontSize: isTablet ? 18 : 14,
-                    fontWeight: FontWeight.w600,
-                    color: change >= 0
-                        ? colorScheme.onPrimaryContainer
-                        : colorScheme.onErrorContainer,
+          if (_paymentMethod == 'CASH')
+            Container(
+              padding: EdgeInsets.all(isTablet ? 24 : 12),
+              decoration: BoxDecoration(
+                color: change >= 0
+                    ? colorScheme.primaryContainer
+                    : colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(isTablet ? 24 : 12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    lang == 'en' ? 'Change' : 'Kembalian',
+                    style: TextStyle(
+                      fontSize: isTablet ? 18 : 14,
+                      fontWeight: FontWeight.w600,
+                      color: change >= 0
+                          ? colorScheme.onPrimaryContainer
+                          : colorScheme.onErrorContainer,
+                    ),
                   ),
-                ),
-                Text(
-                  change >= 0 ? currencyFormatter.format(change) : 'Rp 0',
-                  style: TextStyle(
-                    fontSize: isTablet ? 28 : 20,
-                    fontWeight: FontWeight.bold,
-                    color: change >= 0
-                        ? colorScheme.onPrimaryContainer
-                        : colorScheme.onErrorContainer,
+                  Text(
+                    change >= 0 ? currencyFormatter.format(change) : 'Rp 0',
+                    style: TextStyle(
+                      fontSize: isTablet ? 28 : 20,
+                      fontWeight: FontWeight.bold,
+                      color: change >= 0
+                          ? colorScheme.onPrimaryContainer
+                          : colorScheme.onErrorContainer,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           SizedBox(height: isTablet ? 16 : 12),
           // Confirm Order
           SizedBox(
@@ -636,13 +736,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 backgroundColor: colorScheme.primary,
                 foregroundColor: colorScheme.onPrimary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
+                  borderRadius: BorderRadius.circular(isTablet ? 24 : 12),
                 ),
               ),
               child: _isProcessing
                   ? const CircularProgressIndicator(color: Colors.white)
                   : Text(
-                      lang == 'en' ? 'Confirm Order' : 'Konfirmasi Pesanan',
+                      lang == 'en' 
+                          ? (_paymentMethod == 'QRIS' ? 'Confirm QRIS Payment' : 'Confirm Order') 
+                          : (_paymentMethod == 'QRIS' ? 'Konfirmasi Pembayaran QRIS' : 'Konfirmasi Pesanan'),
                       style: TextStyle(
                         fontSize: isTablet ? 18 : 14,
                         fontWeight: FontWeight.bold,
@@ -662,6 +764,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     ColorScheme colorScheme,
     NumberFormat currencyFormatter,
   ) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       shrinkWrap: true,
@@ -669,7 +773,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       itemBuilder: (context, index) {
         final item = cartState.items[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: EdgeInsets.only(bottom: isTablet ? 12 : 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

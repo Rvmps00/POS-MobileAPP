@@ -61,7 +61,7 @@ class OrderDetailScreen extends ConsumerWidget {
               final printerService = ref.read(printerServiceProvider);
               if (await printerService.isConnected) {
                 final prefs = ref.read(sharedPreferencesProvider);
-                final storeName = prefs.getString('store_name') ?? 'LESEHAN SURYA';
+                final storeName = prefs.getString('store_name') ?? 'POINT OF SALE';
                 final storeAddress = prefs.getString('store_address') ?? '';
                 final storePhone = prefs.getString('store_phone') ?? '';
                 final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';

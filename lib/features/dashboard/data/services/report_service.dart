@@ -116,7 +116,7 @@ class ReportService {
   }
 
   // 3. Email Report
-  Future<bool> sendReportEmail(String subject, String body, List<File> attachments) async {
+  Future<bool> sendReportEmail(String subject, String body, List<File> attachments, String targetEmail) async {
     final email = dotenv.env['SMTP_EMAIL'];
     final password = dotenv.env['SMTP_PASSWORD'];
 
@@ -127,8 +127,8 @@ class ReportService {
 
     final smtpServer = gmail(email, password);
     final message = Message()
-      ..from = Address(email, 'Lesehan Surya POS')
-      ..recipients.add(email) // Sending to self for records
+      ..from = Address(email, 'POS (Point of Sale)')
+      ..recipients.add(targetEmail) 
       ..subject = subject
       ..text = body;
 

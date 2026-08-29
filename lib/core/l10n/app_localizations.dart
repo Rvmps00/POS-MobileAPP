@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// The name of the application
   ///
   /// In en, this message translates to:
-  /// **'Lesehan Surya POS'**
+  /// **'POS (Point of Sale)'**
   String get appName;
 
   /// No description provided for @login.

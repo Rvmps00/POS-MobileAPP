@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:pos_mobile_app/core/database/app_database.dart';
@@ -84,10 +85,12 @@ class ShiftNotifier extends _$ShiftNotifier {
         final csvFile = await reportService.generateOrdersCsv(cutoffDate);
         
         // 3. Email files to owner
+        final targetEmail = Supabase.instance.client.auth.currentUser?.email ?? dotenv.env['SMTP_EMAIL'] ?? 'unknown@example.com';
         await reportService.sendReportEmail(
-          'Lesehan Surya - End of Shift Report',
+          'POS (Point of Sale) - End of Shift Report',
           'Hello,\n\nAttached is the end of shift report for today. We have also attached a CSV backup of orders older than 30 days.\n\nThank you.',
           [pdfFile, csvFile],
+          targetEmail,
         );
         
         // 4. Prune DB (Keep Supabase free tier happy!)

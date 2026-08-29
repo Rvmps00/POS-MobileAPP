@@ -32,12 +32,12 @@ void main() async {
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
     ],
-    child: const LesehanSuryaApp(),
+    child: const POSApp(),
   ));
 }
 
-class LesehanSuryaApp extends ConsumerWidget {
-  const LesehanSuryaApp({super.key});
+class POSApp extends ConsumerWidget {
+  const POSApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,7 +46,7 @@ class LesehanSuryaApp extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'Lesehan Surya POS',
+      title: 'POS (Point of Sale)',
       themeMode: themeMode,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
