@@ -7,6 +7,7 @@ import '../../features/dashboard/data/providers/shift_provider.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/presentation/forgot_password_screen.dart';
+import '../../features/auth/presentation/set_new_password_screen.dart';
 import '../../features/auth/presentation/pin_lock_screen.dart';
 import '../../features/auth/data/providers/auth_provider.dart';
 import '../../core/router/role_guard.dart';
@@ -52,8 +53,17 @@ GoRouter appRouter(Ref ref) {
       final isLoggingIn = state.uri.path == '/login';
       final isRegistering = state.uri.path == '/register';
       final isForgotPassword = state.uri.path == '/forgot-password';
-      final isAuthRoute = isLoggingIn || isRegistering || isForgotPassword;
+      final isSetNewPassword = state.uri.path == '/set-new-password';
+      final isAuthRoute = isLoggingIn || isRegistering || isForgotPassword || isSetNewPassword;
       final isLockScreen = state.uri.path == '/lock';
+      
+      // Handle password recovery deep link
+      if (authState.value?.event == AuthChangeEvent.passwordRecovery) {
+        if (!isSetNewPassword) {
+          return '/set-new-password';
+        }
+        return null; // Stay on this screen
+      }
 
       if (!isAuthenticated && !isAuthRoute) {
         return '/login';
@@ -86,6 +96,7 @@ GoRouter appRouter(Ref ref) {
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
       GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
+      GoRoute(path: '/set-new-password', builder: (context, state) => const SetNewPasswordScreen()),
       GoRoute(path: '/lock', builder: (context, state) => const PinLockScreen()),
       GoRoute(path: '/shift', builder: (context, state) => const ShiftScreen()),
       StatefulShellRoute.indexedStack(
