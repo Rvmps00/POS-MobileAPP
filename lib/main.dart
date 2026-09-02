@@ -7,6 +7,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'core/l10n/app_localizations.dart';
 import 'core/printer/printer_providers.dart';
+import 'core/auth/secure_local_storage.dart';
+import 'core/auth/security_manager.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_notifier.dart';
@@ -16,11 +18,17 @@ import 'core/router/app_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize RASP security
+  SecurityManager.initialize();
+
   // Initialize Supabase
   await Supabase.initialize(
     url: 'https://iggafrwzriteftslmneb.supabase.co',
     publishableKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnZ2Fmcnd6cml0ZWZ0c2xtbmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzAzNDksImV4cCI6MjEwMjAwNjM0OX0.rJZxPFCei76-eVEePa-tPgHZOa0yDSzal8PUPVQxGio',
+    authOptions: FlutterAuthClientOptions(
+      localStorage: SecureLocalStorage(),
+    ),
   );
 
   // Initialize dotenv

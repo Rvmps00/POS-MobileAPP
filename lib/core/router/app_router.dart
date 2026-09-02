@@ -54,7 +54,7 @@ GoRouter appRouter(Ref ref) {
       final isRegistering = state.uri.path == '/register';
       final isForgotPassword = state.uri.path == '/forgot-password';
       final isSetNewPassword = state.uri.path == '/set-new-password';
-      final isAuthRoute = isLoggingIn || isRegistering || isForgotPassword || isSetNewPassword;
+      final isAuthRoute = isLoggingIn || isRegistering || isForgotPassword;
       final isLockScreen = state.uri.path == '/lock';
       
       // Handle password recovery deep link
@@ -65,18 +65,18 @@ GoRouter appRouter(Ref ref) {
         return null; // Stay on this screen
       }
 
-      if (!isAuthenticated && !isAuthRoute) {
+      if (!isAuthenticated && !isAuthRoute && !isSetNewPassword) {
         return '/login';
       }
       
       if (isAuthenticated) {
         // Enforce lock screen
-        if (activeStaff == null && !isLockScreen) {
+        if (activeStaff == null && !isLockScreen && !isSetNewPassword) {
           return '/lock';
         }
         
         // Prevent going to auth routes if already set up
-        if ((isAuthRoute || isLockScreen) && activeStaff != null) {
+        if ((isAuthRoute || isLockScreen) && activeStaff != null && !isSetNewPassword) {
           return '/pos';
         }
 

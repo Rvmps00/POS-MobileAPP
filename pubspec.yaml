@@ -62,6 +62,8 @@ dependencies:
   printing: ^5.14.3
   fl_chart: ^1.2.0
   flutter_dotenv: ^6.0.1
+  flutter_secure_storage: ^11.0.0
+  freerasp: ^8.2.2
 
 dev_dependencies:
   flutter_test:

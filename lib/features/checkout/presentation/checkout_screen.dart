@@ -113,6 +113,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           cashReceived: effectiveCashReceived,
           cashChange: effectiveChange,
           cashierName: cashierName,
+          paymentMethod: _paymentMethod,
           storeName: storeName,
           storeAddress: storeAddress,
           storePhone: storePhone,

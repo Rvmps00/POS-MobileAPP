@@ -31,6 +31,7 @@ class ReceiptBuilder {
     required int cashReceived,
     required int cashChange,
     required String cashierName,
+    String paymentMethod = 'CASH',
     String storeName = 'POINT OF SALE',
     String storeAddress = '',
     String storePhone = '',
@@ -158,16 +159,18 @@ class ReceiptBuilder {
     // === PAYMENT ===
     bytes += generator.row([
       PosColumn(text: 'Pembayaran:', width: 6),
-      PosColumn(text: 'CASH', width: 6, styles: const PosStyles(align: PosAlign.right)),
+      PosColumn(text: paymentMethod, width: 6, styles: const PosStyles(align: PosAlign.right)),
     ]);
-    bytes += generator.row([
-      PosColumn(text: 'Tunai:', width: 6),
-      PosColumn(text: formatRp(cashReceived), width: 6, styles: const PosStyles(align: PosAlign.right)),
-    ]);
-    bytes += generator.row([
-      PosColumn(text: 'Kembali:', width: 6),
-      PosColumn(text: formatRp(cashChange), width: 6, styles: const PosStyles(align: PosAlign.right)),
-    ]);
+    if (paymentMethod == 'CASH') {
+      bytes += generator.row([
+        PosColumn(text: 'Tunai:', width: 6),
+        PosColumn(text: formatRp(cashReceived), width: 6, styles: const PosStyles(align: PosAlign.right)),
+      ]);
+      bytes += generator.row([
+        PosColumn(text: 'Kembali:', width: 6),
+        PosColumn(text: formatRp(cashChange), width: 6, styles: const PosStyles(align: PosAlign.right)),
+      ]);
+    }
     bytes += generator.hr();
 
     // === FOOTER ===
@@ -299,18 +302,21 @@ class ReceiptBuilder {
     bytes += generator.emptyLines(1);
 
     // === PAYMENT ===
+    final method = order.paymentMethod ?? 'CASH';
     bytes += generator.row([
       PosColumn(text: 'Pembayaran:', width: 6),
-      PosColumn(text: order.paymentMethod ?? 'CASH', width: 6, styles: const PosStyles(align: PosAlign.right)),
+      PosColumn(text: method, width: 6, styles: const PosStyles(align: PosAlign.right)),
     ]);
-    bytes += generator.row([
-      PosColumn(text: 'Tunai:', width: 6),
-      PosColumn(text: formatRp(order.cashReceived ?? order.grandTotal), width: 6, styles: const PosStyles(align: PosAlign.right)),
-    ]);
-    bytes += generator.row([
-      PosColumn(text: 'Kembali:', width: 6),
-      PosColumn(text: formatRp(order.cashChange ?? 0), width: 6, styles: const PosStyles(align: PosAlign.right)),
-    ]);
+    if (method == 'CASH') {
+      bytes += generator.row([
+        PosColumn(text: 'Tunai:', width: 6),
+        PosColumn(text: formatRp(order.cashReceived ?? order.grandTotal), width: 6, styles: const PosStyles(align: PosAlign.right)),
+      ]);
+      bytes += generator.row([
+        PosColumn(text: 'Kembali:', width: 6),
+        PosColumn(text: formatRp(order.cashChange ?? 0), width: 6, styles: const PosStyles(align: PosAlign.right)),
+      ]);
+    }
     bytes += generator.hr();
 
     // === FOOTER ===
