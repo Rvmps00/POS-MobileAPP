@@ -248,12 +248,17 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildProductsTab(colorScheme, lang),
-          _buildToppingsTab(colorScheme, lang),
-        ],
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildProductsTab(colorScheme, lang),
+              _buildToppingsTab(colorScheme, lang),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -20,20 +20,57 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
   @override
   void initState() {
     super.initState();
-    _scanDevices();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scanDevices();
+    });
   }
 
   Future<void> _scanDevices() async {
     setState(() => _isScanning = true);
-    final printerService = ref.read(printerServiceProvider);
     
-    // Request permission internally or assume handled by the package.
-    await [
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-      Permission.location,
-    ].request();
+    // Check if permissions are already granted
+    final locationStatus = await Permission.location.status;
+    final bluetoothScanStatus = await Permission.bluetoothScan.status;
+    final bluetoothConnectStatus = await Permission.bluetoothConnect.status;
 
+    if (!locationStatus.isGranted || !bluetoothScanStatus.isGranted || !bluetoothConnectStatus.isGranted) {
+      // Show Prominent Disclosure Dialog for Play Store Compliance
+      if (mounted) {
+        final proceed = await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: const Text('Printer Connection Setup'),
+            content: const Text(
+              'This app requires Bluetooth and Location permissions solely to discover and connect to your Bluetooth thermal printer. We do not track your physical location or share it with third parties.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Deny'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Continue'),
+              ),
+            ],
+          ),
+        );
+
+        if (proceed != true) {
+          setState(() => _isScanning = false);
+          return;
+        }
+      }
+
+      await [
+        Permission.bluetoothScan,
+        Permission.bluetoothConnect,
+        Permission.location,
+      ].request();
+    }
+
+    final printerService = ref.read(printerServiceProvider);
     final devices = await printerService.getPairedDevices();
     
     if (mounted) {

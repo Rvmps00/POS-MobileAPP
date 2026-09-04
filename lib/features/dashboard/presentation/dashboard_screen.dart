@@ -100,35 +100,40 @@ class DashboardScreen extends ConsumerWidget {
                 ),
 
                 // Metrics Grid
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 1.3,
-                  children: [
-                    _MetricCard(
-                      title: l10n.revenue,
-                      value: currencyFormatter.format(metrics.revenue),
-                      icon: Icons.account_balance_wallet,
-                    ),
-                    _MetricCard(
-                      title: l10n.orderCount,
-                      value: '${metrics.orderCount}',
-                      icon: Icons.shopping_bag,
-                    ),
-                    _MetricCard(
-                      title: l10n.averageOrderValue,
-                      value: currencyFormatter.format(metrics.averageOrderValue),
-                      icon: Icons.analytics,
-                    ),
-                    _MetricCard(
-                      title: l10n.itemsSold,
-                      value: '${metrics.itemsSold}',
-                      icon: Icons.fastfood,
-                    ),
-                  ],
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isTablet = constraints.maxWidth > 600;
+                    return GridView.count(
+                      crossAxisCount: isTablet ? 4 : 2,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: isTablet ? 1.5 : 1.3,
+                      children: [
+                        _MetricCard(
+                          title: l10n.revenue,
+                          value: currencyFormatter.format(metrics.revenue),
+                          icon: Icons.account_balance_wallet,
+                        ),
+                        _MetricCard(
+                          title: l10n.orderCount,
+                          value: '${metrics.orderCount}',
+                          icon: Icons.shopping_bag,
+                        ),
+                        _MetricCard(
+                          title: l10n.averageOrderValue,
+                          value: currencyFormatter.format(metrics.averageOrderValue),
+                          icon: Icons.analytics,
+                        ),
+                        _MetricCard(
+                          title: l10n.itemsSold,
+                          value: '${metrics.itemsSold}',
+                          icon: Icons.fastfood,
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 
                 const SizedBox(height: 24),

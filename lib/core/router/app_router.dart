@@ -9,6 +9,7 @@ import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/set_new_password_screen.dart';
 import '../../features/auth/presentation/pin_lock_screen.dart';
+import '../../features/auth/presentation/legal_consent_screen.dart';
 import '../../features/auth/data/providers/auth_provider.dart';
 import '../../core/router/role_guard.dart';
 import '../../features/catalog/presentation/main_pos_screen.dart';
@@ -43,12 +44,25 @@ GoRouter appRouter(Ref ref) {
   final activeStaff = ref.watch(activeStaffProvider);
   final isAuthenticated = authState.value?.session != null;
   final shiftState = ref.watch(shiftProvider);
+  final legalConsentState = ref.watch(legalConsentProvider);
 
   return GoRouter(
     initialLocation: '/pos',
     redirect: (context, state) {
-      // While loading the initial auth state, don't redirect yet
-      if (authState.isLoading) return null;
+      // Wait for async states to initialize
+      if (authState.isLoading || legalConsentState.isLoading) return null;
+
+      final hasAcceptedEula = legalConsentState.value ?? false;
+      final isLegalConsentRoute = state.uri.path == '/legal-consent';
+
+      if (!hasAcceptedEula) {
+        if (!isLegalConsentRoute) {
+          return '/legal-consent';
+        }
+        return null;
+      } else if (isLegalConsentRoute) {
+        return '/login';
+      }
 
       final isLoggingIn = state.uri.path == '/login';
       final isRegistering = state.uri.path == '/register';
@@ -93,6 +107,7 @@ GoRouter appRouter(Ref ref) {
       return null;
     },
     routes: [
+      GoRoute(path: '/legal-consent', builder: (context, state) => const LegalConsentScreen()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
       GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),

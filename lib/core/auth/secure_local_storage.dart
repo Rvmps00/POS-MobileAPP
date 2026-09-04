@@ -35,4 +35,16 @@ class SecureLocalStorage extends LocalStorage {
   Future<void> persistSession(String persistSessionString) async {
     await _storage.write(key: _supabaseSessionKey, value: persistSessionString);
   }
+
+  // --- EULA Consent Methods ---
+  static const _eulaKey = 'has_accepted_eula';
+
+  Future<bool> hasAcceptedEula() async {
+    final value = await _storage.read(key: _eulaKey);
+    return value == 'true';
+  }
+
+  Future<void> acceptEula() async {
+    await _storage.write(key: _eulaKey, value: 'true');
+  }
 }
