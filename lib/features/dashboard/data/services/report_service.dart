@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:drift/drift.dart' as drift;
 
-import 'package:pos_mobile_app/core/database/app_database.dart';
+import 'package:POSCO/core/database/app_database.dart';
 import '../providers/shift_provider.dart';
 import '../providers/dashboard_provider.dart';
 
@@ -160,6 +160,7 @@ class ReportService {
     }
 
     // Local Delete
-    await (db.delete(db.ordersTable)..where((t) => t.createdAt.isSmallerThanValue(olderThan))).go();
+    // Temporarily disabled to prevent accidental wipes due to SQLite DateTime type comparison issues
+    // await (db.delete(db.ordersTable)..where((t) => t.createdAt.isSmallerThanValue(olderThan))).go();
   }
 }

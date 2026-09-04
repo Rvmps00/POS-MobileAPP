@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import 'package:pos_mobile_app/core/database/app_database.dart';
+import 'package:POSCO/core/database/app_database.dart';
 import '../data/providers/order_provider.dart';
 import '../../../../core/printer/printer_providers.dart';
 import '../../../../core/printer/receipt_builder.dart';

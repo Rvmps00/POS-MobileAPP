@@ -6,12 +6,12 @@ class SecurityManager {
   static void initialize() {
     final config = TalsecConfig(
       androidConfig: AndroidConfig(
-        packageName: 'com.surya.pos_mobile_app',
-        signingCertHashes: ['AKoRuyLMM91E7lX/Zqp3u4jMmd0A7hH/Iqozu0TMVd0='], // Replace with actual SHA-256 hash in production
+        packageName: 'com.POSCO.app',
+        signingCertHashes: ['BE:72:52:00:46:4B:25:B1:C7:8F:DD:E8:B0:84:73:40:C2:2D:8F:43:3E:68:13:50:54:D8:90:B4:FB:DE:DD:A8'], // Replace with actual SHA-256 hash in production
         supportedStores: ['com.sec.android.app.samsungapps'],
       ),
       iosConfig: IOSConfig(
-        bundleIds: ['com.surya.pos_mobile_app'],
+        bundleIds: ['com.POSCO.app'],
         teamId: 'YOUR_TEAM_ID',
       ),
       watcherMail: 'admin@example.com',

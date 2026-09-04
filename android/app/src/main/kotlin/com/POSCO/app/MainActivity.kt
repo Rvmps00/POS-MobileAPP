@@ -1,4 +1,4 @@
-package com.surya.pos_mobile_app
+package com.POSCO.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -7,7 +7,7 @@ import '../../../inventory/data/providers/inventory_providers.dart';
 import '../repositories/order_repository.dart';
 
 import '../../../../core/printer/printer_providers.dart';
-import 'package:pos_mobile_app/core/database/app_database.dart';
+import 'package:POSCO/core/database/app_database.dart';
 
 final orderRepositoryProvider = Provider<OrderRepository>((ref) {
   final db = ref.watch(appDatabaseProvider);

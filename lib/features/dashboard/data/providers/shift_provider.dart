@@ -5,12 +5,12 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:pos_mobile_app/core/database/app_database.dart';
-import 'package:pos_mobile_app/features/catalog/data/providers/catalog_providers.dart';
+import 'package:POSCO/core/database/app_database.dart';
+import 'package:POSCO/features/catalog/data/providers/catalog_providers.dart';
 
 import '../services/report_service.dart';
 import 'dashboard_provider.dart';
-import 'package:pos_mobile_app/features/orders/data/providers/order_provider.dart';
+import 'package:POSCO/features/orders/data/providers/order_provider.dart';
 
 part 'shift_provider.g.dart';
 
