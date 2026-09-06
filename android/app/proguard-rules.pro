@@ -9,3 +9,8 @@
 # Fix for R8 missing play core classes
 -dontwarn com.google.android.play.core.**
 -keep class com.google.android.play.core.** { *; }
+
+# FreeRASP / Talsec Required Rules
+-keepclasseswithmembernames,includedescriptorclasses class * { 
+    native <methods>; 
+}
