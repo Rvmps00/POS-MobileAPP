@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../core/l10n/language_notifier.dart';
 import '../data/providers/auth_provider.dart';
 import '../data/repositories/auth_repository.dart';
 
@@ -55,25 +56,39 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
     }
   }
 
+  String _formatRole(String role, String lang) {
+    switch (role.toUpperCase()) {
+      case 'CASHIER':
+        return lang == 'en' ? 'Cashier' : 'Kasir';
+      case 'MANAGER':
+        return lang == 'en' ? 'Manager' : 'Manajer';
+      case 'OWNER':
+        return lang == 'en' ? 'Owner' : 'Pemilik';
+      default:
+        return role;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final staffListAsync = ref.watch(staffProfilesProvider);
+    final lang = ref.watch(languageProvider).languageCode;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: _selectedStaff == null 
-              ? _buildStaffSelection(staffListAsync, theme)
-              : _buildPinPad(theme),
+              ? _buildStaffSelection(staffListAsync, theme, lang)
+              : _buildPinPad(theme, lang),
         ),
       ),
     );
   }
 
-  Widget _buildStaffSelection(AsyncValue<List<StaffProfilesTableData>> staffListAsync, ThemeData theme) {
+  Widget _buildStaffSelection(AsyncValue<List<StaffProfilesTableData>> staffListAsync, ThemeData theme, String lang) {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 600),
@@ -84,7 +99,7 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
           Icon(Icons.lock_person_outlined, size: 64, color: theme.colorScheme.primary),
           const SizedBox(height: 24),
           Text(
-            'Who is using the POS?',
+            lang == 'en' ? 'Who is using the POS?' : 'Siapa yang menggunakan POS?',
             style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 48),
@@ -95,11 +110,9 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
               if (staffList.isEmpty) {
                 return Column(
                   children: [
-                    const Text('No staff members found.'),
+                    Text(lang == 'en' ? 'No staff members found.' : 'Tidak ada anggota staf yang ditemukan.'),
                     const SizedBox(height: 16),
-                    // Allow owner to bypass temporarily to create staff if needed?
-                    // Actually, if list is empty, it means the DB has no staff yet. 
-                    // Owner should bypass.
+                    // Allow owner to bypass temporarily to create staff if needed
                     ElevatedButton(
                       onPressed: () {
                         // Create a dummy owner to unblock setup
@@ -113,7 +126,7 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
                           )
                         );
                       },
-                      child: const Text('Bypass for Initial Setup'),
+                      child: Text(lang == 'en' ? 'Bypass for Initial Setup' : 'Lewati untuk Pengaturan Awal'),
                     )
                   ],
                 );
@@ -164,7 +177,7 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            staff.role,
+                            _formatRole(staff.role, lang),
                             style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant),
                           ),
                         ],
@@ -180,7 +193,7 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
     );
   }
 
-  Widget _buildPinPad(ThemeData theme) {
+  Widget _buildPinPad(ThemeData theme, String lang) {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 360),
@@ -207,7 +220,7 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Enter your PIN',
+            lang == 'en' ? 'Enter your PIN' : 'Masukkan PIN Anda',
             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 32),
@@ -233,7 +246,7 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
           
           if (_isError) ...[
             const SizedBox(height: 16),
-            Text('Incorrect PIN', style: TextStyle(color: theme.colorScheme.error, fontWeight: FontWeight.bold)),
+            Text(lang == 'en' ? 'Incorrect PIN' : 'PIN salah', style: TextStyle(color: theme.colorScheme.error, fontWeight: FontWeight.bold)),
           ] else ...[
             const SizedBox(height: 36),
           ],
@@ -250,7 +263,7 @@ class _PinLockScreenState extends ConsumerState<PinLockScreen> {
               for (var i = 1; i <= 9; i++) _buildKeypadButton(i.toString(), theme),
               TextButton(
                 onPressed: () => setState(() => _selectedStaff = null),
-                child: const Text('Back', style: TextStyle(fontSize: 16)),
+                child: Text(lang == 'en' ? 'Back' : 'Kembali', style: const TextStyle(fontSize: 16)),
               ),
               _buildKeypadButton('0', theme),
               IconButton(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/language_notifier.dart';
 import 'report_preview_screen.dart';
 
 import '../data/providers/shift_provider.dart';
@@ -35,18 +36,18 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
   }
 
   void _submitEndShift() async {
-    // Usually you'd want a popup dialog asking for actual cash counted in the drawer.
-    // For now we'll do a simple prompt.
+    final lang = ref.read(languageProvider).languageCode;
+    // Dialog asking for actual cash counted in the drawer.
     final amountStr = await showDialog<String>(
       context: context,
       builder: (context) {
         final ctrl = TextEditingController();
         return AlertDialog(
-          title: const Text('End Shift'),
+          title: Text(lang == 'en' ? 'End Shift' : 'Akhiri Shift'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Enter actual cash in drawer:'),
+              Text(lang == 'en' ? 'Enter actual cash in drawer:' : 'Masukkan uang fisik di laci kasir:'),
               TextField(
                 controller: ctrl,
                 keyboardType: TextInputType.number,
@@ -57,11 +58,11 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text(lang == 'en' ? 'Cancel' : 'Batal'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, ctrl.text),
-              child: const Text('End Shift'),
+              child: Text(lang == 'en' ? 'End Shift' : 'Akhiri Shift'),
             ),
           ],
         );
@@ -86,6 +87,7 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
   Widget build(BuildContext context) {
     final shiftState = ref.watch(shiftProvider);
     final l10n = AppLocalizations.of(context)!;
+    final lang = ref.watch(languageProvider).languageCode;
     final colorScheme = Theme.of(context).colorScheme;
     final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
     final dateFormatter = DateFormat('dd MMM yyyy, HH:mm');
@@ -139,7 +141,7 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Please enter the starting cash amount in your drawer.',
+                        lang == 'en' ? 'Please enter the starting cash amount in your drawer.' : 'Silakan masukkan jumlah kas modal awal di laci kasir.',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
                         textAlign: TextAlign.center,
                       ),
@@ -185,7 +187,7 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.grey.shade600,
                         ),
-                        child: const Text('Skip for now (Go to Dashboard)'),
+                        child: Text(lang == 'en' ? 'Skip for now (Go to Dashboard)' : 'Lewati untuk sekarang (Buka Dashboard)'),
                       )
                     ],
                   ),
@@ -222,14 +224,14 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
                         borderRadius: BorderRadius.circular(100),
                         border: Border.all(color: Colors.green.withOpacity(0.3)),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.check_circle_rounded, color: Colors.green, size: 20),
-                          SizedBox(width: 8),
+                          const Icon(Icons.check_circle_rounded, color: Colors.green, size: 20),
+                          const SizedBox(width: 8),
                           Text(
-                            'Shift Active',
-                            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 16),
+                            lang == 'en' ? 'Shift Active' : 'Shift Aktif',
+                            style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                         ],
                       ),
@@ -250,7 +252,7 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Started At', style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+                                  Text(lang == 'en' ? 'Started At' : 'Dimulai Pukul', style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
                                   Text(dateFormatter.format(shift.startTime), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                                 ],
                               ),

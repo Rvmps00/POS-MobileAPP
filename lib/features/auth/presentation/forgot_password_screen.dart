@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/l10n/language_notifier.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -15,10 +16,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   bool _isLoading = false;
 
   Future<void> _resetPassword() async {
+    final lang = ref.read(languageProvider).languageCode;
     if (_emailController.text.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter your email')),
+          SnackBar(
+            content: Text(
+              lang == 'en'
+                  ? 'Please enter your email'
+                  : 'Silakan masukkan email Anda',
+            ),
+          ),
         );
       }
       return;
@@ -33,9 +41,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Password reset link sent! Please check your email.'),
-            duration: Duration(seconds: 5),
+          SnackBar(
+            content: Text(
+              lang == 'en'
+                  ? 'Password reset link sent! Please check your email.'
+                  : 'Tautan reset kata sandi telah dikirim! Silakan periksa email Anda.',
+            ),
+            duration: const Duration(seconds: 5),
           ),
         );
         context.pop(); // Go back to login screen
@@ -65,6 +77,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final lang = ref.watch(languageProvider).languageCode;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -93,7 +106,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    "Reset Password",
+                    lang == 'en' ? "Reset Password" : "Reset Kata Sandi",
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
@@ -104,7 +117,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Enter your email to receive a password reset link",
+                    lang == 'en'
+                        ? "Enter your email to receive a password reset link"
+                        : "Masukkan email Anda untuk menerima tautan reset kata sandi",
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontSize: 16,
@@ -117,7 +132,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
                     child: Text(
-                      "Email Address",
+                      lang == 'en' ? "Email Address" : "Alamat Email",
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
@@ -173,9 +188,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               color: colorScheme.surfaceContainerLowest,
                             ),
                           )
-                        : const Text(
-                            "Send Reset Link",
-                            style: TextStyle(
+                        : Text(
+                            lang == 'en' ? "Send Reset Link" : "Kirim Tautan Reset",
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),

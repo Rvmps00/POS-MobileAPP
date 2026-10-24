@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/l10n/language_notifier.dart';
 import '../data/providers/shift_provider.dart';
 import '../data/providers/dashboard_provider.dart';
 
@@ -21,6 +22,7 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
   bool _isEnding = false;
 
   Future<void> _confirmEndShift(BuildContext context) async {
+    final lang = ref.read(languageProvider).languageCode;
     setState(() => _isEnding = true);
     
     // Call endShift to commit everything, send email, and reset queue
@@ -28,7 +30,13 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Shift Ended Successfully! Emails Sent.')),
+        SnackBar(
+          content: Text(
+            lang == 'en'
+                ? 'Shift Ended Successfully! Emails Sent.'
+                : 'Shift berhasil diakhiri! Email telah dikirim.',
+          ),
+        ),
       );
       // Go back to dashboard root
       context.go('/dashboard');
@@ -37,6 +45,7 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = ref.watch(languageProvider).languageCode;
     final shiftState = ref.watch(shiftProvider).value;
     final metricsAsync = ref.watch(dashboardMetricsProvider(null));
     final reportService = ref.watch(reportServiceProvider);
@@ -52,7 +61,7 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Report Preview'),
+        title: Text(lang == 'en' ? 'Report Preview' : 'Pratinjau Laporan'),
       ),
       body: Column(
         children: [
@@ -61,14 +70,14 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
             color: Colors.blue.withOpacity(0.1),
             width: double.infinity,
             child: Text(
-              'The report and CSV backup will be sent to:\n$receiverEmail',
+              '${lang == 'en' ? 'The report and CSV backup will be sent to:' : 'Laporan dan cadangan CSV akan dikirim ke:'}\n$receiverEmail',
               textAlign: TextAlign.center,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
             child: PdfPreview(
-              build: (format) => reportService.generateEndOfDayPdf(shiftState, metrics),
+              build: (format) => reportService.generateEndOfDayPdf(shiftState, metrics, lang: lang),
               allowPrinting: false,
               allowSharing: false,
               canChangeOrientation: false,
@@ -87,7 +96,7 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
             ),
             child: _isEnding 
                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : const Text('Confirm End Shift & Send Email'),
+                : Text(lang == 'en' ? 'Confirm End Shift & Send Email' : 'Konfirmasi Akhiri Shift & Kirim Email'),
           ),
         ),
       ),

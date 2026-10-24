@@ -77,7 +77,7 @@ class CartItemTile extends StatelessWidget {
                         const SizedBox(height: 4),
                         ...item.removedIngredients.map(
                           (i) => Text(
-                            '- Tanpa ${i.localizedName(languageCode)}',
+                            '${languageCode == 'en' ? '- No ' : '- Tanpa '}${i.localizedName(languageCode)}',
                             style: TextStyle(
                               fontSize: 12,
                               color: colorScheme.error,

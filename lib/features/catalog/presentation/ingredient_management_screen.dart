@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/language_notifier.dart';
 import '../data/models/default_ingredient_model.dart';
 import '../data/providers/catalog_providers.dart';
 
@@ -45,22 +46,23 @@ class _IngredientManagementScreenState
   }
 
   Future<void> _deleteIngredient(String id) async {
+    final lang = ref.read(languageProvider).languageCode;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Hapus Bahan?'),
+        title: Text(lang == 'en' ? 'Delete Ingredient?' : 'Hapus Bahan?'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Batal'),
+            child: Text(lang == 'en' ? 'Cancel' : 'Batal'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(ctx).colorScheme.error,
             ),
-            child: const Text('Hapus'),
+            child: Text(lang == 'en' ? 'Delete' : 'Hapus'),
           ),
         ],
       ),
@@ -75,6 +77,7 @@ class _IngredientManagementScreenState
   Future<Map<String, dynamic>?> _showIngredientDialog({
     DefaultIngredientModel? ingredient,
   }) async {
+    final lang = ref.read(languageProvider).languageCode;
     final nameCtrl = TextEditingController(text: ingredient?.name ?? '');
     final nameEnCtrl = TextEditingController(text: ingredient?.nameEn ?? '');
     bool isRemovable = ingredient?.isRemovable ?? true;
@@ -83,7 +86,9 @@ class _IngredientManagementScreenState
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          title: Text(ingredient == null ? 'Tambah Bahan' : 'Edit Bahan'),
+          title: Text(ingredient == null
+              ? (lang == 'en' ? 'Add Ingredient' : 'Tambah Bahan')
+              : (lang == 'en' ? 'Edit Ingredient' : 'Edit Bahan')),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -93,7 +98,7 @@ class _IngredientManagementScreenState
               TextField(
                 controller: nameCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Nama Bahan *',
+                  labelText: lang == 'en' ? 'Ingredient Name *' : 'Nama Bahan *',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -103,7 +108,7 @@ class _IngredientManagementScreenState
               TextField(
                 controller: nameEnCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Name (English)',
+                  labelText: lang == 'en' ? 'Name in English' : 'Name (English)',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -111,7 +116,7 @@ class _IngredientManagementScreenState
               ),
               const SizedBox(height: 12),
               SwitchListTile(
-                title: const Text('Bisa dihilangkan?'),
+                title: Text(lang == 'en' ? 'Removable by customer?' : 'Bisa dihilangkan?'),
                 value: isRemovable,
                 onChanged: (v) => setDialogState(() => isRemovable = v),
                 contentPadding: EdgeInsets.zero,
@@ -121,7 +126,7 @@ class _IngredientManagementScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Batal'),
+              child: Text(lang == 'en' ? 'Cancel' : 'Batal'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -134,7 +139,7 @@ class _IngredientManagementScreenState
                   'is_removable': isRemovable,
                 });
               },
-              child: const Text('Simpan'),
+              child: Text(lang == 'en' ? 'Save' : 'Simpan'),
             ),
           ],
         ),
@@ -144,15 +149,16 @@ class _IngredientManagementScreenState
 
   @override
   Widget build(BuildContext context) {
+    final lang = ref.watch(languageProvider).languageCode;
     final colorScheme = Theme.of(context).colorScheme;
     final ingredientsAsync = ref.watch(ingredientsProvider(widget.productId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Bahan Bawaan')),
+      appBar: AppBar(title: Text(lang == 'en' ? 'Default Ingredients' : 'Bahan Bawaan')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addIngredient,
         icon: const Icon(Icons.add),
-        label: const Text('Tambah Bahan'),
+        label: Text(lang == 'en' ? 'Add Ingredient' : 'Tambah Bahan'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       body: ingredientsAsync.when(
@@ -168,7 +174,7 @@ class _IngredientManagementScreenState
                     color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Belum ada bahan bawaan'),
+                  Text(lang == 'en' ? 'No ingredients added yet' : 'Belum ada bahan bawaan'),
                 ],
               ),
             );
@@ -192,8 +198,10 @@ class _IngredientManagementScreenState
                         ? Colors.green
                         : colorScheme.onSurfaceVariant,
                   ),
-                  title: Text(item.name),
-                  subtitle: Text(item.nameEn ?? ''),
+                  title: Text(item.localizedName(lang)),
+                  subtitle: item.nameEn != null && item.nameEn!.isNotEmpty
+                      ? Text(lang == 'en' ? item.name : item.nameEn!)
+                      : null,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

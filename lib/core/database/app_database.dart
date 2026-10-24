@@ -95,3 +95,30 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 }
+
+extension ProductsTableDataX on ProductsTableData {
+  String localizedName(String lang) {
+    if (lang == 'en' && nameEn != null && nameEn!.isNotEmpty) {
+      return nameEn!;
+    }
+    return name;
+  }
+}
+
+extension AddonToppingsTableDataX on AddonToppingsTableData {
+  String localizedName(String lang) {
+    if (lang == 'en' && nameEn != null && nameEn!.isNotEmpty) {
+      return nameEn!;
+    }
+    return name;
+  }
+}
+
+extension CategoriesTableDataX on CategoriesTableData {
+  String localizedName(String lang) {
+    if (lang == 'en' && nameEn != null && nameEn!.isNotEmpty) {
+      return nameEn!;
+    }
+    return name;
+  }
+}

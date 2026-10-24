@@ -1,7 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/sync/sync_engine.dart';
-import 'dart:convert';
 import 'package:drift/drift.dart' as drift;
 import 'package:uuid/uuid.dart';
 

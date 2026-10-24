@@ -3,7 +3,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'dart:typed_data';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
@@ -21,7 +20,7 @@ class ReportService {
   ReportService(this.db, this.supabase);
 
   // 1. Generate End of Day PDF
-  Future<Uint8List> generateEndOfDayPdf(ShiftModel shift, DashboardMetrics metrics) async {
+  Future<Uint8List> generateEndOfDayPdf(ShiftModel shift, DashboardMetrics metrics, {String lang = 'id'}) async {
     final pdf = pw.Document();
     final dateFormatter = DateFormat('dd MMM yyyy, HH:mm');
     final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
@@ -32,35 +31,41 @@ class ReportService {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text('End of Shift Report', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              pw.Text(
+                lang == 'en' ? 'End of Shift Report' : 'Laporan Akhir Sesi',
+                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+              ),
               pw.SizedBox(height: 20),
-              pw.Text('Shift Started: ${dateFormatter.format(shift.startTime)}'),
-              pw.Text('Shift Ended: ${dateFormatter.format(DateTime.now())}'),
+              pw.Text('${lang == 'en' ? 'Shift Started' : 'Sesi Dimulai'}: ${dateFormatter.format(shift.startTime)}'),
+              pw.Text('${lang == 'en' ? 'Shift Ended' : 'Sesi Berakhir'}: ${dateFormatter.format(DateTime.now())}'),
               pw.SizedBox(height: 20),
-              pw.Text('Starting Cash: ${currencyFormatter.format(shift.startingCash)}'),
+              pw.Text('${lang == 'en' ? 'Starting Cash' : 'Modal Awal'}: ${currencyFormatter.format(shift.startingCash)}'),
               pw.SizedBox(height: 10),
               pw.Divider(),
               pw.SizedBox(height: 10),
-              pw.Text('Sales Summary', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+              pw.Text(
+                lang == 'en' ? 'Sales Summary' : 'Ringkasan Penjualan',
+                style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+              ),
               pw.SizedBox(height: 10),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Total Revenue:'),
+                  pw.Text(lang == 'en' ? 'Total Revenue:' : 'Total Pendapatan:'),
                   pw.Text(currencyFormatter.format(metrics.revenue)),
                 ],
               ),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Total Orders:'),
+                  pw.Text(lang == 'en' ? 'Total Orders:' : 'Total Pesanan:'),
                   pw.Text('${metrics.orderCount}'),
                 ],
               ),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Items Sold:'),
+                  pw.Text(lang == 'en' ? 'Items Sold:' : 'Item Terjual:'),
                   pw.Text('${metrics.itemsSold}'),
                 ],
               ),

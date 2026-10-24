@@ -2,8 +2,6 @@ import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:intl/intl.dart';
 
 import '../../features/cart/data/models/cart_state_model.dart';
-import '../../features/cart/data/models/cart_state_model.dart';
-import '../../features/cart/data/models/cart_item_model.dart';
 import '../database/app_database.dart';
 
 class ReceiptBuilder {
@@ -36,7 +34,9 @@ class ReceiptBuilder {
     String storeAddress = '',
     String storePhone = '',
     String footerMessage = 'Terima Kasih!\nSelamat Menikmati 🙏',
+    String lang = 'id',
   }) async {
+    final isEn = lang == 'en';
     final profile = await CapabilityProfile.load();
     // 58mm paper is standard 32 characters per line
     final generator = Generator(PaperSize.mm58, profile);
@@ -66,7 +66,7 @@ class ReceiptBuilder {
     // === QUEUE NUMBER ===
     final queueNumber = getQueueNumber(orderNumber);
     bytes += generator.text(
-      'ANTRIAN: $queueNumber',
+      isEn ? 'QUEUE: $queueNumber' : 'ANTRIAN: $queueNumber',
       styles: const PosStyles(
         align: PosAlign.center,
         bold: true,
@@ -79,30 +79,29 @@ class ReceiptBuilder {
     // === ORDER INFO ===
     bytes += generator.hr(ch: '=');
     final dateStr = DateFormat('dd/MM/yyyy  HH:mm').format(DateTime.now());
-    bytes += generator.text('Waktu: $dateStr');
-    bytes += generator.text('Kasir: $cashierName');
-    bytes += generator.text('Order: $orderNumber');
+    bytes += generator.text(isEn ? 'Time  : $dateStr' : 'Waktu : $dateStr');
+    bytes += generator.text(isEn ? 'Cashier: $cashierName' : 'Kasir: $cashierName');
+    bytes += generator.text('Order : $orderNumber');
     
-    final typeStr = cartState.orderType.name == 'dineIn' ? 'Dine-in' : 'Takeaway';
+    final typeStr = cartState.orderType.name == 'dineIn' 
+        ? (isEn ? 'Dine-in' : 'Makan di Tempat') 
+        : (isEn ? 'Takeaway' : 'Bawa Pulang');
     if (cartState.orderType.name == 'dineIn' && cartState.tableNumber != null) {
-      bytes += generator.text('Tipe : $typeStr    Meja: ${cartState.tableNumber}');
+      bytes += generator.text('${isEn ? 'Type' : 'Tipe'} : $typeStr    ${isEn ? 'Table' : 'Meja'}: ${cartState.tableNumber}');
     } else {
-      bytes += generator.text('Tipe : $typeStr');
+      bytes += generator.text('${isEn ? 'Type' : 'Tipe'} : $typeStr');
     }
     bytes += generator.hr();
 
     // === ITEMS ===
     for (final item in cartState.items) {
       // Print Product Name and Total for this line
-      // Format: "ProductName         x2  Total"
       final qtyStr = 'x${item.quantity}';
       final totalStr = formatRp(item.lineTotal);
       
-      // If product name is too long, we might need to truncate or let it wrap.
-      // PosColumn automatically wraps if we use columns.
       bytes += generator.row([
         PosColumn(
-          text: item.product.name,
+          text: item.product.localizedName(lang),
           width: 6,
           styles: const PosStyles(bold: true),
         ),
@@ -125,13 +124,13 @@ class ReceiptBuilder {
       // Modifiers
       for (final topping in item.addedToppings) {
         final tPrice = topping.price > 0 ? '(+${formatRp(topping.price)})' : '(FREE)';
-        bytes += generator.text('  + ${topping.name} $tPrice');
+        bytes += generator.text('  + ${topping.localizedName(lang)} $tPrice');
       }
       for (final ing in item.removedIngredients) {
-        bytes += generator.text('  - No ${ing.name}');
+        bytes += generator.text(isEn ? '  - No ${ing.localizedName(lang)}' : '  - Tanpa ${ing.localizedName(lang)}');
       }
       if (item.notes != null && item.notes!.isNotEmpty) {
-        bytes += generator.text('  Catatan: ${item.notes}');
+        bytes += generator.text(isEn ? '  Notes: ${item.notes}' : '  Catatan: ${item.notes}');
       }
     }
     bytes += generator.hr();
@@ -143,7 +142,7 @@ class ReceiptBuilder {
     ]);
     if (cartState.taxAmount > 0) {
       bytes += generator.row([
-        PosColumn(text: 'Pajak (10%):', width: 6),
+        PosColumn(text: isEn ? 'Tax (10%):' : 'Pajak (10%):', width: 6),
         PosColumn(text: formatRp(cartState.taxAmount), width: 6, styles: const PosStyles(align: PosAlign.right)),
       ]);
     }
@@ -157,17 +156,18 @@ class ReceiptBuilder {
     bytes += generator.emptyLines(1);
 
     // === PAYMENT ===
+    final payMethodLabel = paymentMethod == 'CASH' ? (isEn ? 'Cash' : 'Tunai') : paymentMethod;
     bytes += generator.row([
-      PosColumn(text: 'Pembayaran:', width: 6),
-      PosColumn(text: paymentMethod, width: 6, styles: const PosStyles(align: PosAlign.right)),
+      PosColumn(text: isEn ? 'Payment:' : 'Pembayaran:', width: 6),
+      PosColumn(text: payMethodLabel, width: 6, styles: const PosStyles(align: PosAlign.right)),
     ]);
     if (paymentMethod == 'CASH') {
       bytes += generator.row([
-        PosColumn(text: 'Tunai:', width: 6),
+        PosColumn(text: isEn ? 'Cash:' : 'Tunai:', width: 6),
         PosColumn(text: formatRp(cashReceived), width: 6, styles: const PosStyles(align: PosAlign.right)),
       ]);
       bytes += generator.row([
-        PosColumn(text: 'Kembali:', width: 6),
+        PosColumn(text: isEn ? 'Change:' : 'Kembali:', width: 6),
         PosColumn(text: formatRp(cashChange), width: 6, styles: const PosStyles(align: PosAlign.right)),
       ]);
     }
@@ -194,7 +194,9 @@ class ReceiptBuilder {
     String storeAddress = '',
     String storePhone = '',
     String footerMessage = 'Terima Kasih!\nSelamat Menikmati 🙏',
+    String lang = 'id',
   }) async {
+    final isEn = lang == 'en';
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm58, profile);
     List<int> bytes = [];
@@ -222,7 +224,7 @@ class ReceiptBuilder {
     // === QUEUE NUMBER ===
     final queueNumber = getQueueNumber(order.orderNumber);
     bytes += generator.text(
-      'ANTRIAN: $queueNumber',
+      isEn ? 'QUEUE: $queueNumber' : 'ANTRIAN: $queueNumber',
       styles: const PosStyles(
         align: PosAlign.center,
         bold: true,
@@ -234,17 +236,19 @@ class ReceiptBuilder {
 
     // === ORDER INFO ===
     bytes += generator.hr(ch: '=');
-    bytes += generator.text('*** REPRINT ***', styles: const PosStyles(align: PosAlign.center, bold: true));
+    bytes += generator.text(isEn ? '*** REPRINT ***' : '*** CETAK ULANG ***', styles: const PosStyles(align: PosAlign.center, bold: true));
     final dateStr = DateFormat('dd/MM/yyyy  HH:mm').format(order.createdAt);
-    bytes += generator.text('Waktu: $dateStr');
-    bytes += generator.text('Kasir: $cashierName');
-    bytes += generator.text('Order: ${order.orderNumber}');
+    bytes += generator.text(isEn ? 'Time  : $dateStr' : 'Waktu : $dateStr');
+    bytes += generator.text(isEn ? 'Cashier: $cashierName' : 'Kasir: $cashierName');
+    bytes += generator.text('Order : ${order.orderNumber}');
     
-    final typeStr = order.orderType == 'DINE_IN' ? 'Dine-in' : 'Takeaway';
+    final typeStr = order.orderType == 'DINE_IN' 
+        ? (isEn ? 'Dine-in' : 'Makan di Tempat') 
+        : (isEn ? 'Takeaway' : 'Bawa Pulang');
     if (order.orderType == 'DINE_IN' && order.tableNumber != null) {
-      bytes += generator.text('Tipe : $typeStr    Meja: ${order.tableNumber}');
+      bytes += generator.text('${isEn ? 'Type' : 'Tipe'} : $typeStr    ${isEn ? 'Table' : 'Meja'}: ${order.tableNumber}');
     } else {
-      bytes += generator.text('Tipe : $typeStr');
+      bytes += generator.text('${isEn ? 'Type' : 'Tipe'} : $typeStr');
     }
     bytes += generator.hr();
 
@@ -276,7 +280,7 @@ class ReceiptBuilder {
       }
 
       if (item.notes != null && item.notes!.isNotEmpty) {
-        bytes += generator.text('  Catatan: ${item.notes}');
+        bytes += generator.text(isEn ? '  Notes: ${item.notes}' : '  Catatan: ${item.notes}');
       }
     }
     bytes += generator.hr();
@@ -288,7 +292,7 @@ class ReceiptBuilder {
     ]);
     if (order.taxAmount > 0) {
       bytes += generator.row([
-        PosColumn(text: 'Pajak (10%):', width: 6),
+        PosColumn(text: isEn ? 'Tax (10%):' : 'Pajak (10%):', width: 6),
         PosColumn(text: formatRp(order.taxAmount), width: 6, styles: const PosStyles(align: PosAlign.right)),
       ]);
     }
@@ -302,18 +306,19 @@ class ReceiptBuilder {
     bytes += generator.emptyLines(1);
 
     // === PAYMENT ===
-    final method = order.paymentMethod ?? 'CASH';
+    final method = order.paymentMethod;
+    final payMethodLabel = method == 'CASH' ? (isEn ? 'Cash' : 'Tunai') : method;
     bytes += generator.row([
-      PosColumn(text: 'Pembayaran:', width: 6),
-      PosColumn(text: method, width: 6, styles: const PosStyles(align: PosAlign.right)),
+      PosColumn(text: isEn ? 'Payment:' : 'Pembayaran:', width: 6),
+      PosColumn(text: payMethodLabel, width: 6, styles: const PosStyles(align: PosAlign.right)),
     ]);
     if (method == 'CASH') {
       bytes += generator.row([
-        PosColumn(text: 'Tunai:', width: 6),
+        PosColumn(text: isEn ? 'Cash:' : 'Tunai:', width: 6),
         PosColumn(text: formatRp(order.cashReceived ?? order.grandTotal), width: 6, styles: const PosStyles(align: PosAlign.right)),
       ]);
       bytes += generator.row([
-        PosColumn(text: 'Kembali:', width: 6),
+        PosColumn(text: isEn ? 'Change:' : 'Kembali:', width: 6),
         PosColumn(text: formatRp(order.cashChange ?? 0), width: 6, styles: const PosStyles(align: PosAlign.right)),
       ]);
     }

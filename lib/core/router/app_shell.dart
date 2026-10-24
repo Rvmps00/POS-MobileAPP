@@ -34,12 +34,12 @@ class AppShell extends ConsumerWidget {
       NavigationDestination(
         icon: const Icon(Icons.dashboard_outlined),
         selectedIcon: const Icon(Icons.dashboard),
-        label: 'Dashboard',
+        label: lang == 'en' ? 'Dashboard' : 'Dasbor',
       ),
       NavigationDestination(
         icon: const Icon(Icons.restaurant_menu_outlined),
         selectedIcon: const Icon(Icons.restaurant_menu),
-        label: 'Menu',
+        label: lang == 'en' ? 'Menu' : 'Menu',
       ),
       NavigationDestination(
         icon: Badge(

@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../data/models/product_model.dart';
 import '../data/providers/catalog_providers.dart';
+import '../../../core/l10n/language_notifier.dart';
 import 'widgets/image_picker_widget.dart';
 
 class ProductFormScreen extends ConsumerStatefulWidget {
@@ -67,6 +68,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     setState(() => _isSaving = true);
 
     try {
+      final lang = ref.read(languageProvider).languageCode;
       final repo = ref.read(catalogRepositoryProvider);
       String? imageUrl = _currentImageUrl;
 
@@ -112,8 +114,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
           SnackBar(
             content: Text(
               widget.isEditing
-                  ? 'Produk berhasil diperbarui'
-                  : 'Produk berhasil ditambahkan',
+                  ? (lang == 'en' ? 'Product updated successfully' : 'Produk berhasil diperbarui')
+                  : (lang == 'en' ? 'Product added successfully' : 'Produk berhasil ditambahkan'),
             ),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -141,24 +143,28 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     }
   }
 
-  Future<void> _delete() async {
+  Future<void> _delete(String lang) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Hapus Produk?'),
-        content: const Text('Produk ini akan dihapus secara permanen.'),
+        title: Text(lang == 'en' ? 'Delete Product?' : 'Hapus Produk?'),
+        content: Text(
+          lang == 'en'
+              ? 'This product will be permanently deleted.'
+              : 'Produk ini akan dihapus secara permanen.',
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Batal'),
+            child: Text(lang == 'en' ? 'Cancel' : 'Batal'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(ctx).colorScheme.error,
             ),
-            child: const Text('Hapus'),
+            child: Text(lang == 'en' ? 'Delete' : 'Hapus'),
           ),
         ],
       ),
@@ -186,6 +192,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final locale = ref.watch(languageProvider);
+    final lang = locale.languageCode;
     final categoriesAsync = ref.watch(categoriesProvider);
 
     // Load existing product if editing
@@ -198,12 +206,16 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isEditing ? 'Edit Produk' : 'Tambah Produk'),
+        title: Text(
+          widget.isEditing
+              ? (lang == 'en' ? 'Edit Product' : 'Edit Produk')
+              : (lang == 'en' ? 'Add Product' : 'Tambah Produk'),
+        ),
         actions: [
           if (widget.isEditing)
             IconButton(
               icon: Icon(Icons.delete_outline, color: colorScheme.error),
-              onPressed: _isSaving ? null : _delete,
+              onPressed: _isSaving ? null : () => _delete(lang),
             ),
         ],
       ),
@@ -224,14 +236,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: 'Nama Produk *',
-                hintText: 'Contoh: Nasi Goreng',
+                labelText: lang == 'en' ? 'Product Name *' : 'Nama Produk *',
+                hintText: lang == 'en' ? 'e.g. Fried Rice' : 'Contoh: Nasi Goreng',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
               validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Nama wajib diisi' : null,
+                  v == null || v.trim().isEmpty ? (lang == 'en' ? 'Name is required' : 'Nama wajib diisi') : null,
             ),
             const SizedBox(height: 16),
 
@@ -239,7 +251,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             TextFormField(
               controller: _nameEnController,
               decoration: InputDecoration(
-                labelText: 'Name (English)',
+                labelText: lang == 'en' ? 'Name (English)' : 'Nama (Bahasa Inggris)',
                 hintText: 'e.g., Fried Rice',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -253,7 +265,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
               data: (categories) => DropdownButtonFormField<String>(
                 initialValue: _selectedCategoryId,
                 decoration: InputDecoration(
-                  labelText: 'Kategori *',
+                  labelText: lang == 'en' ? 'Category *' : 'Kategori *',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -262,15 +274,15 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     .map(
                       (c) => DropdownMenuItem(
                         value: c.id,
-                        child: Text('${c.icon ?? ''} ${c.name}'),
+                        child: Text('${c.icon ?? ''} ${c.localizedName(lang)}'),
                       ),
                     )
                     .toList(),
                 onChanged: (v) => setState(() => _selectedCategoryId = v),
-                validator: (v) => v == null ? 'Pilih kategori' : null,
+                validator: (v) => v == null ? (lang == 'en' ? 'Select category' : 'Pilih kategori') : null,
               ),
               loading: () => const LinearProgressIndicator(),
-              error: (_, __) => const Text('Gagal memuat kategori'),
+              error: (_, __) => Text(lang == 'en' ? 'Failed to load categories' : 'Gagal memuat kategori'),
             ),
             const SizedBox(height: 16),
 
@@ -278,7 +290,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             TextFormField(
               controller: _priceController,
               decoration: InputDecoration(
-                labelText: 'Harga (Rp) *',
+                labelText: lang == 'en' ? 'Price (Rp) *' : 'Harga (Rp) *',
                 hintText: '15000',
                 prefixText: 'Rp ',
                 border: OutlineInputBorder(
@@ -289,10 +301,10 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               validator: (v) {
                 if (v == null || v.trim().isEmpty) {
-                  return 'Harga wajib diisi';
+                  return lang == 'en' ? 'Price is required' : 'Harga wajib diisi';
                 }
                 if (int.tryParse(v.trim()) == null) {
-                  return 'Masukkan angka';
+                  return lang == 'en' ? 'Enter a valid number' : 'Masukkan angka';
                 }
                 return null;
               },
@@ -303,9 +315,11 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             TextFormField(
               controller: _variationsController,
               decoration: InputDecoration(
-                labelText: 'Variasi (Opsional)',
-                hintText: 'Contoh: Panas, Dingin',
-                helperText: 'Pisahkan dengan koma (,) untuk pilihan tunggal',
+                labelText: lang == 'en' ? 'Variations (Optional)' : 'Variasi (Opsional)',
+                hintText: lang == 'en' ? 'e.g. Hot, Cold' : 'Contoh: Panas, Dingin',
+                helperText: lang == 'en'
+                    ? 'Separate with comma (,) for single choice'
+                    : 'Pisahkan dengan koma (,) untuk pilihan tunggal',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -317,7 +331,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             TextFormField(
               controller: _stockController,
               decoration: InputDecoration(
-                labelText: 'Stok',
+                labelText: lang == 'en' ? 'Stock' : 'Stok',
                 hintText: '100',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -333,8 +347,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
               controller: _descriptionController,
               maxLines: 3,
               decoration: InputDecoration(
-                labelText: 'Deskripsi',
-                hintText: 'Deskripsi produk (opsional)',
+                labelText: lang == 'en' ? 'Description' : 'Deskripsi',
+                hintText: lang == 'en' ? 'Product description (optional)' : 'Deskripsi produk (opsional)',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -344,11 +358,11 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
             // Availability toggle
             SwitchListTile(
-              title: const Text('Tersedia'),
+              title: Text(lang == 'en' ? 'Available' : 'Tersedia'),
               subtitle: Text(
                 _isAvailable
-                    ? 'Produk bisa dipesan'
-                    : 'Produk tidak tersedia (Habis)',
+                    ? (lang == 'en' ? 'Product can be ordered' : 'Produk bisa dipesan')
+                    : (lang == 'en' ? 'Product not available (Out of stock)' : 'Produk tidak tersedia (Habis)'),
               ),
               value: _isAvailable,
               onChanged: (v) => setState(() => _isAvailable = v),
@@ -363,8 +377,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
               const Divider(height: 32),
               ListTile(
                 leading: const Icon(Icons.list_alt_outlined),
-                title: const Text('Kelola Bahan Bawaan'),
-                subtitle: const Text('Bahan yang bisa dihilangkan'),
+                title: Text(lang == 'en' ? 'Manage Default Ingredients' : 'Kelola Bahan Bawaan'),
+                subtitle: Text(lang == 'en' ? 'Ingredients that can be removed' : 'Bahan yang bisa dihilangkan'),
                 trailing: const Icon(Icons.chevron_right),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -374,8 +388,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.add_circle_outline),
-                title: const Text('Kelola Tambahan'),
-                subtitle: const Text('Topping & extra dengan harga'),
+                title: Text(lang == 'en' ? 'Manage Add-ons & Toppings' : 'Kelola Tambahan'),
+                subtitle: Text(lang == 'en' ? 'Toppings & extras with price' : 'Topping & extra dengan harga'),
                 trailing: const Icon(Icons.chevron_right),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -404,7 +418,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(
-                        widget.isEditing ? 'Simpan Perubahan' : 'Simpan Produk',
+                        widget.isEditing
+                            ? (lang == 'en' ? 'Save Changes' : 'Simpan Perubahan')
+                            : (lang == 'en' ? 'Save Product' : 'Simpan Produk'),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import '../../../core/l10n/language_notifier.dart';
 import '../data/providers/auth_provider.dart';
 import '../../../../core/constants/legal_documents.dart';
 
@@ -40,6 +41,7 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final lang = ref.watch(languageProvider).languageCode;
     
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -56,7 +58,7 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                       Icon(Icons.gavel, size: 48, color: colorScheme.primary),
                       const SizedBox(height: 16),
                       Text(
-                        'Welcome to POS Mobile',
+                        lang == 'en' ? 'Welcome to POS Mobile' : 'Selamat Datang di POS Mobile',
                         style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -64,7 +66,9 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Please review our legal policies before using the app.',
+                        lang == 'en'
+                            ? 'Please review our legal policies before using the app.'
+                            : 'Harap tinjau kebijakan hukum kami sebelum menggunakan aplikasi.',
                         style: TextStyle(color: colorScheme.onSurfaceVariant),
                         textAlign: TextAlign.center,
                       ),
@@ -77,13 +81,13 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ChoiceChip(
-                      label: const Text('Terms of Service'),
+                      label: Text(lang == 'en' ? 'Terms of Service' : 'Ketentuan Layanan'),
                       selected: _currentTabIndex == 0,
                       onSelected: (val) => setState(() => _currentTabIndex = 0),
                     ),
                     const SizedBox(width: 16),
                     ChoiceChip(
-                      label: const Text('Privacy Policy'),
+                      label: Text(lang == 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'),
                       selected: _currentTabIndex == 1,
                       onSelected: (val) => setState(() => _currentTabIndex = 1),
                     ),
@@ -122,7 +126,9 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                             child: GestureDetector(
                               onTap: () => setState(() => _hasAgreed = !_hasAgreed),
                               child: Text(
-                                'I have read and agree to the Terms of Service and Privacy Policy.',
+                                lang == 'en'
+                                    ? 'I have read and agree to the Terms of Service and Privacy Policy.'
+                                    : 'Saya telah membaca dan menyetujui Ketentuan Layanan dan Kebijakan Privasi.',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: colorScheme.onSurface,
@@ -144,7 +150,10 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                                   height: 24,
                                   child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                 )
-                              : const Text('Continue to App', style: TextStyle(fontSize: 16)),
+                              : Text(
+                                  lang == 'en' ? 'Continue to App' : 'Lanjutkan ke Aplikasi',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
                         ),
                       ),
                     ],

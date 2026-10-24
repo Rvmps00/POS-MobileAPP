@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 
-import 'package:POSCO/core/database/app_database.dart';
 import 'package:POSCO/features/catalog/data/providers/catalog_providers.dart';
 
 

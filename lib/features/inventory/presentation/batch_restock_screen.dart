@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/database/app_database.dart';
 import '../../../../core/l10n/language_notifier.dart';
 import '../data/providers/inventory_providers.dart';
 
@@ -23,12 +24,15 @@ class _BatchRestockScreenState extends ConsumerState<BatchRestockScreen> {
     setState(() => _isSubmitting = true);
     try {
       final repo = ref.read(inventoryRepositoryProvider);
+      final lang = ref.read(languageProvider).languageCode;
       await repo.batchRestock(_restockQuantities);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${_restockQuantities.length} items restocked successfully!',
+              lang == 'en'
+                  ? '${_restockQuantities.length} items restocked successfully!'
+                  : '${_restockQuantities.length} item berhasil direstok!',
             ),
           ),
         );
@@ -129,7 +133,7 @@ class _BatchRestockScreenState extends ConsumerState<BatchRestockScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              product.name,
+                              product.localizedName(lang),
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                               ),

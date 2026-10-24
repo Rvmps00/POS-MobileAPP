@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/l10n/language_notifier.dart';
 import '../../../core/printer/printer_providers.dart';
 
 class RestaurantInfoScreen extends ConsumerStatefulWidget {
@@ -39,7 +40,7 @@ class _RestaurantInfoScreenState extends ConsumerState<RestaurantInfoScreen> {
     super.dispose();
   }
 
-  Future<void> _save() async {
+  Future<void> _save(String lang) async {
     if (_formKey.currentState!.validate()) {
       await _prefs.setString('store_name', _nameController.text);
       await _prefs.setString('store_address', _addressController.text);
@@ -48,7 +49,14 @@ class _RestaurantInfoScreenState extends ConsumerState<RestaurantInfoScreen> {
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restaurant Info saved successfully!'), backgroundColor: Colors.green),
+          SnackBar(
+            content: Text(
+              lang == 'en'
+                  ? 'Restaurant Info saved successfully!'
+                  : 'Informasi Restoran berhasil disimpan!',
+            ),
+            backgroundColor: Colors.green,
+          ),
         );
         Navigator.pop(context);
       }
@@ -57,14 +65,17 @@ class _RestaurantInfoScreenState extends ConsumerState<RestaurantInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(languageProvider);
+    final lang = locale.languageCode;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Restaurant Info'),
+        title: Text(lang == 'en' ? 'Restaurant Info' : 'Informasi Restoran'),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: _save,
-            tooltip: 'Save',
+            onPressed: () => _save(lang),
+            tooltip: lang == 'en' ? 'Save' : 'Simpan',
           ),
         ],
       ),
@@ -73,50 +84,54 @@ class _RestaurantInfoScreenState extends ConsumerState<RestaurantInfoScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
-            const Text(
-              'This information will be printed on the receipts.',
-              style: TextStyle(color: Colors.grey),
+            Text(
+              lang == 'en'
+                  ? 'This information will be printed on the receipts.'
+                  : 'Informasi ini akan dicetak pada struk pembayaran.',
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Store Name',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: lang == 'en' ? 'Store Name' : 'Nama Restoran / Toko',
+                border: const OutlineInputBorder(),
               ),
-              validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+              validator: (value) => value == null || value.isEmpty
+                  ? (lang == 'en' ? 'Required' : 'Wajib diisi')
+                  : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _addressController,
-              decoration: const InputDecoration(
-                labelText: 'Address',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: lang == 'en' ? 'Address' : 'Alamat',
+                border: const OutlineInputBorder(),
               ),
               maxLines: 2,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: lang == 'en' ? 'Phone Number' : 'Nomor Telepon',
+                border: const OutlineInputBorder(),
               ),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _footerController,
-              decoration: const InputDecoration(
-                labelText: 'Footer Message',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: lang == 'en' ? 'Footer Message' : 'Pesan Penutup Struk',
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _save,
-              child: const Text('Save Info'),
+              onPressed: () => _save(lang),
+              child: Text(lang == 'en' ? 'Save Info' : 'Simpan Informasi'),
             ),
           ],
         ),

@@ -29,6 +29,19 @@ class SyncEngine {
     });
   }
 
+  Timer? _debounceTimer;
+
+  /// Trigger debounced sync so multiple rapid enqueues are batched
+  /// and surrounding database transactions have time to commit.
+  void triggerSync() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      if (_connectivity.isOnline && !_isProcessing) {
+        processQueue();
+      }
+    });
+  }
+
   /// Enqueue a mutation for later sync to Supabase.
   Future<void> enqueue({
     required String tableName,
@@ -46,10 +59,8 @@ class SyncEngine {
       ),
     );
 
-    // Attempt immediate sync if online
-    if (_connectivity.isOnline && !_isProcessing) {
-      processQueue();
-    }
+    // Attempt debounced sync if online
+    triggerSync();
   }
 
   /// Process all pending items in FIFO order.
@@ -249,5 +260,6 @@ class SyncEngine {
 
   void dispose() {
     _connectivitySub?.cancel();
+    _debounceTimer?.cancel();
   }
 }

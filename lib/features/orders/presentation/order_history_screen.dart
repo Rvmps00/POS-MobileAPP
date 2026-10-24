@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/l10n/language_notifier.dart';
 import '../data/providers/order_provider.dart';
 import 'order_detail_screen.dart';
 
@@ -24,6 +25,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(languageProvider);
+    final lang = locale.languageCode;
     final colorScheme = Theme.of(context).colorScheme;
     final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
     final dateFormatter = DateFormat('dd MMM yyyy, HH:mm');
@@ -32,7 +35,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order History'),
+        title: Text(lang == 'en' ? 'Order History' : 'Riwayat Pesanan'),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Padding(
@@ -40,7 +43,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search by Receipt ID...',
+                hintText: lang == 'en' ? 'Search by Receipt ID...' : 'Cari nomor struk...',
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
@@ -76,7 +79,11 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height - kToolbarHeight - 100,
-                  child: const Center(child: Text('No orders found.')),
+                  child: Center(
+                    child: Text(
+                      lang == 'en' ? 'No orders found.' : 'Tidak ada pesanan ditemukan.',
+                    ),
+                  ),
                 ),
               ),
             );
@@ -92,6 +99,9 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
               itemBuilder: (context, index) {
                 final order = orders[index];
                 final isCancelled = order.status == 'CANCELLED';
+                final orderTypeLabel = order.orderType == 'DINE_IN'
+                    ? (lang == 'en' ? 'Dine-in' : 'Makan di tempat')
+                    : (lang == 'en' ? 'Takeaway' : 'Bawa pulang');
 
                 return ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -107,14 +117,14 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
-                            'CANCELLED',
+                            lang == 'en' ? 'CANCELLED' : 'DIBATALKAN',
                             style: TextStyle(fontSize: 10, color: colorScheme.onErrorContainer),
                           ),
                         ),
                       ],
                     ],
                   ),
-                  subtitle: Text('${dateFormatter.format(order.createdAt)} • ${order.orderType}'),
+                  subtitle: Text('${dateFormatter.format(order.createdAt)} • $orderTypeLabel'),
                   trailing: Text(
                     currencyFormatter.format(order.grandTotal),
                     style: TextStyle(

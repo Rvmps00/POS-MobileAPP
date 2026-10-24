@@ -522,7 +522,7 @@ class _ProductStockCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.name,
+                      product.localizedName(lang),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
@@ -637,7 +637,7 @@ class _ToppingStockCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      topping.name,
+                      topping.localizedName(lang),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
@@ -690,9 +690,9 @@ class _ToppingStockCard extends StatelessWidget {
                     color: Colors.orange,
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: const Text(
-                    'LOW',
-                    style: TextStyle(
+                  child: Text(
+                    lang == 'en' ? 'LOW' : 'RENDAH',
+                    style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

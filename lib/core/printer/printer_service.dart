@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'receipt_builder.dart';
-
 class PrinterService {
   final SharedPreferences _prefs;
   static const String _savedMacAddressKey = 'saved_printer_mac_address';

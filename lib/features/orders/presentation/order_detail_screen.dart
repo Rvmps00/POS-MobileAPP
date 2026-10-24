@@ -3,26 +3,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'package:POSCO/core/database/app_database.dart';
+import '../../../../core/l10n/language_notifier.dart';
 import '../data/providers/order_provider.dart';
 import '../../../../core/printer/printer_providers.dart';
 import '../../../../core/printer/receipt_builder.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../auth/data/providers/auth_provider.dart';
+
 class OrderDetailScreen extends ConsumerWidget {
   final OrdersTableData order;
 
   const OrderDetailScreen({super.key, required this.order});
 
-  void _confirmCancel(BuildContext context, WidgetRef ref) {
+  void _confirmCancel(BuildContext context, WidgetRef ref, String lang) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Order'),
-        content: const Text('Are you sure you want to cancel this order? This action cannot be undone.'),
+        title: Text(lang == 'en' ? 'Cancel Order' : 'Batalkan Pesanan'),
+        content: Text(
+          lang == 'en'
+              ? 'Are you sure you want to cancel this order? This action cannot be undone.'
+              : 'Apakah Anda yakin ingin membatalkan pesanan ini? Tindakan ini tidak dapat dibatalkan.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('No'),
+            child: Text(lang == 'en' ? 'No' : 'Tidak'),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
@@ -30,11 +35,17 @@ class OrderDetailScreen extends ConsumerWidget {
               Navigator.pop(ctx);
               ref.read(orderActionsProvider).cancelOrder(order.id);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Order Cancelled Successfully')),
+                SnackBar(
+                  content: Text(
+                    lang == 'en'
+                        ? 'Order Cancelled Successfully'
+                        : 'Pesanan Berhasil Dibatalkan',
+                  ),
+                ),
               );
               Navigator.pop(context); // Go back to history list
             },
-            child: const Text('Yes, Cancel'),
+            child: Text(lang == 'en' ? 'Yes, Cancel' : 'Ya, Batalkan'),
           ),
         ],
       ),
@@ -43,12 +54,26 @@ class OrderDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(languageProvider);
+    final lang = locale.languageCode;
     final colorScheme = Theme.of(context).colorScheme;
-    final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    final currencyFormatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
     final dateFormatter = DateFormat('dd MMM yyyy, HH:mm');
 
     final itemsAsync = ref.watch(orderItemsProvider(order.id));
     final isCancelled = order.status == 'CANCELLED';
+
+    final orderTypeLabel = order.orderType == 'DINE_IN'
+        ? (lang == 'en' ? 'Dine-in' : 'Makan di tempat')
+        : (lang == 'en' ? 'Takeaway' : 'Bawa pulang');
+
+    final statusLabel = isCancelled
+        ? (lang == 'en' ? 'CANCELLED' : 'DIBATALKAN')
+        : (lang == 'en' ? 'COMPLETED' : 'SELESAI');
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +81,7 @@ class OrderDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.print),
-            tooltip: 'Reprint Receipt',
+            tooltip: lang == 'en' ? 'Reprint Receipt' : 'Cetak Ulang Struk',
             onPressed: () async {
               final printerService = ref.read(printerServiceProvider);
               if (await printerService.isConnected) {
@@ -79,21 +104,30 @@ class OrderDetailScreen extends ConsumerWidget {
                   storeAddress: storeAddress,
                   storePhone: storePhone,
                   footerMessage: storeFooter,
+                  lang: lang,
                 );
 
                 final printSuccess = await printerService.printBytes(bytes);
                 if (!printSuccess && context.mounted) {
                    ScaffoldMessenger.of(context).showSnackBar(
-                     const SnackBar(content: Text('Failed to print receipt.'), backgroundColor: Colors.red),
+                     SnackBar(
+                       content: Text(lang == 'en' ? 'Failed to print receipt.' : 'Gagal mencetak struk.'),
+                       backgroundColor: Colors.red,
+                     ),
                    );
                 } else if (context.mounted) {
                    ScaffoldMessenger.of(context).showSnackBar(
-                     const SnackBar(content: Text('Receipt printed successfully.')),
+                     SnackBar(
+                       content: Text(lang == 'en' ? 'Receipt printed successfully.' : 'Struk berhasil dicetak.'),
+                     ),
                    );
                 }
               } else if (context.mounted) {
                  ScaffoldMessenger.of(context).showSnackBar(
-                   const SnackBar(content: Text('Printer not connected.'), backgroundColor: Colors.red),
+                   SnackBar(
+                     content: Text(lang == 'en' ? 'Printer not connected.' : 'Printer belum terhubung.'),
+                     backgroundColor: Colors.red,
+                   ),
                  );
               }
             },
@@ -120,7 +154,9 @@ class OrderDetailScreen extends ConsumerWidget {
                       Icon(Icons.warning_amber_rounded, color: colorScheme.onErrorContainer),
                       const SizedBox(width: 8),
                       Text(
-                        'This order has been cancelled.',
+                        lang == 'en'
+                            ? 'This order has been cancelled.'
+                            : 'Pesanan ini telah dibatalkan.',
                         style: TextStyle(color: colorScheme.onErrorContainer, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -132,19 +168,19 @@ class OrderDetailScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildInfoRow('Type', order.orderType),
+                      _buildInfoRow(lang == 'en' ? 'Type' : 'Tipe', orderTypeLabel),
                       const SizedBox(height: 8),
-                      _buildInfoRow('Date', dateFormatter.format(order.createdAt)),
+                      _buildInfoRow(lang == 'en' ? 'Date' : 'Tanggal', dateFormatter.format(order.createdAt)),
                       const SizedBox(height: 8),
-                      _buildInfoRow('Table', order.tableNumber?.toString() ?? '-'),
+                      _buildInfoRow(lang == 'en' ? 'Table' : 'Meja', order.tableNumber?.toString() ?? '-'),
                       const SizedBox(height: 8),
-                      _buildInfoRow('Status', order.status),
+                      _buildInfoRow('Status', statusLabel),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              Text('Items', style: Theme.of(context).textTheme.titleLarge),
+              Text(lang == 'en' ? 'Items' : 'Daftar Item', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
               Card(
                 child: ListView.separated(
@@ -159,9 +195,10 @@ class OrderDetailScreen extends ConsumerWidget {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (item.selectedVariation != null) Text('Variation: ${item.selectedVariation}'),
-                          // Addon toppings and removed ingredients would be parsed here from JSON if needed
-                          if (item.notes != null && item.notes!.isNotEmpty) Text('Note: ${item.notes}'),
+                          if (item.selectedVariation != null)
+                            Text('${lang == 'en' ? 'Variation' : 'Variasi'}: ${item.selectedVariation}'),
+                          if (item.notes != null && item.notes!.isNotEmpty)
+                            Text('${lang == 'en' ? 'Note' : 'Catatan'}: ${item.notes}'),
                         ],
                       ),
                       trailing: Text(currencyFormatter.format(item.lineTotal)),
@@ -177,12 +214,20 @@ class OrderDetailScreen extends ConsumerWidget {
                     children: [
                       _buildSummaryRow('Subtotal', currencyFormatter.format(order.subtotal)),
                       const SizedBox(height: 8),
-                      _buildSummaryRow('Tax', currencyFormatter.format(order.taxAmount)),
+                      _buildSummaryRow(lang == 'en' ? 'Tax' : 'Pajak', currencyFormatter.format(order.taxAmount)),
                       const Divider(),
-                      _buildSummaryRow('Grand Total', currencyFormatter.format(order.grandTotal), isBold: true),
+                      _buildSummaryRow(lang == 'en' ? 'Grand Total' : 'Total Akhir', currencyFormatter.format(order.grandTotal), isBold: true),
                       const SizedBox(height: 8),
-                      _buildSummaryRow('Cash Received', currencyFormatter.format(order.cashReceived)),
-                      _buildSummaryRow('Change', currencyFormatter.format(order.cashChange)),
+                      _buildSummaryRow(
+                        lang == 'en' ? 'Payment Method' : 'Metode Pembayaran',
+                        order.paymentMethod == 'QRIS' ? 'QRIS' : (lang == 'en' ? 'Cash' : 'Tunai'),
+                      ),
+                      if (order.paymentMethod != 'QRIS') ...[
+                        const SizedBox(height: 8),
+                        _buildSummaryRow(lang == 'en' ? 'Cash Received' : 'Uang Diterima', currencyFormatter.format(order.cashReceived)),
+                        const SizedBox(height: 8),
+                        _buildSummaryRow(lang == 'en' ? 'Change' : 'Kembalian', currencyFormatter.format(order.cashChange)),
+                      ],
                     ],
                   ),
                 ),
@@ -195,8 +240,8 @@ class OrderDetailScreen extends ConsumerWidget {
                     foregroundColor: colorScheme.onError,
                   ),
                   icon: const Icon(Icons.cancel),
-                  label: const Text('Cancel Order'),
-                  onPressed: () => _confirmCancel(context, ref),
+                  label: Text(lang == 'en' ? 'Cancel Order' : 'Batalkan Pesanan'),
+                  onPressed: () => _confirmCancel(context, ref, lang),
                 ),
             ],
           );

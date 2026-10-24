@@ -237,7 +237,7 @@ class _TabletLayout extends ConsumerWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Online',
+                                languageCode == 'en' ? 'Online' : 'Online',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,

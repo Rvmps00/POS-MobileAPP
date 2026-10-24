@@ -10,7 +10,6 @@ import 'staff_management_screen.dart';
 import '../../auth/data/providers/auth_provider.dart';
 import '../../../core/printer/printer_providers.dart';
 import '../../../core/router/role_guard.dart';
-import '../../../core/database/app_database.dart';
 import '../../catalog/data/providers/catalog_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -20,11 +19,10 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
     final locale = ref.watch(languageProvider);
-    // Note: Once localization is fully translated, use l10n strings.
-    // final l10n = AppLocalizations.of(context)!;
+    final lang = locale.languageCode;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(lang == 'en' ? 'Settings' : 'Pengaturan')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 800),
@@ -34,7 +32,7 @@ class SettingsScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.dark_mode_outlined),
-              title: const Text('Dark Mode'),
+              title: Text(lang == 'en' ? 'Dark Mode' : 'Mode Gelap'),
               trailing: Switch(
                 value: themeMode == ThemeMode.dark,
                 onChanged: (_) {
@@ -46,7 +44,7 @@ class SettingsScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.language),
-              title: const Text('Language'),
+              title: Text(lang == 'en' ? 'Language' : 'Bahasa'),
               trailing: DropdownButton<String>(
                 value: locale.languageCode,
                 items: const [
@@ -68,7 +66,7 @@ class SettingsScreen extends ConsumerWidget {
             child: ListTile(
               leading: const Icon(Icons.receipt_long),
               title: Text(
-                locale.languageCode == 'en'
+                lang == 'en'
                     ? 'Enable Tax (10%)'
                     : 'Aktifkan Pajak (10%)',
               ),
@@ -83,7 +81,7 @@ class SettingsScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.print),
-              title: const Text('Printer Setup'),
+              title: Text(lang == 'en' ? 'Printer Setup' : 'Pengaturan Printer'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
@@ -96,7 +94,7 @@ class SettingsScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.storefront),
-              title: const Text('Restaurant Info'),
+              title: Text(lang == 'en' ? 'Restaurant Info' : 'Informasi Restoran'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
@@ -111,7 +109,7 @@ class SettingsScreen extends ConsumerWidget {
             child: Card(
               child: ListTile(
                 leading: const Icon(Icons.people),
-                title: const Text('Staff Management'),
+                title: Text(lang == 'en' ? 'Staff Management' : 'Manajemen Staf'),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   Navigator.push(
@@ -125,18 +123,32 @@ class SettingsScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.numbers),
-              title: const Text('Reset Queue Number'),
-              subtitle: const Text('Reset the receipt queue to 0'),
+              title: Text(lang == 'en' ? 'Reset Queue Number' : 'Reset Nomor Antrian'),
+              subtitle: Text(
+                lang == 'en'
+                    ? 'Reset the receipt queue to 0'
+                    : 'Reset nomor antrian struk ke 0',
+              ),
               trailing: const Icon(Icons.restore),
               onTap: () async {
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Reset Queue?'),
-                    content: const Text('Are you sure you want to reset the queue number? The next order will be Antrian: 001.'),
+                    title: Text(lang == 'en' ? 'Reset Queue?' : 'Reset Antrian?'),
+                    content: Text(
+                      lang == 'en'
+                          ? 'Are you sure you want to reset the queue number? The next order will be Antrian: 001.'
+                          : 'Apakah Anda yakin ingin mereset nomor antrian? Pesanan berikutnya akan menjadi Antrian: 001.',
+                    ),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('CANCEL')),
-                      TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('RESET')),
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: Text(lang == 'en' ? 'CANCEL' : 'BATAL'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: Text(lang == 'en' ? 'RESET' : 'RESET'),
+                      ),
                     ],
                   ),
                 );
@@ -145,7 +157,14 @@ class SettingsScreen extends ConsumerWidget {
                   await prefs.setInt('queue_sequence', 0);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Queue number reset to 0.'), backgroundColor: Colors.green),
+                      SnackBar(
+                        content: Text(
+                          lang == 'en'
+                              ? 'Queue number reset to 0.'
+                              : 'Nomor antrian berhasil direset ke 0.',
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
                     );
                   }
                 }
@@ -166,7 +185,7 @@ class SettingsScreen extends ConsumerWidget {
               await Supabase.instance.client.auth.signOut();
             },
             icon: const Icon(Icons.logout),
-            label: const Text('Logout'),
+            label: Text(lang == 'en' ? 'Logout' : 'Keluar'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
               foregroundColor: Theme.of(context).colorScheme.onError,

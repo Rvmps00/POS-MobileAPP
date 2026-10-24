@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../core/l10n/language_notifier.dart';
 import '../../../core/printer/printer_providers.dart';
 import '../../../core/printer/receipt_builder.dart';
 
@@ -26,6 +27,7 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
   }
 
   Future<void> _scanDevices() async {
+    final lang = ref.read(languageProvider).languageCode;
     setState(() => _isScanning = true);
     
     // Check if permissions are already granted
@@ -40,18 +42,24 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
           context: context,
           barrierDismissible: false,
           builder: (context) => AlertDialog(
-            title: const Text('Printer Connection Setup'),
-            content: const Text(
-              'This app requires Bluetooth and Location permissions solely to discover and connect to your Bluetooth thermal printer. We do not track your physical location or share it with third parties.',
+            title: Text(
+              lang == 'en'
+                  ? 'Printer Connection Setup'
+                  : 'Pengaturan Sambungan Printer',
+            ),
+            content: Text(
+              lang == 'en'
+                  ? 'This app requires Bluetooth and Location permissions solely to discover and connect to your Bluetooth thermal printer. We do not track your physical location or share it with third parties.'
+                  : 'Aplikasi ini membutuhkan izin Bluetooth dan Lokasi hanya untuk menemukan dan menyambungkan printer thermal Bluetooth Anda. Kami tidak melacak lokasi fisik Anda atau membagikannya dengan pihak ketiga.',
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Deny'),
+                child: Text(lang == 'en' ? 'Deny' : 'Tolak'),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Continue'),
+                child: Text(lang == 'en' ? 'Continue' : 'Lanjutkan'),
               ),
             ],
           ),
@@ -82,8 +90,15 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
   }
 
   Future<void> _connectToDevice(BluetoothInfo device) async {
+    final lang = ref.read(languageProvider).languageCode;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Connecting to ${device.name}...')),
+      SnackBar(
+        content: Text(
+          lang == 'en'
+              ? 'Connecting to ${device.name}...'
+              : 'Menghubungkan ke ${device.name}...',
+        ),
+      ),
     );
     
     final success = await ref.read(printerConnectionProvider.notifier).connect(device.macAdress);
@@ -92,11 +107,21 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Printer connected!'), backgroundColor: Colors.green),
+          SnackBar(
+            content: Text(
+              lang == 'en' ? 'Printer connected!' : 'Printer terhubung!',
+            ),
+            backgroundColor: Colors.green,
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to connect.'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text(
+              lang == 'en' ? 'Failed to connect.' : 'Gagal terhubung.',
+            ),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -107,28 +132,36 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
   }
 
   Future<void> _testPrint() async {
+    final lang = ref.read(languageProvider).languageCode;
     final bytes = await ReceiptBuilder.buildTestReceipt();
     final success = await ref.read(printerServiceProvider).printBytes(bytes);
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Test print failed.'), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text(
+            lang == 'en' ? 'Test print failed.' : 'Tes cetak gagal.',
+          ),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(languageProvider);
+    final lang = locale.languageCode;
     final isConnected = ref.watch(printerConnectionProvider);
     final savedMac = ref.watch(printerServiceProvider).savedMacAddress;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Printer Setup'),
+        title: Text(lang == 'en' ? 'Printer Setup' : 'Pengaturan Printer'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _isScanning ? null : _scanDevices,
-            tooltip: 'Scan for printers',
+            tooltip: lang == 'en' ? 'Scan for printers' : 'Pindai printer',
           ),
         ],
       ),
@@ -149,18 +182,25 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        isConnected ? 'Connected' : 'Disconnected',
+                        isConnected
+                            ? (lang == 'en' ? 'Connected' : 'Terhubung')
+                            : (lang == 'en' ? 'Disconnected' : 'Terputus'),
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       if (savedMac != null && !isConnected)
-                        Text('Saved: $savedMac (Will auto-connect)', style: const TextStyle(fontSize: 12)),
+                        Text(
+                          lang == 'en'
+                              ? 'Saved: $savedMac (Will auto-connect)'
+                              : 'Tersimpan: $savedMac (Akan otomatis terhubung)',
+                          style: const TextStyle(fontSize: 12),
+                        ),
                     ],
                   ),
                 ),
                 if (isConnected)
                   TextButton(
                     onPressed: _disconnect,
-                    child: const Text('DISCONNECT'),
+                    child: Text(lang == 'en' ? 'DISCONNECT' : 'PUTUSKAN'),
                   ),
               ],
             ),
@@ -172,7 +212,7 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
               child: ElevatedButton.icon(
                 onPressed: _testPrint,
                 icon: const Icon(Icons.receipt),
-                label: const Text('Test Print'),
+                label: Text(lang == 'en' ? 'Test Print' : 'Tes Cetak'),
               ),
             ),
             
@@ -182,7 +222,17 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
             child: _isScanning
                 ? const Center(child: CircularProgressIndicator())
                 : _devices.isEmpty
-                    ? const Center(child: Text('No paired bluetooth devices found. Pair a printer in Android Settings first.'))
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Text(
+                            lang == 'en'
+                                ? 'No paired bluetooth devices found. Pair a printer in Android Settings first.'
+                                : 'Tidak ada perangkat bluetooth tersambung. Pasangkan printer di Pengaturan Android terlebih dahulu.',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
                     : ListView.builder(
                         itemCount: _devices.length,
                         itemBuilder: (context, index) {
@@ -197,7 +247,7 @@ class _PrinterSetupScreenState extends ConsumerState<PrinterSetupScreen> {
                                 ? const Icon(Icons.check_circle, color: Colors.green)
                                 : ElevatedButton(
                                     onPressed: () => _connectToDevice(device),
-                                    child: const Text('Connect'),
+                                    child: Text(lang == 'en' ? 'Connect' : 'Sambungkan'),
                                   ),
                           );
                         },

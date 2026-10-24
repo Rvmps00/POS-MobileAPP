@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/l10n/language_notifier.dart';
 import '../../../../core/sync/sync_providers.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -21,10 +22,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _rememberMe = false;
 
   Future<void> _signInWithEmail() async {
+    final lang = ref.read(languageProvider).languageCode;
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter email and password')),
+          SnackBar(
+            content: Text(
+              lang == 'en'
+                  ? 'Please enter email and password'
+                  : 'Silakan masukkan email dan kata sandi',
+            ),
+          ),
         );
       }
       return;
@@ -107,6 +115,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final lang = ref.watch(languageProvider).languageCode;
 
     // Based on Stitch HTML design
     return Scaffold(
@@ -140,7 +149,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 4), // mb-xs
                   Text(
-                    "Device Setup & Admin Login",
+                    lang == 'en' ? "Device Setup & Admin Login" : "Pengaturan Perangkat & Masuk Admin",
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontSize: 16,
@@ -152,7 +161,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
                     child: Text(
-                      "Email Address",
+                      lang == 'en' ? "Email Address" : "Alamat Email",
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
@@ -202,7 +211,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
                     child: Text(
-                      "Password",
+                      lang == 'en' ? "Password" : "Kata Sandi",
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
@@ -285,7 +294,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Remember me",
+                              lang == 'en' ? "Remember me" : "Ingat saya",
                               style: theme.textTheme.labelSmall?.copyWith(
                                 color: colorScheme.onSurfaceVariant,
                               ),
@@ -300,7 +309,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           child: Text(
-                            "Forgot password?",
+                            lang == 'en' ? "Forgot password?" : "Lupa kata sandi?",
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: colorScheme.primary,
                             ),
@@ -332,9 +341,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               color: colorScheme.surfaceContainerLowest,
                             ),
                           )
-                        : const Text(
-                            "Sign In",
-                            style: TextStyle(
+                        : Text(
+                            lang == 'en' ? "Sign In" : "Masuk",
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
@@ -351,7 +360,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          'OR',
+                          lang == 'en' ? 'OR' : 'ATAU',
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -383,7 +392,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       height: 24,
                     ),
                     label: Text(
-                      "Sign in with Google",
+                      lang == 'en' ? "Sign in with Google" : "Masuk dengan Google",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -399,7 +408,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Don't have an account?",
+                        lang == 'en' ? "Don't have an account?" : "Belum punya akun?",
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -407,7 +416,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       TextButton(
                         onPressed: () => context.push('/register'),
                         child: Text(
-                          "Sign Up",
+                          lang == 'en' ? "Sign Up" : "Daftar",
                           style: theme.textTheme.labelMedium?.copyWith(
                             color: colorScheme.primary,
                             fontWeight: FontWeight.bold,

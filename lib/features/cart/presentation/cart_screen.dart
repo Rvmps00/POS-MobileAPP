@@ -139,7 +139,7 @@ class CartScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Text(
-                              'Dine-in',
+                              lang == 'en' ? 'Dine-in' : 'Makan di Tempat',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: cartState.orderType == OrderType.dineIn
@@ -166,7 +166,7 @@ class CartScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Text(
-                              'Takeaway',
+                              lang == 'en' ? 'Takeaway' : 'Bawa Pulang',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: cartState.orderType == OrderType.takeaway

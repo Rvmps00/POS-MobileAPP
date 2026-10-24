@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -21,6 +20,7 @@ class DashboardScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
     final l10n = AppLocalizations.of(context)!;
+    final lang = ref.watch(languageProvider).languageCode;
     final activeStaff = ref.watch(activeStaffProvider);
     final theme = Theme.of(context);
 
@@ -54,7 +54,7 @@ class DashboardScreen extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24),
                   child: Text(
-                    'Hello, ${activeStaff?.fullName ?? 'Owner'} 👋',
+                    '${lang == 'en' ? 'Hello' : 'Halo'}, ${activeStaff?.fullName ?? (lang == 'en' ? 'Owner' : 'Pemilik')} 👋',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -188,7 +188,7 @@ class DashboardScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Hourly Sales', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(lang == 'en' ? 'Hourly Sales' : 'Penjualan Per Jam', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 32),
                         SizedBox(
                           height: 200,

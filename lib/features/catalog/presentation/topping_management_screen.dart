@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/language_notifier.dart';
 import '../data/models/addon_topping_model.dart';
 import '../data/providers/catalog_providers.dart';
 
@@ -48,22 +49,23 @@ class _ToppingManagementScreenState
   }
 
   Future<void> _deleteTopping(String id) async {
+    final lang = ref.read(languageProvider).languageCode;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Hapus Topping?'),
+        title: Text(lang == 'en' ? 'Delete Add-on?' : 'Hapus Topping?'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Batal'),
+            child: Text(lang == 'en' ? 'Cancel' : 'Batal'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(ctx).colorScheme.error,
             ),
-            child: const Text('Hapus'),
+            child: Text(lang == 'en' ? 'Delete' : 'Hapus'),
           ),
         ],
       ),
@@ -75,8 +77,8 @@ class _ToppingManagementScreenState
     ref.invalidate(toppingsProvider(widget.productId));
   }
 
-  String _formatPrice(int price) {
-    if (price == 0) return 'GRATIS';
+  String _formatPrice(int price, String lang) {
+    if (price == 0) return lang == 'en' ? 'FREE' : 'GRATIS';
     final formatted = price.toString().replaceAllMapped(
       RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
       (m) => '${m[1]}.',
@@ -87,6 +89,7 @@ class _ToppingManagementScreenState
   Future<Map<String, dynamic>?> _showToppingDialog({
     AddonToppingModel? topping,
   }) async {
+    final lang = ref.read(languageProvider).languageCode;
     final nameCtrl = TextEditingController(text: topping?.name ?? '');
     final nameEnCtrl = TextEditingController(text: topping?.nameEn ?? '');
     final priceCtrl = TextEditingController(
@@ -98,7 +101,9 @@ class _ToppingManagementScreenState
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          title: Text(topping == null ? 'Tambah Topping' : 'Edit Topping'),
+          title: Text(topping == null
+              ? (lang == 'en' ? 'Add Topping' : 'Tambah Topping')
+              : (lang == 'en' ? 'Edit Topping' : 'Edit Topping')),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -108,7 +113,7 @@ class _ToppingManagementScreenState
               TextField(
                 controller: nameCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Nama Topping *',
+                  labelText: lang == 'en' ? 'Topping Name *' : 'Nama Topping *',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -118,7 +123,7 @@ class _ToppingManagementScreenState
               TextField(
                 controller: nameEnCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Name (English)',
+                  labelText: lang == 'en' ? 'Name in English' : 'Name (English)',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -128,7 +133,7 @@ class _ToppingManagementScreenState
               TextField(
                 controller: priceCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Harga (0 = Gratis)',
+                  labelText: lang == 'en' ? 'Price (0 = Free)' : 'Harga (0 = Gratis)',
                   prefixText: 'Rp ',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -139,7 +144,7 @@ class _ToppingManagementScreenState
               ),
               const SizedBox(height: 12),
               SwitchListTile(
-                title: const Text('Tersedia'),
+                title: Text(lang == 'en' ? 'Available' : 'Tersedia'),
                 value: isAvailable,
                 onChanged: (v) => setDialogState(() => isAvailable = v),
                 contentPadding: EdgeInsets.zero,
@@ -149,7 +154,7 @@ class _ToppingManagementScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Batal'),
+              child: Text(lang == 'en' ? 'Cancel' : 'Batal'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -163,7 +168,7 @@ class _ToppingManagementScreenState
                   'is_available': isAvailable,
                 });
               },
-              child: const Text('Simpan'),
+              child: Text(lang == 'en' ? 'Save' : 'Simpan'),
             ),
           ],
         ),
@@ -173,15 +178,16 @@ class _ToppingManagementScreenState
 
   @override
   Widget build(BuildContext context) {
+    final lang = ref.watch(languageProvider).languageCode;
     final colorScheme = Theme.of(context).colorScheme;
     final toppingsAsync = ref.watch(toppingsProvider(widget.productId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Kelola Tambahan')),
+      appBar: AppBar(title: Text(lang == 'en' ? 'Manage Add-ons' : 'Kelola Tambahan')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addTopping,
         icon: const Icon(Icons.add),
-        label: const Text('Tambah Topping'),
+        label: Text(lang == 'en' ? 'Add Topping' : 'Tambah Topping'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       body: toppingsAsync.when(
@@ -197,7 +203,7 @@ class _ToppingManagementScreenState
                     color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Belum ada tambahan/topping'),
+                  Text(lang == 'en' ? 'No add-ons/toppings yet' : 'Belum ada tambahan/topping'),
                 ],
               ),
             );
@@ -225,7 +231,7 @@ class _ToppingManagementScreenState
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      _formatPrice(item.price),
+                      _formatPrice(item.price, lang),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
@@ -235,8 +241,10 @@ class _ToppingManagementScreenState
                       ),
                     ),
                   ),
-                  title: Text(item.name),
-                  subtitle: Text(item.nameEn ?? ''),
+                  title: Text(item.localizedName(lang)),
+                  subtitle: item.nameEn != null && item.nameEn!.isNotEmpty
+                      ? Text(lang == 'en' ? item.name : item.nameEn!)
+                      : null,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -251,7 +259,7 @@ class _ToppingManagementScreenState
                             borderRadius: BorderRadius.circular(100),
                           ),
                           child: Text(
-                            'Habis',
+                            lang == 'en' ? 'Out of Stock' : 'Habis',
                             style: TextStyle(
                               fontSize: 10,
                               color: colorScheme.onErrorContainer,

@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../../core/theme/theme_notifier.dart';
 import '../../../core/l10n/language_notifier.dart';
 import '../../auth/data/providers/auth_provider.dart';
 import '../../../core/printer/printer_providers.dart';
@@ -75,6 +72,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   Future<void> _processOrder(int grandTotal) async {
+    final lang = ref.read(languageProvider).languageCode;
     final effectiveCashReceived = _paymentMethod == 'QRIS' ? grandTotal : _cashReceived;
     final effectiveChange = _paymentMethod == 'QRIS' ? 0 : (_cashReceived - grandTotal);
     
@@ -118,12 +116,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           storeAddress: storeAddress,
           storePhone: storePhone,
           footerMessage: storeFooter,
+          lang: lang,
         );
 
         final printSuccess = await printerService.printBytes(bytes);
         if (!printSuccess && mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text('Failed to print receipt.'), backgroundColor: Colors.red),
+             SnackBar(content: Text(lang == 'en' ? 'Failed to print receipt.' : 'Gagal mencetak struk.'), backgroundColor: Colors.red),
            );
         }
       }
@@ -134,7 +133,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Order Completed Successfully!')),
+          SnackBar(content: Text(lang == 'en' ? 'Order Completed Successfully!' : 'Pesanan Berhasil Diselesaikan!')),
         );
         // Go back to POS
         context.go('/pos');
@@ -143,7 +142,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to process order: $e'),
+            content: Text(lang == 'en' ? 'Failed to process order: $e' : 'Gagal memproses pesanan: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -176,7 +175,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        title: Text(lang == 'en' ? 'Checkout (Cash)' : 'Pembayaran (Tunai)'),
+        title: Text(lang == 'en' ? 'Checkout' : 'Pembayaran'),
         backgroundColor: colorScheme.surface,
         surfaceTintColor: Colors.transparent,
       ),
@@ -288,9 +287,31 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               top: isTablet ? 20 : 16, 
               bottom: isTablet ? 12 : 8,
             ),
-            child: Text(
-              lang == 'en' ? 'Order Summary' : 'Ringkasan Pesanan',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  lang == 'en' ? 'Order Summary' : 'Ringkasan Pesanan',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Text(
+                    cartState.orderType == OrderType.dineIn
+                        ? (lang == 'en' ? 'Dine-in' : 'Makan di Tempat')
+                        : (lang == 'en' ? 'Takeaway' : 'Bawa Pulang'),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -474,7 +495,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   runSpacing: 8,
                   children: [
                     _QuickFillButton(
-                      label: 'Exact',
+                      label: lang == 'en' ? 'Exact' : 'Uang Pas',
                       amount: grandTotal,
                       colorScheme: colorScheme,
                       onTap: () {
@@ -805,7 +826,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       ),
                     if (item.removedIngredients.isNotEmpty)
                       Text(
-                        '- Tanpa ${item.removedIngredients.map((i) => i.localizedName(lang)).join(', ')}',
+                        '${lang == 'en' ? '- No ' : '- Tanpa '}${item.removedIngredients.map((i) => i.localizedName(lang)).join(', ')}',
                         style: TextStyle(
                           fontSize: 12,
                           color: colorScheme.error,

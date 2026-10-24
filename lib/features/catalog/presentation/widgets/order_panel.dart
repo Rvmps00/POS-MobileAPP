@@ -114,7 +114,7 @@ class OrderPanel extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Text(
-                              'Dine-in',
+                              languageCode == 'en' ? 'Dine-in' : 'Makan di Tempat',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: cartState.orderType == OrderType.dineIn
@@ -141,7 +141,7 @@ class OrderPanel extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Text(
-                              'Takeaway',
+                              languageCode == 'en' ? 'Takeaway' : 'Bawa Pulang',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: cartState.orderType == OrderType.takeaway
@@ -258,7 +258,9 @@ class OrderPanel extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Tax (10%)',
+                      languageCode == 'en'
+                          ? 'Tax (${(cartState.taxRate * 100).toInt()}%)'
+                          : 'Pajak (${(cartState.taxRate * 100).toInt()}%)',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -285,7 +287,7 @@ class OrderPanel extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Grand Total',
+                      languageCode == 'en' ? 'Grand Total' : 'Total Akhir',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -311,7 +313,7 @@ class OrderPanel extends ConsumerWidget {
                         : () {
                             context.push('/pos/checkout');
                           },
-                    icon: const Text('Checkout'),
+                    icon: Text(languageCode == 'en' ? 'Checkout' : 'Lanjut Pembayaran'),
                     label: const Icon(Icons.arrow_forward, size: 18),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
