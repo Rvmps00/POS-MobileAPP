@@ -9,6 +9,7 @@ import '../../../core/printer/receipt_builder.dart';
 import '../../cart/data/providers/cart_provider.dart';
 import '../../cart/data/models/cart_state_model.dart';
 import '../../orders/data/providers/order_provider.dart';
+import 'widgets/order_success_dialog.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -93,18 +94,19 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         cashierId: cashierId,
       );
 
-      // Print Receipt
+      // Retrieve store & cashier preferences
+      final prefs = ref.read(sharedPreferencesProvider);
+      final storeName = prefs.getString('store_name') ?? 'POINT OF SALE';
+      final storeAddress = prefs.getString('store_address') ?? '';
+      final storePhone = prefs.getString('store_phone') ?? '';
+      final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';
+      final activeStaff = ref.read(activeStaffProvider);
+      final cashierName = activeStaff?.fullName ?? (lang == 'en' ? 'Cashier' : 'Kasir');
+
+      // Attempt first print if printer connected
+      bool initialPrintSuccess = false;
       final printerService = ref.read(printerServiceProvider);
       if (await printerService.isConnected) {
-        final prefs = ref.read(sharedPreferencesProvider);
-        final storeName = prefs.getString('store_name') ?? 'POINT OF SALE';
-        final storeAddress = prefs.getString('store_address') ?? '';
-        final storePhone = prefs.getString('store_phone') ?? '';
-        final storeFooter = prefs.getString('store_footer') ?? 'Terima Kasih!\nSelamat Menikmati 🙏';
-        
-        final activeStaff = ref.read(activeStaffProvider);
-        final cashierName = activeStaff?.fullName ?? 'Kasir';
-
         final bytes = await ReceiptBuilder.buildReceipt(
           orderNumber: orderNumber,
           cartState: cartState,
@@ -119,11 +121,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           lang: lang,
         );
 
-        final printSuccess = await printerService.printBytes(bytes);
-        if (!printSuccess && mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text(lang == 'en' ? 'Failed to print receipt.' : 'Gagal mencetak struk.'), backgroundColor: Colors.red),
-           );
+        initialPrintSuccess = await printerService.printBytes(bytes);
+        if (!initialPrintSuccess && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(lang == 'en' ? 'Failed to print receipt.' : 'Gagal mencetak struk.'),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       }
 
@@ -132,11 +137,31 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ref.invalidate(orderHistoryProvider);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(lang == 'en' ? 'Order Completed Successfully!' : 'Pesanan Berhasil Diselesaikan!')),
+        // Show post-checkout dialog with change due and multiple reprint options
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (dialogCtx) => OrderSuccessDialog(
+            orderNumber: orderNumber,
+            cartState: cartState,
+            cashReceived: effectiveCashReceived,
+            cashChange: effectiveChange,
+            grandTotal: grandTotal,
+            paymentMethod: _paymentMethod,
+            cashierName: cashierName,
+            storeName: storeName,
+            storeAddress: storeAddress,
+            storePhone: storePhone,
+            storeFooter: storeFooter,
+            lang: lang,
+            initialPrintSuccess: initialPrintSuccess,
+          ),
         );
-        // Go back to POS
-        context.go('/pos');
+
+        // Once cashier chooses "New Order" (dialog dismissed), return to POS
+        if (mounted) {
+          context.go('/pos');
+        }
       }
     } catch (e) {
       if (mounted) {
