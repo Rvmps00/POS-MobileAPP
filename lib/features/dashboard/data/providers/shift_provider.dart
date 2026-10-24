@@ -12,6 +12,10 @@ import '../services/report_service.dart';
 import 'dashboard_provider.dart';
 import 'package:POSCO/features/orders/data/providers/order_provider.dart';
 
+import 'package:intl/intl.dart';
+import 'package:POSCO/core/printer/printer_providers.dart';
+import 'package:POSCO/core/l10n/language_notifier.dart';
+
 part 'shift_provider.g.dart';
 
 final reportServiceProvider = Provider<ReportService>((ref) {
@@ -24,8 +28,16 @@ class ShiftModel {
   final String id;
   final DateTime startTime;
   final double startingCash;
+  final DateTime? endTime;
+  final double? actualEndingCash;
   
-  ShiftModel({required this.id, required this.startTime, required this.startingCash});
+  ShiftModel({
+    required this.id,
+    required this.startTime,
+    required this.startingCash,
+    this.endTime,
+    this.actualEndingCash,
+  });
 }
 
 @riverpod
@@ -42,7 +54,13 @@ class ShiftNotifier extends _$ShiftNotifier {
       .getSingleOrNull();
       
     if (entry == null) return null;
-    return ShiftModel(id: entry.id, startTime: entry.startTime, startingCash: entry.startingCash);
+    return ShiftModel(
+      id: entry.id,
+      startTime: entry.startTime,
+      startingCash: entry.startingCash,
+      endTime: entry.endTime,
+      actualEndingCash: entry.actualEndingCash,
+    );
   }
 
   Future<void> startShift(double startingCash) async {
@@ -59,13 +77,14 @@ class ShiftNotifier extends _$ShiftNotifier {
   Future<void> endShift(double actualEndingCash) async {
     final currentShift = state.value;
     if (currentShift != null) {
+      final now = DateTime.now();
       
       // We will calculate expected ending cash here later by summing up cash orders.
       final expectedCash = currentShift.startingCash;
       
       await (_db.update(_db.shiftsTable)..where((t) => t.id.equals(currentShift.id)))
         .write(ShiftsTableCompanion(
-          endTime: drift.Value(DateTime.now()),
+          endTime: drift.Value(now),
           actualEndingCash: drift.Value(actualEndingCash),
           expectedEndingCash: drift.Value(expectedCash),
           status: const drift.Value('CLOSED'),
@@ -75,29 +94,79 @@ class ShiftNotifier extends _$ShiftNotifier {
       try {
         final metrics = await ref.read(dashboardMetricsProvider(null).future);
         final reportService = ref.read(reportServiceProvider);
+        final prefs = ref.read(sharedPreferencesProvider);
+        final storeName = prefs.getString('store_name') ?? 'POINT OF SALE';
+        final lang = ref.read(languageProvider).languageCode;
+        final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+
+        final shiftForReport = ShiftModel(
+          id: currentShift.id,
+          startTime: currentShift.startTime,
+          startingCash: currentShift.startingCash,
+          endTime: now,
+          actualEndingCash: actualEndingCash,
+        );
         
         // 1. Generate PDF Report and save to File
-        final pdfBytes = await reportService.generateEndOfDayPdf(currentShift, metrics);
+        final pdfBytes = await reportService.generateEndOfDayPdf(
+          shiftForReport,
+          metrics,
+          lang: lang,
+          storeName: storeName,
+        );
         final pdfFile = await reportService.savePdfToFile(pdfBytes);
         
         // 2. Generate CSV for old orders (older than 30 days)
         final cutoffDate = DateTime.now().subtract(const Duration(days: 30));
         final csvFile = await reportService.generateOrdersCsv(cutoffDate);
         
-        // 3. Email files to owner
+        // 3. Format items sold list for email body
+        final itemsSummary = StringBuffer();
+        if (metrics.soldItems.isEmpty) {
+          itemsSummary.writeln('  (Tidak ada item terjual / No items sold)');
+        } else {
+          for (int i = 0; i < metrics.soldItems.length; i++) {
+            final item = metrics.soldItems[i];
+            itemsSummary.writeln(
+              '  ${i + 1}. ${item.localizedName(lang)} - ${item.quantity}x (${currencyFormatter.format(item.totalSales)})',
+            );
+          }
+        }
+
+        final emailBody = '''
+Halo / Hello,
+
+Berikut adalah Laporan Akhir Sesi (End of Shift Report) untuk toko: $storeName
+
+RINGKASAN PENJUALAN:
+- Total Pendapatan: ${currencyFormatter.format(metrics.revenue)}
+  * Tunai (Cash): ${currencyFormatter.format(metrics.cashRevenue)}
+  * QRIS / Digital: ${currencyFormatter.format(metrics.qrisRevenue)}
+- Modal Awal: ${currencyFormatter.format(currentShift.startingCash)}
+- Uang Fisik Kasir: ${currencyFormatter.format(actualEndingCash)}
+- Total Pesanan: ${metrics.orderCount}
+- Total Item Terjual: ${metrics.itemsSold}
+
+RINCIAN ITEM TERJUAL:
+$itemsSummary
+Terlampir dokumen resmi laporan PDF dan cadangan data CSV pesanan.
+
+Terima kasih.
+''';
+
+        // 4. Email files to owner
         final targetEmail = Supabase.instance.client.auth.currentUser?.email ?? dotenv.env['SMTP_EMAIL'] ?? 'unknown@example.com';
         await reportService.sendReportEmail(
-          'POS (Point of Sale) - End of Shift Report',
-          'Hello,\n\nAttached is the end of shift report for today. We have also attached a CSV backup of orders older than 30 days.\n\nThank you.',
+          '$storeName - End of Shift Report (${DateFormat('dd MMM yyyy').format(now)})',
+          emailBody,
           [pdfFile, csvFile],
           targetEmail,
         );
         
-        // 4. Prune DB (Keep Supabase free tier happy!)
+        // 5. Prune DB (Keep Supabase free tier happy!)
         await reportService.pruneOldData(cutoffDate);
         
-        
-        // 5. Reset Queue Number for the next shift/day
+        // 6. Reset Queue Number for the next shift/day
         await ref.read(orderRepositoryProvider).resetQueue();
       } catch (e) {
         print('Error generating reports: $e');

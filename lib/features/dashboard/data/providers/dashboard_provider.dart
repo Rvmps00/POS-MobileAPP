@@ -5,12 +5,38 @@ import 'package:POSCO/features/catalog/data/providers/catalog_providers.dart';
 
 
 
+class SoldItemReport {
+  final String productId;
+  final String productName;
+  final String? productNameEn;
+  final int quantity;
+  final int totalSales;
+
+  const SoldItemReport({
+    required this.productId,
+    required this.productName,
+    this.productNameEn,
+    required this.quantity,
+    required this.totalSales,
+  });
+
+  String localizedName(String lang) {
+    if (lang == 'en' && productNameEn != null && productNameEn!.isNotEmpty) {
+      return productNameEn!;
+    }
+    return productName;
+  }
+}
+
 class DashboardMetrics {
   final double revenue;
   final int orderCount;
   final double averageOrderValue;
   final int itemsSold;
   final Map<int, double> hourlySales;
+  final List<SoldItemReport> soldItems;
+  final double cashRevenue;
+  final double qrisRevenue;
 
   DashboardMetrics({
     required this.revenue,
@@ -18,6 +44,9 @@ class DashboardMetrics {
     required this.averageOrderValue,
     required this.itemsSold,
     required this.hourlySales,
+    this.soldItems = const [],
+    this.cashRevenue = 0.0,
+    this.qrisRevenue = 0.0,
   });
 }
 
@@ -37,6 +66,8 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
   final orders = await ordersQuery.get();
   
   double totalRevenue = 0;
+  double cashRevenue = 0;
+  double qrisRevenue = 0;
   Map<int, double> hourlySales = {};
   for (int i = 0; i < 24; i++) {
     hourlySales[i] = 0.0;
@@ -44,6 +75,11 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
 
   for (final order in orders) {
     totalRevenue += order.grandTotal;
+    if (order.paymentMethod.toUpperCase() == 'QRIS') {
+      qrisRevenue += order.grandTotal;
+    } else {
+      cashRevenue += order.grandTotal;
+    }
     final hour = order.createdAt.hour;
     hourlySales[hour] = (hourlySales[hour] ?? 0) + order.grandTotal;
   }
@@ -51,19 +87,45 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
   int orderCount = orders.length;
   double averageOrderValue = orderCount > 0 ? totalRevenue / orderCount : 0;
   
-  // To get items sold, we could query order items for these orders
-  // Let's do a simple count for now by joining or querying in a loop (since SQLite is fast)
   int itemsSold = 0;
+  final Map<String, SoldItemReport> aggregatedItems = {};
+
   if (orders.isNotEmpty) {
     final orderIds = orders.map((e) => e.id).toList();
     final itemsQuery = db.select(db.orderItemsTable)
       ..where((t) => t.orderId.isIn(orderIds));
     final items = await itemsQuery.get();
+
+    final products = await db.select(db.productsTable).get();
+    final productMap = {for (final p in products) p.id: p};
     
     for (final item in items) {
       itemsSold += item.quantity.toInt();
+      final p = productMap[item.productId];
+      final key = item.productId.isNotEmpty ? item.productId : item.productName;
+      if (aggregatedItems.containsKey(key)) {
+        final existing = aggregatedItems[key]!;
+        aggregatedItems[key] = SoldItemReport(
+          productId: existing.productId,
+          productName: existing.productName,
+          productNameEn: existing.productNameEn,
+          quantity: existing.quantity + item.quantity.toInt(),
+          totalSales: existing.totalSales + item.lineTotal,
+        );
+      } else {
+        aggregatedItems[key] = SoldItemReport(
+          productId: item.productId,
+          productName: item.productName,
+          productNameEn: p?.nameEn,
+          quantity: item.quantity.toInt(),
+          totalSales: item.lineTotal,
+        );
+      }
     }
   }
+
+  final soldItems = aggregatedItems.values.toList()
+    ..sort((a, b) => b.quantity.compareTo(a.quantity));
 
   return DashboardMetrics(
     revenue: totalRevenue,
@@ -71,5 +133,8 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
     averageOrderValue: averageOrderValue,
     itemsSold: itemsSold,
     hourlySales: hourlySales,
+    soldItems: soldItems,
+    cashRevenue: cashRevenue,
+    qrisRevenue: qrisRevenue,
   );
 });
