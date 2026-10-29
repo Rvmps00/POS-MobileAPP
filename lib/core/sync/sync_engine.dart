@@ -252,6 +252,29 @@ class SyncEngine {
           await _db.into(_db.staffProfilesTable).insertOnConflictUpdate(entry);
         }
       });
+
+      // 6. Expenses
+      final exp = await _supabase.from('expenses').select();
+      await _db.transaction(() async {
+        for (final row in exp) {
+          final entry = ExpensesTableCompanion.insert(
+            id: row['id'],
+            title: row['title'],
+            amount: (row['amount'] as num).toInt(),
+            category: row['category'],
+            paymentSource: drift.Value(row['payment_source'] ?? 'CASH_DRAWER'),
+            notes: drift.Value(row['notes']),
+            receiptImagePath: drift.Value(row['receipt_image_path']),
+            expenseDate: DateTime.parse(row['expense_date']),
+            shiftId: drift.Value(row['shift_id']),
+            createdByStaffId: drift.Value(row['created_by_staff_id']),
+            createdByName: drift.Value(row['created_by_name']),
+            createdAt: drift.Value(row['created_at'] != null ? DateTime.parse(row['created_at']) : DateTime.now()),
+            updatedAt: drift.Value(row['updated_at'] != null ? DateTime.parse(row['updated_at']) : DateTime.now()),
+          );
+          await _db.into(_db.expensesTable).insertOnConflictUpdate(entry);
+        }
+      });
       
     } catch (e) {
       debugPrint('Initial sync failed: $e');

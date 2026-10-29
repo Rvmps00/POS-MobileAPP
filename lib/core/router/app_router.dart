@@ -27,6 +27,8 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/dashboard/presentation/shift_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/printer_setup_screen.dart';
+import '../../features/expenses/presentation/expenses_screen.dart';
+import '../../features/expenses/presentation/expense_form_screen.dart';
 import 'app_shell.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -213,7 +215,32 @@ GoRouter appRouter(Ref ref) {
               ),
             ],
           ),
-          // Tab 5: Settings
+          // Tab 5: Expenses
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/expenses',
+                builder: (context, state) => const RoleGuard(
+                  allowedRoles: ['OWNER', 'MANAGER'],
+                  fallback: Center(child: Text('Access Denied.')),
+                  child: ExpensesScreen(),
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    builder: (context, state) => const ExpenseFormScreen(),
+                  ),
+                  GoRoute(
+                    path: ':id/edit',
+                    builder: (context, state) => ExpenseFormScreen(
+                      expenseId: state.pathParameters['id'],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          // Tab 6: Settings
           StatefulShellBranch(
             routes: [
               GoRoute(

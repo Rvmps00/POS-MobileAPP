@@ -341,6 +341,157 @@ class DashboardScreen extends ConsumerWidget {
 
                 const SizedBox(height: 16),
 
+                // Net Profit & Loss Summary Card
+                Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    side: BorderSide(color: colorScheme.outlineVariant.withOpacity(0.5)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lang == 'en' ? 'Net Profit & Loss' : 'Laba / Rugi Bersih Hari Ini',
+                                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  lang == 'en' ? 'Revenue minus expenses recorded today' : 'Pendapatan dikurangi total pengeluaran hari ini',
+                                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: metrics.isProfit ? Colors.blue.withOpacity(0.12) : Colors.red.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: metrics.isProfit ? Colors.blue.withOpacity(0.3) : Colors.red.withOpacity(0.3)),
+                              ),
+                              child: Text(
+                                metrics.isProfit
+                                    ? (lang == 'en' ? 'SURPLUS' : 'SURPLUS')
+                                    : (lang == 'en' ? 'DEFICIT' : 'DEFISIT'),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: metrics.isProfit ? Colors.blue.shade800 : Colors.red.shade800,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: metrics.isProfit ? Colors.blue.withOpacity(0.06) : Colors.red.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: metrics.isProfit ? Colors.blue.withOpacity(0.2) : Colors.red.withOpacity(0.2)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    metrics.isProfit
+                                        ? (lang == 'en' ? 'Net Profit' : 'Estimasi Laba Bersih')
+                                        : (lang == 'en' ? 'Net Loss' : 'Estimasi Rugi Bersih'),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: metrics.isProfit ? Colors.blue.shade900 : Colors.red.shade900,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${metrics.isProfit ? '+' : '-'} ${currencyFormatter.format(metrics.netProfit.abs())}',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: metrics.isProfit ? Colors.blue.shade900 : Colors.red.shade900,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Icon(
+                                metrics.isProfit ? Icons.trending_up : Icons.trending_down,
+                                size: 36,
+                                color: metrics.isProfit ? Colors.blue : Colors.red,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.withOpacity(0.06),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      lang == 'en' ? 'Gross Revenue' : 'Pendapatan Kotor',
+                                      style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      currencyFormatter.format(metrics.revenue),
+                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.06),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      lang == 'en' ? 'Total Expenses' : 'Total Pengeluaran',
+                                      style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '- ${currencyFormatter.format(metrics.totalExpenses)}',
+                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
                 // Items Sold Breakdown Card
                 Card(
                   elevation: 0,

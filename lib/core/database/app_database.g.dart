@@ -6127,6 +6127,783 @@ class StaffProfilesTableCompanion
   }
 }
 
+class $ExpensesTableTable extends ExpensesTable
+    with TableInfo<$ExpensesTableTable, ExpensesTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExpensesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paymentSourceMeta = const VerificationMeta(
+    'paymentSource',
+  );
+  @override
+  late final GeneratedColumn<String> paymentSource = GeneratedColumn<String>(
+    'payment_source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('CASH_DRAWER'),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _receiptImagePathMeta = const VerificationMeta(
+    'receiptImagePath',
+  );
+  @override
+  late final GeneratedColumn<String> receiptImagePath = GeneratedColumn<String>(
+    'receipt_image_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _expenseDateMeta = const VerificationMeta(
+    'expenseDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> expenseDate = GeneratedColumn<DateTime>(
+    'expense_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shiftIdMeta = const VerificationMeta(
+    'shiftId',
+  );
+  @override
+  late final GeneratedColumn<String> shiftId = GeneratedColumn<String>(
+    'shift_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdByStaffIdMeta = const VerificationMeta(
+    'createdByStaffId',
+  );
+  @override
+  late final GeneratedColumn<String> createdByStaffId = GeneratedColumn<String>(
+    'created_by_staff_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdByNameMeta = const VerificationMeta(
+    'createdByName',
+  );
+  @override
+  late final GeneratedColumn<String> createdByName = GeneratedColumn<String>(
+    'created_by_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    amount,
+    category,
+    paymentSource,
+    notes,
+    receiptImagePath,
+    expenseDate,
+    shiftId,
+    createdByStaffId,
+    createdByName,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'expenses_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExpensesTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('payment_source')) {
+      context.handle(
+        _paymentSourceMeta,
+        paymentSource.isAcceptableOrUnknown(
+          data['payment_source']!,
+          _paymentSourceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('receipt_image_path')) {
+      context.handle(
+        _receiptImagePathMeta,
+        receiptImagePath.isAcceptableOrUnknown(
+          data['receipt_image_path']!,
+          _receiptImagePathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expense_date')) {
+      context.handle(
+        _expenseDateMeta,
+        expenseDate.isAcceptableOrUnknown(
+          data['expense_date']!,
+          _expenseDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expenseDateMeta);
+    }
+    if (data.containsKey('shift_id')) {
+      context.handle(
+        _shiftIdMeta,
+        shiftId.isAcceptableOrUnknown(data['shift_id']!, _shiftIdMeta),
+      );
+    }
+    if (data.containsKey('created_by_staff_id')) {
+      context.handle(
+        _createdByStaffIdMeta,
+        createdByStaffId.isAcceptableOrUnknown(
+          data['created_by_staff_id']!,
+          _createdByStaffIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_by_name')) {
+      context.handle(
+        _createdByNameMeta,
+        createdByName.isAcceptableOrUnknown(
+          data['created_by_name']!,
+          _createdByNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExpensesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExpensesTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      paymentSource: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_source'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      receiptImagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}receipt_image_path'],
+      ),
+      expenseDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}expense_date'],
+      )!,
+      shiftId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shift_id'],
+      ),
+      createdByStaffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_staff_id'],
+      ),
+      createdByName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_name'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ExpensesTableTable createAlias(String alias) {
+    return $ExpensesTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExpensesTableData extends DataClass
+    implements Insertable<ExpensesTableData> {
+  final String id;
+  final String title;
+  final int amount;
+  final String category;
+  final String paymentSource;
+  final String? notes;
+  final String? receiptImagePath;
+  final DateTime expenseDate;
+  final String? shiftId;
+  final String? createdByStaffId;
+  final String? createdByName;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ExpensesTableData({
+    required this.id,
+    required this.title,
+    required this.amount,
+    required this.category,
+    required this.paymentSource,
+    this.notes,
+    this.receiptImagePath,
+    required this.expenseDate,
+    this.shiftId,
+    this.createdByStaffId,
+    this.createdByName,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['amount'] = Variable<int>(amount);
+    map['category'] = Variable<String>(category);
+    map['payment_source'] = Variable<String>(paymentSource);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || receiptImagePath != null) {
+      map['receipt_image_path'] = Variable<String>(receiptImagePath);
+    }
+    map['expense_date'] = Variable<DateTime>(expenseDate);
+    if (!nullToAbsent || shiftId != null) {
+      map['shift_id'] = Variable<String>(shiftId);
+    }
+    if (!nullToAbsent || createdByStaffId != null) {
+      map['created_by_staff_id'] = Variable<String>(createdByStaffId);
+    }
+    if (!nullToAbsent || createdByName != null) {
+      map['created_by_name'] = Variable<String>(createdByName);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ExpensesTableCompanion toCompanion(bool nullToAbsent) {
+    return ExpensesTableCompanion(
+      id: Value(id),
+      title: Value(title),
+      amount: Value(amount),
+      category: Value(category),
+      paymentSource: Value(paymentSource),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      receiptImagePath: receiptImagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receiptImagePath),
+      expenseDate: Value(expenseDate),
+      shiftId: shiftId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shiftId),
+      createdByStaffId: createdByStaffId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdByStaffId),
+      createdByName: createdByName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdByName),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ExpensesTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExpensesTableData(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      amount: serializer.fromJson<int>(json['amount']),
+      category: serializer.fromJson<String>(json['category']),
+      paymentSource: serializer.fromJson<String>(json['paymentSource']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      receiptImagePath: serializer.fromJson<String?>(json['receiptImagePath']),
+      expenseDate: serializer.fromJson<DateTime>(json['expenseDate']),
+      shiftId: serializer.fromJson<String?>(json['shiftId']),
+      createdByStaffId: serializer.fromJson<String?>(json['createdByStaffId']),
+      createdByName: serializer.fromJson<String?>(json['createdByName']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'amount': serializer.toJson<int>(amount),
+      'category': serializer.toJson<String>(category),
+      'paymentSource': serializer.toJson<String>(paymentSource),
+      'notes': serializer.toJson<String?>(notes),
+      'receiptImagePath': serializer.toJson<String?>(receiptImagePath),
+      'expenseDate': serializer.toJson<DateTime>(expenseDate),
+      'shiftId': serializer.toJson<String?>(shiftId),
+      'createdByStaffId': serializer.toJson<String?>(createdByStaffId),
+      'createdByName': serializer.toJson<String?>(createdByName),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ExpensesTableData copyWith({
+    String? id,
+    String? title,
+    int? amount,
+    String? category,
+    String? paymentSource,
+    Value<String?> notes = const Value.absent(),
+    Value<String?> receiptImagePath = const Value.absent(),
+    DateTime? expenseDate,
+    Value<String?> shiftId = const Value.absent(),
+    Value<String?> createdByStaffId = const Value.absent(),
+    Value<String?> createdByName = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ExpensesTableData(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    amount: amount ?? this.amount,
+    category: category ?? this.category,
+    paymentSource: paymentSource ?? this.paymentSource,
+    notes: notes.present ? notes.value : this.notes,
+    receiptImagePath: receiptImagePath.present
+        ? receiptImagePath.value
+        : this.receiptImagePath,
+    expenseDate: expenseDate ?? this.expenseDate,
+    shiftId: shiftId.present ? shiftId.value : this.shiftId,
+    createdByStaffId: createdByStaffId.present
+        ? createdByStaffId.value
+        : this.createdByStaffId,
+    createdByName: createdByName.present
+        ? createdByName.value
+        : this.createdByName,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ExpensesTableData copyWithCompanion(ExpensesTableCompanion data) {
+    return ExpensesTableData(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      category: data.category.present ? data.category.value : this.category,
+      paymentSource: data.paymentSource.present
+          ? data.paymentSource.value
+          : this.paymentSource,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      receiptImagePath: data.receiptImagePath.present
+          ? data.receiptImagePath.value
+          : this.receiptImagePath,
+      expenseDate: data.expenseDate.present
+          ? data.expenseDate.value
+          : this.expenseDate,
+      shiftId: data.shiftId.present ? data.shiftId.value : this.shiftId,
+      createdByStaffId: data.createdByStaffId.present
+          ? data.createdByStaffId.value
+          : this.createdByStaffId,
+      createdByName: data.createdByName.present
+          ? data.createdByName.value
+          : this.createdByName,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpensesTableData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('amount: $amount, ')
+          ..write('category: $category, ')
+          ..write('paymentSource: $paymentSource, ')
+          ..write('notes: $notes, ')
+          ..write('receiptImagePath: $receiptImagePath, ')
+          ..write('expenseDate: $expenseDate, ')
+          ..write('shiftId: $shiftId, ')
+          ..write('createdByStaffId: $createdByStaffId, ')
+          ..write('createdByName: $createdByName, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    amount,
+    category,
+    paymentSource,
+    notes,
+    receiptImagePath,
+    expenseDate,
+    shiftId,
+    createdByStaffId,
+    createdByName,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExpensesTableData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.amount == this.amount &&
+          other.category == this.category &&
+          other.paymentSource == this.paymentSource &&
+          other.notes == this.notes &&
+          other.receiptImagePath == this.receiptImagePath &&
+          other.expenseDate == this.expenseDate &&
+          other.shiftId == this.shiftId &&
+          other.createdByStaffId == this.createdByStaffId &&
+          other.createdByName == this.createdByName &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ExpensesTableCompanion extends UpdateCompanion<ExpensesTableData> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<int> amount;
+  final Value<String> category;
+  final Value<String> paymentSource;
+  final Value<String?> notes;
+  final Value<String?> receiptImagePath;
+  final Value<DateTime> expenseDate;
+  final Value<String?> shiftId;
+  final Value<String?> createdByStaffId;
+  final Value<String?> createdByName;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ExpensesTableCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.category = const Value.absent(),
+    this.paymentSource = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.receiptImagePath = const Value.absent(),
+    this.expenseDate = const Value.absent(),
+    this.shiftId = const Value.absent(),
+    this.createdByStaffId = const Value.absent(),
+    this.createdByName = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExpensesTableCompanion.insert({
+    required String id,
+    required String title,
+    required int amount,
+    required String category,
+    this.paymentSource = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.receiptImagePath = const Value.absent(),
+    required DateTime expenseDate,
+    this.shiftId = const Value.absent(),
+    this.createdByStaffId = const Value.absent(),
+    this.createdByName = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       title = Value(title),
+       amount = Value(amount),
+       category = Value(category),
+       expenseDate = Value(expenseDate);
+  static Insertable<ExpensesTableData> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<int>? amount,
+    Expression<String>? category,
+    Expression<String>? paymentSource,
+    Expression<String>? notes,
+    Expression<String>? receiptImagePath,
+    Expression<DateTime>? expenseDate,
+    Expression<String>? shiftId,
+    Expression<String>? createdByStaffId,
+    Expression<String>? createdByName,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (amount != null) 'amount': amount,
+      if (category != null) 'category': category,
+      if (paymentSource != null) 'payment_source': paymentSource,
+      if (notes != null) 'notes': notes,
+      if (receiptImagePath != null) 'receipt_image_path': receiptImagePath,
+      if (expenseDate != null) 'expense_date': expenseDate,
+      if (shiftId != null) 'shift_id': shiftId,
+      if (createdByStaffId != null) 'created_by_staff_id': createdByStaffId,
+      if (createdByName != null) 'created_by_name': createdByName,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExpensesTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<int>? amount,
+    Value<String>? category,
+    Value<String>? paymentSource,
+    Value<String?>? notes,
+    Value<String?>? receiptImagePath,
+    Value<DateTime>? expenseDate,
+    Value<String?>? shiftId,
+    Value<String?>? createdByStaffId,
+    Value<String?>? createdByName,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ExpensesTableCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      amount: amount ?? this.amount,
+      category: category ?? this.category,
+      paymentSource: paymentSource ?? this.paymentSource,
+      notes: notes ?? this.notes,
+      receiptImagePath: receiptImagePath ?? this.receiptImagePath,
+      expenseDate: expenseDate ?? this.expenseDate,
+      shiftId: shiftId ?? this.shiftId,
+      createdByStaffId: createdByStaffId ?? this.createdByStaffId,
+      createdByName: createdByName ?? this.createdByName,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (paymentSource.present) {
+      map['payment_source'] = Variable<String>(paymentSource.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (receiptImagePath.present) {
+      map['receipt_image_path'] = Variable<String>(receiptImagePath.value);
+    }
+    if (expenseDate.present) {
+      map['expense_date'] = Variable<DateTime>(expenseDate.value);
+    }
+    if (shiftId.present) {
+      map['shift_id'] = Variable<String>(shiftId.value);
+    }
+    if (createdByStaffId.present) {
+      map['created_by_staff_id'] = Variable<String>(createdByStaffId.value);
+    }
+    if (createdByName.present) {
+      map['created_by_name'] = Variable<String>(createdByName.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpensesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('amount: $amount, ')
+          ..write('category: $category, ')
+          ..write('paymentSource: $paymentSource, ')
+          ..write('notes: $notes, ')
+          ..write('receiptImagePath: $receiptImagePath, ')
+          ..write('expenseDate: $expenseDate, ')
+          ..write('shiftId: $shiftId, ')
+          ..write('createdByStaffId: $createdByStaffId, ')
+          ..write('createdByName: $createdByName, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6148,6 +6925,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ShiftsTableTable shiftsTable = $ShiftsTableTable(this);
   late final $StaffProfilesTableTable staffProfilesTable =
       $StaffProfilesTableTable(this);
+  late final $ExpensesTableTable expensesTable = $ExpensesTableTable(this);
   late final CatalogDao catalogDao = CatalogDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -6164,6 +6942,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncQueueTable,
     shiftsTable,
     staffProfilesTable,
+    expensesTable,
   ];
 }
 
@@ -9244,6 +10023,372 @@ typedef $$StaffProfilesTableTableProcessedTableManager =
       StaffProfilesTableData,
       PrefetchHooks Function()
     >;
+typedef $$ExpensesTableTableCreateCompanionBuilder =
+    ExpensesTableCompanion Function({
+      required String id,
+      required String title,
+      required int amount,
+      required String category,
+      Value<String> paymentSource,
+      Value<String?> notes,
+      Value<String?> receiptImagePath,
+      required DateTime expenseDate,
+      Value<String?> shiftId,
+      Value<String?> createdByStaffId,
+      Value<String?> createdByName,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ExpensesTableTableUpdateCompanionBuilder =
+    ExpensesTableCompanion Function({
+      Value<String> id,
+      Value<String> title,
+      Value<int> amount,
+      Value<String> category,
+      Value<String> paymentSource,
+      Value<String?> notes,
+      Value<String?> receiptImagePath,
+      Value<DateTime> expenseDate,
+      Value<String?> shiftId,
+      Value<String?> createdByStaffId,
+      Value<String?> createdByName,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ExpensesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ExpensesTableTable> {
+  $$ExpensesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentSource => $composableBuilder(
+    column: $table.paymentSource,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get receiptImagePath => $composableBuilder(
+    column: $table.receiptImagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get expenseDate => $composableBuilder(
+    column: $table.expenseDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shiftId => $composableBuilder(
+    column: $table.shiftId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdByStaffId => $composableBuilder(
+    column: $table.createdByStaffId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdByName => $composableBuilder(
+    column: $table.createdByName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ExpensesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ExpensesTableTable> {
+  $$ExpensesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paymentSource => $composableBuilder(
+    column: $table.paymentSource,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get receiptImagePath => $composableBuilder(
+    column: $table.receiptImagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get expenseDate => $composableBuilder(
+    column: $table.expenseDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shiftId => $composableBuilder(
+    column: $table.shiftId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdByStaffId => $composableBuilder(
+    column: $table.createdByStaffId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdByName => $composableBuilder(
+    column: $table.createdByName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ExpensesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ExpensesTableTable> {
+  $$ExpensesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get paymentSource => $composableBuilder(
+    column: $table.paymentSource,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get receiptImagePath => $composableBuilder(
+    column: $table.receiptImagePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get expenseDate => $composableBuilder(
+    column: $table.expenseDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get shiftId =>
+      $composableBuilder(column: $table.shiftId, builder: (column) => column);
+
+  GeneratedColumn<String> get createdByStaffId => $composableBuilder(
+    column: $table.createdByStaffId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdByName => $composableBuilder(
+    column: $table.createdByName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ExpensesTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ExpensesTableTable,
+          ExpensesTableData,
+          $$ExpensesTableTableFilterComposer,
+          $$ExpensesTableTableOrderingComposer,
+          $$ExpensesTableTableAnnotationComposer,
+          $$ExpensesTableTableCreateCompanionBuilder,
+          $$ExpensesTableTableUpdateCompanionBuilder,
+          (
+            ExpensesTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $ExpensesTableTable,
+              ExpensesTableData
+            >,
+          ),
+          ExpensesTableData,
+          PrefetchHooks Function()
+        > {
+  $$ExpensesTableTableTableManager(_$AppDatabase db, $ExpensesTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExpensesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExpensesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExpensesTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<int> amount = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> paymentSource = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> receiptImagePath = const Value.absent(),
+                Value<DateTime> expenseDate = const Value.absent(),
+                Value<String?> shiftId = const Value.absent(),
+                Value<String?> createdByStaffId = const Value.absent(),
+                Value<String?> createdByName = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExpensesTableCompanion(
+                id: id,
+                title: title,
+                amount: amount,
+                category: category,
+                paymentSource: paymentSource,
+                notes: notes,
+                receiptImagePath: receiptImagePath,
+                expenseDate: expenseDate,
+                shiftId: shiftId,
+                createdByStaffId: createdByStaffId,
+                createdByName: createdByName,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String title,
+                required int amount,
+                required String category,
+                Value<String> paymentSource = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> receiptImagePath = const Value.absent(),
+                required DateTime expenseDate,
+                Value<String?> shiftId = const Value.absent(),
+                Value<String?> createdByStaffId = const Value.absent(),
+                Value<String?> createdByName = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExpensesTableCompanion.insert(
+                id: id,
+                title: title,
+                amount: amount,
+                category: category,
+                paymentSource: paymentSource,
+                notes: notes,
+                receiptImagePath: receiptImagePath,
+                expenseDate: expenseDate,
+                shiftId: shiftId,
+                createdByStaffId: createdByStaffId,
+                createdByName: createdByName,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ExpensesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ExpensesTableTable,
+      ExpensesTableData,
+      $$ExpensesTableTableFilterComposer,
+      $$ExpensesTableTableOrderingComposer,
+      $$ExpensesTableTableAnnotationComposer,
+      $$ExpensesTableTableCreateCompanionBuilder,
+      $$ExpensesTableTableUpdateCompanionBuilder,
+      (
+        ExpensesTableData,
+        BaseReferences<_$AppDatabase, $ExpensesTableTable, ExpensesTableData>,
+      ),
+      ExpensesTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9271,4 +10416,6 @@ class $AppDatabaseManager {
       $$ShiftsTableTableTableManager(_db, _db.shiftsTable);
   $$StaffProfilesTableTableTableManager get staffProfilesTable =>
       $$StaffProfilesTableTableTableManager(_db, _db.staffProfilesTable);
+  $$ExpensesTableTableTableManager get expensesTable =>
+      $$ExpensesTableTableTableManager(_db, _db.expensesTable);
 }

@@ -23,7 +23,7 @@ class AppShell extends ConsumerWidget {
     final isCashier = activeStaff?.role == 'CASHIER';
 
     // Map visible tab indices to branch indices
-    final List<int> visibleBranches = isCashier ? [0, 4] : [0, 1, 2, 3, 4];
+    final List<int> visibleBranches = isCashier ? [0, 5] : [0, 1, 2, 3, 4, 5];
     
     final allDestinations = [
       NavigationDestination(
@@ -53,6 +53,11 @@ class AppShell extends ConsumerWidget {
           child: const Icon(Icons.inventory_2),
         ),
         label: lang == 'en' ? 'Inventory' : 'Stok',
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.account_balance_wallet_outlined),
+        selectedIcon: const Icon(Icons.account_balance_wallet),
+        label: lang == 'en' ? 'Expenses' : 'Pengeluaran',
       ),
       NavigationDestination(
         icon: Badge(

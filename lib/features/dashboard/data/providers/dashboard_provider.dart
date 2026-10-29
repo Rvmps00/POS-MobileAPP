@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 
+import 'package:POSCO/core/database/app_database.dart';
 import 'package:POSCO/features/catalog/data/providers/catalog_providers.dart';
-
-
 
 class SoldItemReport {
   final String productId;
@@ -37,6 +36,11 @@ class DashboardMetrics {
   final List<SoldItemReport> soldItems;
   final double cashRevenue;
   final double qrisRevenue;
+  final double totalExpenses;
+  final double netProfit;
+  final List<ExpensesTableData> expenses;
+
+  bool get isProfit => netProfit >= 0;
 
   DashboardMetrics({
     required this.revenue,
@@ -47,20 +51,37 @@ class DashboardMetrics {
     this.soldItems = const [],
     this.cashRevenue = 0.0,
     this.qrisRevenue = 0.0,
+    this.totalExpenses = 0.0,
+    this.netProfit = 0.0,
+    this.expenses = const [],
   });
 }
 
-final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?>((ref, _) async {
+final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?>((ref, shiftId) async {
   final db = ref.watch(appDatabaseProvider);
   
-  // For now, let's just get everything for 'today'
-  final now = DateTime.now();
-  final startOfDay = DateTime(now.year, now.month, now.day);
-  final endOfDay = startOfDay.add(const Duration(days: 1));
+  DateTime startRange;
+  DateTime endRange;
 
-  // Query orders for today
+  if (shiftId != null) {
+    final shift = await (db.select(db.shiftsTable)..where((t) => t.id.equals(shiftId))).getSingleOrNull();
+    if (shift != null) {
+      startRange = shift.startTime;
+      endRange = shift.endTime ?? DateTime.now();
+    } else {
+      final now = DateTime.now();
+      startRange = DateTime(now.year, now.month, now.day);
+      endRange = startRange.add(const Duration(days: 1));
+    }
+  } else {
+    final now = DateTime.now();
+    startRange = DateTime(now.year, now.month, now.day);
+    endRange = startRange.add(const Duration(days: 1));
+  }
+
+  // Query orders in range
   final ordersQuery = db.select(db.ordersTable)
-    ..where((t) => t.createdAt.isBetweenValues(startOfDay, endOfDay))
+    ..where((t) => t.createdAt.isBetweenValues(startRange, endRange))
     ..where((t) => t.status.equals('COMPLETED'));
     
   final orders = await ordersQuery.get();
@@ -127,6 +148,22 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
   final soldItems = aggregatedItems.values.toList()
     ..sort((a, b) => b.quantity.compareTo(a.quantity));
 
+  // Query expenses in range (or shiftId)
+  final expensesQuery = db.select(db.expensesTable);
+  if (shiftId != null) {
+    expensesQuery.where((t) => t.shiftId.equals(shiftId) | t.expenseDate.isBetweenValues(startRange, endRange));
+  } else {
+    expensesQuery.where((t) => t.expenseDate.isBetweenValues(startRange, endRange));
+  }
+  expensesQuery.orderBy([(t) => drift.OrderingTerm.desc(t.expenseDate)]);
+  final expenses = await expensesQuery.get();
+
+  double totalExpenses = 0;
+  for (final exp in expenses) {
+    totalExpenses += exp.amount.toDouble();
+  }
+  final netProfit = totalRevenue - totalExpenses;
+
   return DashboardMetrics(
     revenue: totalRevenue,
     orderCount: orderCount,
@@ -136,5 +173,8 @@ final dashboardMetricsProvider = FutureProvider.family<DashboardMetrics, String?
     soldItems: soldItems,
     cashRevenue: cashRevenue,
     qrisRevenue: qrisRevenue,
+    totalExpenses: totalExpenses,
+    netProfit: netProfit,
+    expenses: expenses,
   );
 });

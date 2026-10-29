@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/l10n/language_notifier.dart';
 import 'report_preview_screen.dart';
-
+import '../../expenses/data/providers/expense_providers.dart';
 import '../data/providers/shift_provider.dart';
 
 class ShiftScreen extends ConsumerStatefulWidget {
@@ -274,6 +274,39 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
                                 ],
                               ),
                             ],
+                          ),
+                          Consumer(
+                            builder: (context, ref, _) {
+                              final cashExpenses = ref.watch(shiftCashDrawerExpensesProvider(shift.id)).value ?? 0;
+                              if (cashExpenses <= 0) return const SizedBox.shrink();
+                              return Column(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                    child: Divider(),
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.arrow_circle_down_rounded, color: Colors.redAccent),
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            lang == 'en' ? 'Cash Expenses (Drawer)' : 'Pengeluaran Kasir (Laci)',
+                                            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                                          ),
+                                          Text(
+                                            '- ${currencyFormatter.format(cashExpenses)}',
+                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.redAccent),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ],
                       ),

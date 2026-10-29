@@ -92,7 +92,7 @@ class ShiftNotifier extends _$ShiftNotifier {
         
       // --- REPORTING & EFFICIENCY LOGIC ---
       try {
-        final metrics = await ref.read(dashboardMetricsProvider(null).future);
+        final metrics = await ref.read(dashboardMetricsProvider(currentShift.id).future);
         final reportService = ref.read(reportServiceProvider);
         final prefs = ref.read(sharedPreferencesProvider);
         final storeName = prefs.getString('store_name') ?? 'POINT OF SALE';
@@ -133,20 +133,47 @@ class ShiftNotifier extends _$ShiftNotifier {
           }
         }
 
+        // Format expenses list for email body
+        final expensesSummary = StringBuffer();
+        if (metrics.expenses.isEmpty) {
+          expensesSummary.writeln('  (Tidak ada pengeluaran dicatat / No expenses recorded)');
+        } else {
+          for (int i = 0; i < metrics.expenses.length; i++) {
+            final exp = metrics.expenses[i];
+            expensesSummary.writeln(
+              '  ${i + 1}. ${exp.title} - ${currencyFormatter.format(exp.amount)} [${exp.category}]',
+            );
+          }
+        }
+
+        final profitStatus = metrics.isProfit ? 'LABA BERSIH (PROFIT)' : 'RUGI BERSIH (DEFICIT)';
+        final profitSign = metrics.isProfit ? '+' : '-';
+
         final emailBody = '''
 Halo / Hello,
 
 Berikut adalah Laporan Akhir Sesi (End of Shift Report) untuk toko: $storeName
 
-RINGKASAN PENJUALAN:
-- Total Pendapatan: ${currencyFormatter.format(metrics.revenue)}
+==================================================
+RINGKASAN KEUANGAN & LABA/RUGI:
+==================================================
+- Pendapatan Kotor (Gross): ${currencyFormatter.format(metrics.revenue)}
   * Tunai (Cash): ${currencyFormatter.format(metrics.cashRevenue)}
   * QRIS / Digital: ${currencyFormatter.format(metrics.qrisRevenue)}
+- Total Pengeluaran (Expenses): ${currencyFormatter.format(metrics.totalExpenses)}
+--------------------------------------------------
+- HASIL: $profitStatus
+- JUMLAH BERSIH: $profitSign ${currencyFormatter.format(metrics.netProfit.abs())}
+==================================================
+
+KAS KASIR (DRAWER):
 - Modal Awal: ${currencyFormatter.format(currentShift.startingCash)}
 - Uang Fisik Kasir: ${currencyFormatter.format(actualEndingCash)}
 - Total Pesanan: ${metrics.orderCount}
 - Total Item Terjual: ${metrics.itemsSold}
 
+RINCIAN PENGELUARAN:
+$expensesSummary
 RINCIAN ITEM TERJUAL:
 $itemsSummary
 Terlampir dokumen resmi laporan PDF dan cadangan data CSV pesanan.

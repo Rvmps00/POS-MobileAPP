@@ -48,7 +48,7 @@ class _ReportPreviewScreenState extends ConsumerState<ReportPreviewScreen> {
   Widget build(BuildContext context) {
     final lang = ref.watch(languageProvider).languageCode;
     final shiftState = ref.watch(shiftProvider).value;
-    final metricsAsync = ref.watch(dashboardMetricsProvider(null));
+    final metricsAsync = ref.watch(dashboardMetricsProvider(shiftState?.id));
     final reportService = ref.watch(reportServiceProvider);
     final prefs = ref.watch(sharedPreferencesProvider);
     final storeName = prefs.getString('store_name') ?? 'POINT OF SALE';

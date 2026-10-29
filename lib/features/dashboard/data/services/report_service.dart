@@ -166,15 +166,15 @@ class ReportService {
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text(
-                    isEnglish ? 'Sales & Payment Summary' : 'Ringkasan Penjualan & Pembayaran',
+                    isEnglish ? 'Sales & Financial Summary' : 'Ringkasan Penjualan & Keuangan',
                     style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, color: PdfColors.blueGrey800),
                   ),
                   pw.SizedBox(height: 8),
                   pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      pw.Text(isEnglish ? 'Total Revenue:' : 'Total Pendapatan:', style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
-                      pw.Text(currencyFormatter.format(metrics.revenue), style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold, color: PdfColors.green800)),
+                      pw.Text(isEnglish ? 'Gross Revenue (Pendapatan):' : 'Pendapatan Kotor (Gross):', style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+                      pw.Text(currencyFormatter.format(metrics.revenue), style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold, color: PdfColors.blue800)),
                     ],
                   ),
                   pw.Padding(
@@ -200,6 +200,62 @@ class ReportService {
                     ),
                   ),
                   pw.SizedBox(height: 6),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text(isEnglish ? 'Total Expenses (Pengeluaran):' : 'Total Pengeluaran (Biaya):', style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+                      pw.Text('- ${currencyFormatter.format(metrics.totalExpenses)}', style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold, color: PdfColors.red800)),
+                    ],
+                  ),
+                  pw.SizedBox(height: 8),
+                  // Net Profit / Loss Highlight Box
+                  pw.Container(
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: pw.BoxDecoration(
+                      color: metrics.isProfit ? PdfColors.blue50 : PdfColors.red50,
+                      borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                      border: pw.Border.all(
+                        color: metrics.isProfit ? PdfColors.blue300 : PdfColors.red300,
+                        width: 1,
+                      ),
+                    ),
+                    child: pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Text(
+                              metrics.isProfit 
+                                  ? (isEnglish ? 'NET PROFIT (SURPLUS)' : 'LABA BERSIH (UNTUNG)')
+                                  : (isEnglish ? 'NET LOSS (DEFICIT)' : 'RUGI BERSIH (DEFISIT)'),
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                                fontWeight: pw.FontWeight.bold,
+                                color: metrics.isProfit ? PdfColors.blue900 : PdfColors.red900,
+                              ),
+                            ),
+                            pw.Text(
+                              isEnglish ? 'Gross Revenue minus Operational Expenses' : 'Pendapatan dikurangi total pengeluaran operasional',
+                              style: pw.TextStyle(
+                                fontSize: 7,
+                                color: metrics.isProfit ? PdfColors.blue700 : PdfColors.red700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        pw.Text(
+                          '${metrics.isProfit ? '+' : '-'} ${currencyFormatter.format(metrics.netProfit.abs())}',
+                          style: pw.TextStyle(
+                            fontSize: 13,
+                            fontWeight: pw.FontWeight.bold,
+                            color: metrics.isProfit ? PdfColors.blue900 : PdfColors.red900,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  pw.SizedBox(height: 8),
                   pw.Divider(color: PdfColors.grey300, thickness: 0.5),
                   pw.SizedBox(height: 4),
                   pw.Row(
@@ -301,12 +357,119 @@ class ReportService {
                   3: const pw.FlexColumnWidth(1.8),
                 },
               ),
+            pw.SizedBox(height: 20),
+
+            // Operational Expenses Breakdown Section
+            pw.Text(
+              isEnglish ? 'Operational Expenses Breakdown' : 'Rincian Pengeluaran Operasional',
+              style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold, color: PdfColors.blueGrey900),
+            ),
+            pw.SizedBox(height: 4),
+            pw.Text(
+              isEnglish ? 'List of all operational expenses recorded during this shift' : 'Daftar semua pengeluaran operasional yang dicatat pada sesi ini',
+              style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600),
+            ),
+            pw.SizedBox(height: 8),
+
+            if (metrics.expenses.isEmpty)
+              pw.Container(
+                width: double.infinity,
+                padding: const pw.EdgeInsets.all(16),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.grey300),
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+                ),
+                child: pw.Center(
+                  child: pw.Text(
+                    isEnglish ? 'No operational expenses recorded during this shift.' : 'Tidak ada pengeluaran operasional yang dicatat pada sesi ini.',
+                    style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
+                  ),
+                ),
+              )
+            else
+              pw.TableHelper.fromTextArray(
+                border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+                headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9, color: PdfColors.white),
+                headerDecoration: const pw.BoxDecoration(color: PdfColors.red800),
+                headerHeight: 22,
+                cellHeight: 20,
+                cellStyle: const pw.TextStyle(fontSize: 8),
+                oddRowDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+                headers: [
+                  '#',
+                  isEnglish ? 'Expense / Item' : 'Keterangan Pengeluaran',
+                  isEnglish ? 'Category' : 'Kategori',
+                  isEnglish ? 'Payment Source' : 'Sumber Kas',
+                  isEnglish ? 'Amount' : 'Nominal',
+                ],
+                data: [
+                  for (int i = 0; i < metrics.expenses.length; i++)
+                    [
+                      '${i + 1}',
+                      metrics.expenses[i].title,
+                      _getCategoryLabel(metrics.expenses[i].category, lang),
+                      _getPaymentSourceLabel(metrics.expenses[i].paymentSource, lang),
+                      currencyFormatter.format(metrics.expenses[i].amount),
+                    ],
+                  // Total summary row
+                  [
+                    '',
+                    isEnglish ? 'TOTAL EXPENSES' : 'TOTAL PENGELUARAN',
+                    '',
+                    '',
+                    currencyFormatter.format(metrics.totalExpenses),
+                  ],
+                ],
+                cellAlignments: {
+                  0: pw.Alignment.center,
+                  1: pw.Alignment.centerLeft,
+                  2: pw.Alignment.centerLeft,
+                  3: pw.Alignment.centerLeft,
+                  4: pw.Alignment.centerRight,
+                },
+                columnWidths: {
+                  0: const pw.FixedColumnWidth(25),
+                  1: const pw.FlexColumnWidth(2.5),
+                  2: const pw.FlexColumnWidth(1.5),
+                  3: const pw.FlexColumnWidth(1.5),
+                  4: const pw.FlexColumnWidth(1.8),
+                },
+              ),
           ];
         },
       ),
     );
 
     return await pdf.save();
+  }
+
+  String _getCategoryLabel(String category, String lang) {
+    switch (category) {
+      case 'INGREDIENTS':
+        return lang == 'en' ? 'Ingredients' : 'Bahan Baku';
+      case 'OPERATIONAL':
+        return lang == 'en' ? 'Operational' : 'Operasional';
+      case 'SALARY':
+        return lang == 'en' ? 'Salary / Wage' : 'Gaji & Uang Makan';
+      case 'SUPPLIES':
+        return lang == 'en' ? 'Supplies' : 'Perlengkapan';
+      case 'OTHER':
+      default:
+        return lang == 'en' ? 'Other' : 'Lain-lain';
+    }
+  }
+
+  String _getPaymentSourceLabel(String source, String lang) {
+    switch (source) {
+      case 'CASH_DRAWER':
+        return lang == 'en' ? 'Cash Drawer' : 'Kas Kasir';
+      case 'BANK_TRANSFER':
+        return lang == 'en' ? 'Bank Transfer' : 'Rekening Bank';
+      case 'OWNER_POCKET':
+        return lang == 'en' ? 'Owner Pocket' : 'Pribadi / Owner';
+      default:
+        return source;
+    }
   }
 
   Future<File> savePdfToFile(Uint8List bytes) async {
