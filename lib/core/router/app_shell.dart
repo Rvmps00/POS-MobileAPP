@@ -82,16 +82,35 @@ class AppShell extends ConsumerWidget {
 
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
-          final targetBranch = visibleBranches[index];
-          navigationShell.goBranch(
-            targetBranch,
-            initialLocation: targetBranch == navigationShell.currentIndex,
-          );
-        },
-        destinations: destinations,
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          height: 68,
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const TextStyle(
+                fontSize: 9.5,
+                fontWeight: FontWeight.bold,
+                letterSpacing: -0.4,
+              );
+            }
+            return const TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -0.4,
+            );
+          }),
+        ),
+        child: NavigationBar(
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) {
+            final targetBranch = visibleBranches[index];
+            navigationShell.goBranch(
+              targetBranch,
+              initialLocation: targetBranch == navigationShell.currentIndex,
+            );
+          },
+          destinations: destinations,
+        ),
       ),
     );
   }

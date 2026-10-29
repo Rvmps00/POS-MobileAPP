@@ -355,21 +355,25 @@ class DashboardScreen extends ConsumerWidget {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  lang == 'en' ? 'Net Profit & Loss' : 'Laba / Rugi Bersih Hari Ini',
-                                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  lang == 'en' ? 'Revenue minus expenses recorded today' : 'Pendapatan dikurangi total pengeluaran hari ini',
-                                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                                ),
-                              ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    lang == 'en' ? 'Net Profit & Loss' : 'Laba / Rugi Bersih Hari Ini',
+                                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    lang == 'en' ? 'Revenue minus expenses recorded today' : 'Pendapatan dikurangi total pengeluaran hari ini',
+                                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
                             ),
+                            const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
@@ -394,37 +398,51 @@ class DashboardScreen extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: metrics.isProfit ? Colors.blue.withOpacity(0.06) : Colors.red.withOpacity(0.06),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: metrics.isProfit ? Colors.blue.withOpacity(0.2) : Colors.red.withOpacity(0.2)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                            border: Border.all(color: colorScheme.outlineVariant.withOpacity(0.4)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    metrics.isProfit
-                                        ? (lang == 'en' ? 'Net Profit' : 'Estimasi Laba Bersih')
-                                        : (lang == 'en' ? 'Net Loss' : 'Estimasi Rugi Bersih'),
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: metrics.isProfit ? Colors.blue.shade900 : Colors.red.shade900,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      metrics.isProfit
+                                          ? (lang == 'en' ? 'Net Profit' : 'Estimasi Laba Bersih')
+                                          : (lang == 'en' ? 'Net Loss' : 'Estimasi Rugi Bersih'),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: metrics.isProfit ? Colors.blue.shade900 : Colors.red.shade900,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '${metrics.isProfit ? '+' : '-'} ${currencyFormatter.format(metrics.netProfit.abs())}',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      color: metrics.isProfit ? Colors.blue.shade900 : Colors.red.shade900,
+                                    const SizedBox(height: 4),
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '${metrics.isProfit ? '+' : '-'} ${currencyFormatter.format(metrics.netProfit.abs())}',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: metrics.isProfit ? Colors.blue.shade900 : Colors.red.shade900,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
+                              const SizedBox(width: 12),
                               Icon(
                                 metrics.isProfit ? Icons.trending_up : Icons.trending_down,
                                 size: 36,
@@ -440,8 +458,16 @@ class DashboardScreen extends ConsumerWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.withOpacity(0.06),
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.03),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                  border: Border.all(color: colorScheme.outlineVariant.withOpacity(0.4)),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -451,9 +477,13 @@ class DashboardScreen extends ConsumerWidget {
                                       style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      currencyFormatter.format(metrics.revenue),
-                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue),
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        currencyFormatter.format(metrics.revenue),
+                                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -464,8 +494,16 @@ class DashboardScreen extends ConsumerWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.06),
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.03),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                  border: Border.all(color: colorScheme.outlineVariant.withOpacity(0.4)),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -475,9 +513,13 @@ class DashboardScreen extends ConsumerWidget {
                                       style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      '- ${currencyFormatter.format(metrics.totalExpenses)}',
-                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red),
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '- ${currencyFormatter.format(metrics.totalExpenses)}',
+                                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red),
+                                      ),
                                     ),
                                   ],
                                 ),

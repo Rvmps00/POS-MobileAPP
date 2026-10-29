@@ -132,14 +132,21 @@ class ExpensesScreen extends ConsumerWidget {
             // Top Financial Cards (Gross Income, Expenses, Total)
             Row(
               children: [
-                // Gross Income (Blue)
+                // Gross Income (White card with subtle shadow)
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1E3A8A).withOpacity(0.08), // Soft Blue tint
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFF2563EB).withOpacity(0.3)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      border: Border.all(color: colorScheme.outlineVariant.withOpacity(0.4)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +156,7 @@ class ExpensesScreen extends ConsumerWidget {
                             Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF2563EB).withOpacity(0.15),
+                                color: const Color(0xFF2563EB).withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(Icons.trending_up, size: 18, color: Color(0xFF2563EB)),
@@ -188,14 +195,21 @@ class ExpensesScreen extends ConsumerWidget {
                 ),
                 const SizedBox(width: 12),
 
-                // Expenses (Red)
+                // Expenses (White card with subtle shadow)
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF991B1B).withOpacity(0.08), // Soft Red tint
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFDC2626).withOpacity(0.3)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      border: Border.all(color: colorScheme.outlineVariant.withOpacity(0.4)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,7 +219,7 @@ class ExpensesScreen extends ConsumerWidget {
                             Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFDC2626).withOpacity(0.15),
+                                color: const Color(0xFFDC2626).withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(Icons.trending_down, size: 18, color: Color(0xFFDC2626)),
@@ -246,19 +260,21 @@ class ExpensesScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
 
-            // Total / Net Balance Card (Dynamic Blue or Red)
+            // Total / Net Balance Card (White card with subtle shadow)
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: summary.isSurplus
-                    ? const Color(0xFF1E3A8A).withOpacity(0.12) // Blue tint if surplus
-                    : const Color(0xFF991B1B).withOpacity(0.12), // Red tint if minus
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
                 border: Border.all(
-                  color: summary.isSurplus
-                      ? const Color(0xFF2563EB).withOpacity(0.4)
-                      : const Color(0xFFDC2626).withOpacity(0.4),
-                  width: 1.5,
+                  color: colorScheme.outlineVariant.withOpacity(0.4),
                 ),
               ),
               child: Row(
